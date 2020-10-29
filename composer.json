@@ -22,6 +22,7 @@
         "cakephp/bake": "^2.0.3",
         "cakephp/cakephp-codesniffer": "~4.2.0",
         "cakephp/debug_kit": "^4.1",
+        "imo-tikuwa/cakephp-admin-baker": "^2.0",
         "phpunit/phpunit": "~8.5.0",
         "psy/psysh": "@stable"
     },
