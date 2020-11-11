@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 use Migrations\AbstractSeed;
 
 /**
@@ -12,7 +14,7 @@ class AccessMapsSeed extends AbstractSeed
      * Write your database seeder using this method.
      *
      * More information on writing seeds is available here:
-     * http://docs.phinx.org/en/latest/seeding.html
+     * https://book.cakephp.org/phinx/0/en/seeding.html
      *
      * @return void
      */
@@ -30,7 +32,6 @@ class AccessMapsSeed extends AbstractSeed
         ];
 
         $table = $this->table('access_maps');
-        $table->truncate();
         $table->insert($data)->save();
     }
 }

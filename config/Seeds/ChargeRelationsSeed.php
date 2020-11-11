@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 use Migrations\AbstractSeed;
 
 /**
@@ -12,7 +14,7 @@ class ChargeRelationsSeed extends AbstractSeed
      * Write your database seeder using this method.
      *
      * More information on writing seeds is available here:
-     * http://docs.phinx.org/en/latest/seeding.html
+     * https://book.cakephp.org/phinx/0/en/seeding.html
      *
      * @return void
      */
@@ -121,7 +123,6 @@ class ChargeRelationsSeed extends AbstractSeed
         ];
 
         $table = $this->table('charge_relations');
-        $table->truncate();
         $table->insert($data)->save();
     }
 }

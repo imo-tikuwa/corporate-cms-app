@@ -36,14 +36,11 @@ class AuthController extends AppController
     {
         $this->getRequest()->allowMethod(['get', 'post']);
         $result = $this->Authentication->getResult();
-        // POSTやGETに関係なく、ユーザーがログインしていればリダイレクトします
         if ($result->isValid()) {
-            $redirect = $this->getRequest()->getQuery('redirect', [
+            return $this->redirect([
                 'controller' => 'Top',
                 'action' => 'index',
             ]);
-
-            return $this->redirect($redirect);
         }
         // ユーザーの送信と認証に失敗した場合にエラーを表示します
         if ($this->getRequest()->is('post') && !$result->isValid()) {

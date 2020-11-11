@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 use Migrations\AbstractSeed;
 
 /**
@@ -12,7 +14,7 @@ class ContactsSeed extends AbstractSeed
      * Write your database seeder using this method.
      *
      * More information on writing seeds is available here:
-     * http://docs.phinx.org/en/latest/seeding.html
+     * https://book.cakephp.org/phinx/0/en/seeding.html
      *
      * @return void
      */
@@ -47,10 +49,22 @@ class ContactsSeed extends AbstractSeed
                 'modified' => '2020-09-30 15:27:24',
                 'deleted' => NULL,
             ],
+            [
+                'id' => '3',
+                'name' => '問い合わせテスト',
+                'email' => 'hogehoge@imo-tikuwa.com',
+                'type' => '01',
+                'tel' => '',
+                'content' => 'CakePHP4アップデートした',
+                'hp_url' => 'http://',
+                'search_snippet' => '問い合わせテスト hogehoge@imo-tikuwa.com ご予約  CakePHP4アップデートした http://',
+                'created' => '2020-10-12 20:26:28',
+                'modified' => '2020-10-12 20:26:28',
+                'deleted' => NULL,
+            ],
         ];
 
         $table = $this->table('contacts');
-        $table->truncate();
         $table->insert($data)->save();
     }
 }

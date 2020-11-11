@@ -1,12 +1,30 @@
 <?php
+declare(strict_types=1);
+
 use Migrations\AbstractMigration;
 
 class Initial extends AbstractMigration
 {
+    public $autoId = false;
+
+    /**
+     * Up Method.
+     *
+     * More information on this method is available here:
+     * https://book.cakephp.org/phinx/0/en/migrations.html#the-up-method
+     * @return void
+     */
     public function up()
     {
-
         $this->table('access_maps')
+            ->addColumn('id', 'integer', [
+                'autoIncrement' => true,
+                'comment' => 'ID',
+                'default' => null,
+                'limit' => null,
+                'null' => false,
+            ])
+            ->addPrimaryKey(['id'])
             ->addColumn('description', 'string', [
                 'comment' => 'アクセス方法',
                 'default' => null,
@@ -40,6 +58,14 @@ class Initial extends AbstractMigration
             ->create();
 
         $this->table('admins')
+            ->addColumn('id', 'integer', [
+                'autoIncrement' => true,
+                'comment' => 'ID',
+                'default' => null,
+                'limit' => null,
+                'null' => false,
+            ])
+            ->addPrimaryKey(['id'])
             ->addColumn('mail', 'string', [
                 'default' => null,
                 'limit' => 255,
@@ -74,6 +100,14 @@ class Initial extends AbstractMigration
             ->create();
 
         $this->table('charge_masters')
+            ->addColumn('id', 'integer', [
+                'autoIncrement' => true,
+                'comment' => 'ID',
+                'default' => null,
+                'limit' => null,
+                'null' => false,
+            ])
+            ->addPrimaryKey(['id'])
             ->addColumn('name', 'string', [
                 'comment' => 'マスタ名',
                 'default' => null,
@@ -83,13 +117,13 @@ class Initial extends AbstractMigration
             ->addColumn('basic_charge', 'integer', [
                 'comment' => '基本料金',
                 'default' => null,
-                'limit' => 11,
+                'limit' => null,
                 'null' => true,
             ])
             ->addColumn('campaign_charge', 'integer', [
                 'comment' => 'キャンペーン料金',
                 'default' => null,
-                'limit' => 11,
+                'limit' => null,
                 'null' => true,
             ])
             ->addColumn('search_snippet', 'text', [
@@ -119,16 +153,24 @@ class Initial extends AbstractMigration
             ->create();
 
         $this->table('charge_relations')
+            ->addColumn('id', 'integer', [
+                'autoIncrement' => true,
+                'comment' => 'ID',
+                'default' => null,
+                'limit' => null,
+                'null' => false,
+            ])
+            ->addPrimaryKey(['id'])
             ->addColumn('charge_id', 'integer', [
                 'comment' => '基本料金ID',
                 'default' => null,
-                'limit' => 11,
+                'limit' => null,
                 'null' => true,
             ])
             ->addColumn('charge_master_id', 'integer', [
                 'comment' => '料金マスタID',
                 'default' => null,
-                'limit' => 11,
+                'limit' => null,
                 'null' => true,
             ])
             ->addColumn('search_snippet', 'text', [
@@ -158,6 +200,14 @@ class Initial extends AbstractMigration
             ->create();
 
         $this->table('charges')
+            ->addColumn('id', 'integer', [
+                'autoIncrement' => true,
+                'comment' => 'ID',
+                'default' => null,
+                'limit' => null,
+                'null' => false,
+            ])
+            ->addPrimaryKey(['id'])
             ->addColumn('name', 'string', [
                 'comment' => 'プラン名',
                 'default' => null,
@@ -197,6 +247,14 @@ class Initial extends AbstractMigration
             ->create();
 
         $this->table('contacts')
+            ->addColumn('id', 'integer', [
+                'autoIncrement' => true,
+                'comment' => 'ID',
+                'default' => null,
+                'limit' => null,
+                'null' => false,
+            ])
+            ->addPrimaryKey(['id'])
             ->addColumn('name', 'string', [
                 'comment' => 'お名前',
                 'default' => null,
@@ -209,7 +267,7 @@ class Initial extends AbstractMigration
                 'limit' => 255,
                 'null' => true,
             ])
-            ->addColumn('type', 'string', [
+            ->addColumn('type', 'char', [
                 'comment' => 'お問い合わせ内容',
                 'default' => null,
                 'limit' => 2,
@@ -260,7 +318,15 @@ class Initial extends AbstractMigration
             ->create();
 
         $this->table('links')
-            ->addColumn('category', 'string', [
+            ->addColumn('id', 'integer', [
+                'autoIncrement' => true,
+                'comment' => 'ID',
+                'default' => null,
+                'limit' => null,
+                'null' => false,
+            ])
+            ->addPrimaryKey(['id'])
+            ->addColumn('category', 'char', [
                 'comment' => 'リンクカテゴリ',
                 'default' => null,
                 'limit' => 2,
@@ -311,6 +377,14 @@ class Initial extends AbstractMigration
             ->create();
 
         $this->table('operation_logs')
+            ->addColumn('id', 'integer', [
+                'autoIncrement' => true,
+                'comment' => 'ID',
+                'default' => null,
+                'limit' => null,
+                'null' => false,
+            ])
+            ->addPrimaryKey(['id'])
             ->addColumn('client_ip', 'text', [
                 'comment' => 'クライアントIP',
                 'default' => null,
@@ -334,16 +408,28 @@ class Initial extends AbstractMigration
                 'default' => null,
                 'limit' => null,
                 'null' => false,
+                'precision' => 3,
+                // 'scale' => 3
             ])
             ->addColumn('response_time', 'datetime', [
                 'comment' => 'レスポンス日時',
                 'default' => null,
                 'limit' => null,
                 'null' => false,
+                'precision' => 3,
+                // 'scale' => 3
             ])
             ->create();
 
         $this->table('operation_logs_daily')
+            ->addColumn('id', 'integer', [
+                'autoIncrement' => true,
+                'comment' => 'ID',
+                'default' => null,
+                'limit' => null,
+                'null' => false,
+            ])
+            ->addPrimaryKey(['id'])
             ->addColumn('target_ymd', 'date', [
                 'comment' => '対象日',
                 'default' => null,
@@ -365,12 +451,20 @@ class Initial extends AbstractMigration
             ->addColumn('counter', 'integer', [
                 'comment' => 'カウンタ',
                 'default' => null,
-                'limit' => 11,
+                'limit' => null,
                 'null' => false,
             ])
             ->create();
 
         $this->table('operation_logs_hourly')
+            ->addColumn('id', 'integer', [
+                'autoIncrement' => true,
+                'comment' => 'ID',
+                'default' => null,
+                'limit' => null,
+                'null' => false,
+            ])
+            ->addPrimaryKey(['id'])
             ->addColumn('target_time', 'datetime', [
                 'comment' => '対象日時',
                 'default' => null,
@@ -392,16 +486,24 @@ class Initial extends AbstractMigration
             ->addColumn('counter', 'integer', [
                 'comment' => 'カウンタ',
                 'default' => null,
-                'limit' => 11,
+                'limit' => null,
                 'null' => false,
             ])
             ->create();
 
         $this->table('operation_logs_monthly')
+            ->addColumn('id', 'integer', [
+                'autoIncrement' => true,
+                'comment' => 'ID',
+                'default' => null,
+                'limit' => null,
+                'null' => false,
+            ])
+            ->addPrimaryKey(['id'])
             ->addColumn('target_ym', 'integer', [
                 'comment' => '対象年月',
                 'default' => null,
-                'limit' => 6,
+                'limit' => null,
                 'null' => false,
             ])
             ->addColumn('summary_type', 'string', [
@@ -419,12 +521,20 @@ class Initial extends AbstractMigration
             ->addColumn('counter', 'integer', [
                 'comment' => 'カウンタ',
                 'default' => null,
-                'limit' => 11,
+                'limit' => null,
                 'null' => false,
             ])
             ->create();
 
         $this->table('staffs')
+            ->addColumn('id', 'integer', [
+                'autoIncrement' => true,
+                'comment' => 'ID',
+                'default' => null,
+                'limit' => null,
+                'null' => false,
+            ])
+            ->addPrimaryKey(['id'])
             ->addColumn('name', 'string', [
                 'comment' => 'スタッフ名',
                 'default' => null,
@@ -437,13 +547,13 @@ class Initial extends AbstractMigration
                 'limit' => 255,
                 'null' => true,
             ])
-            ->addColumn('staff_position', 'string', [
+            ->addColumn('staff_position', 'char', [
                 'comment' => 'スタッフ役職',
                 'default' => null,
                 'limit' => 2,
                 'null' => true,
             ])
-            ->addColumn('photo_position', 'string', [
+            ->addColumn('photo_position', 'char', [
                 'comment' => '画像表示位置',
                 'default' => null,
                 'limit' => 2,
@@ -500,6 +610,13 @@ class Initial extends AbstractMigration
             ->create();
     }
 
+    /**
+     * Down Method.
+     *
+     * More information on this method is available here:
+     * https://book.cakephp.org/phinx/0/en/migrations.html#the-down-method
+     * @return void
+     */
     public function down()
     {
         $this->table('access_maps')->drop()->save();
