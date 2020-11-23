@@ -4,9 +4,14 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Controller\Admin\AppController;
+use App\Utils\ExcelUtils;
 use Cake\I18n\FrozenDate;
 use Cake\I18n\FrozenTime;
 use Cake\Utility\Hash;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx as XlsxReader;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx as XlsxWriter;
 
 /**
  * Charges Controller
@@ -125,6 +130,7 @@ class ChargesController extends AppController
     {
         if ($this->getRequest()->getParam('action') == 'edit') {
             $charge = $this->Charges->get($id);
+            $this->Charges->touch($charge);
         } else {
             $charge = $this->Charges->newEmptyEntity();
         }
@@ -208,5 +214,58 @@ class ChargesController extends AppController
         $this->response = $this->response->withDownload("charges-{$datetime->format('YmdHis')}.csv");
         $this->viewBuilder()->setClassName('CsvView.Csv');
         $this->set(compact('charges', '_serialize', '_header', '_extract', '_csvEncoding'));
+    }
+
+    /**
+     * excel export method
+     * @return void
+     */
+    public function excelExport()
+    {
+        $request = $this->getRequest()->getQueryParams();
+        $charges = $this->_getQuery($request)->toArray();
+
+        $reader = new XlsxReader();
+        $spreadsheet = $reader->load(EXCEL_TEMPLATE_DIR . 'charges_template.xlsx');
+        $data_sheet = $spreadsheet->getSheetByName('DATA');
+        $row_num = 2;
+
+        // 取得したデータをExcelに書き込む
+        foreach ($charges as $charge) {
+            // ID
+            $data_sheet->setCellValue("A{$row_num}", $charge['id']);
+            // プラン名
+            $data_sheet->setCellValue("B{$row_num}", $charge['name']);
+            // プラン名下注釈
+            $data_sheet->setCellValue("C{$row_num}", $charge['annotation']);
+            // 作成日時
+            $cell_value = @$charge['created']->i18nFormat('yyyy-MM-dd HH:mm:ss');
+            $data_sheet->setCellValue("D{$row_num}", $cell_value);
+            // 更新日時
+            $cell_value = @$charge['modified']->i18nFormat('yyyy-MM-dd HH:mm:ss');
+            $data_sheet->setCellValue("E{$row_num}", $cell_value);
+            $row_num++;
+        }
+
+        // データ入力行のフォーマットを文字列に設定
+        $charges_row_num = count($charges) + 100;
+        $data_sheet->getStyle("A2:E{$charges_row_num}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
+
+
+        // 罫線設定、A2セルを選択、1行目固定、DATAシートをアクティブ化
+        $data_sheet->getStyle("A1:E{$charges_row_num}")->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+        $data_sheet->setSelectedCell('A2');
+        $data_sheet->freezePane('A2');
+        $spreadsheet->setActiveSheetIndexByName('DATA');
+
+        $datetime = new \DateTime();
+        $datetime->setTimezone(new \DateTimeZone('Asia/Tokyo'));
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;');
+        header("Content-Disposition: attachment; filename=\"charges-{$datetime->format('YmdHis')}.xlsx\"");
+        header('Cache-Control: max-age=0');
+        $writer = new XlsxWriter($spreadsheet);
+        $writer->save('php://output');
+        exit;
     }
 }

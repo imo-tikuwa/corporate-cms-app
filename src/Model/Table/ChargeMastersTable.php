@@ -70,6 +70,7 @@ class ChargeMastersTable extends AppTable
 
         // マスタ名
         $validator
+            ->requirePresence('name', true, 'マスタ名を入力してください。')
             ->add('name', 'scalar', [
                 'rule' => 'isScalar',
                 'message' => 'マスタ名を正しく入力してください。',
@@ -84,6 +85,7 @@ class ChargeMastersTable extends AppTable
 
         // 基本料金
         $validator
+            ->requirePresence('basic_charge', true, '基本料金を入力してください。')
             ->add('basic_charge', 'integer', [
                 'rule' => 'isInteger',
                 'message' => '基本料金を正しく入力してください。',
@@ -103,6 +105,7 @@ class ChargeMastersTable extends AppTable
 
         // キャンペーン料金
         $validator
+            ->requirePresence('campaign_charge', true, 'キャンペーン料金を入力してください。')
             ->add('campaign_charge', 'integer', [
                 'rule' => 'isInteger',
                 'message' => 'キャンペーン料金を正しく入力してください。',
@@ -173,24 +176,5 @@ class ChargeMastersTable extends AppTable
             'created',
             'modified',
         ];
-    }
-
-    /**
-     * CSVの入力情報を取得する
-     * @param array $csv_row CSVの1行辺りの配列データ
-     * @return array データ登録用に変換した配列データ
-     */
-    public function getCsvData($csv_row)
-    {
-        $csv_data = array_combine($this->getCsvColumns(), $csv_row);
-
-        // 基本料金
-        $csv_data['basic_charge'] = preg_replace('/[^0-9]/', '', $csv_data['basic_charge']);
-        // キャンペーン料金
-        $csv_data['campaign_charge'] = preg_replace('/[^0-9]/', '', $csv_data['campaign_charge']);
-        unset($csv_data['created']);
-        unset($csv_data['modified']);
-
-        return $csv_data;
     }
 }

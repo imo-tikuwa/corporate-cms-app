@@ -129,6 +129,7 @@ class ChargeMastersController extends AppController
     {
         if ($this->getRequest()->getParam('action') == 'edit') {
             $charge_master = $this->ChargeMasters->get($id);
+            $this->ChargeMasters->touch($charge_master);
         } else {
             $charge_master = $this->ChargeMasters->newEmptyEntity();
         }

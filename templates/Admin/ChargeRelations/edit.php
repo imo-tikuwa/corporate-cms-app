@@ -17,13 +17,13 @@ if ($charge_relation->hasErrors()) {
         <div class="col-lg-6 col-md-6 col-sm-12">
           <div class="form-group">
             <?= $this->element('Parts/label', ['field' => 'charge_id', 'label' => '基本料金ID', 'require' => true, 'class' => 'item-label col-form-label']); ?>
-            <?= $this->Form->control('charge_id', ['id' => 'charge_id', 'type' => 'select', 'class' => 'form-control rounded-0 ', 'label' => false, 'required' => false, 'error' => false]); ?>
+            <?= $this->Form->control('charge_id', ['id' => 'charge_id', 'type' => 'select', 'class' => 'form-control rounded-0 ', 'label' => false, 'required' => false, 'error' => false, 'empty' => '　']); ?>
           </div>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-12">
           <div class="form-group">
             <?= $this->element('Parts/label', ['field' => 'charge_master_id', 'label' => '料金マスタID', 'require' => true, 'class' => 'item-label col-form-label']); ?>
-            <?= $this->Form->control('charge_master_id', ['id' => 'charge_master_id', 'type' => 'select', 'class' => 'form-control rounded-0 ', 'label' => false, 'required' => false, 'error' => false]); ?>
+            <?= $this->Form->control('charge_master_id', ['id' => 'charge_master_id', 'type' => 'select', 'class' => 'form-control rounded-0 ', 'label' => false, 'required' => false, 'error' => false, 'empty' => '　']); ?>
           </div>
         </div>
         <div class="col-md-12">

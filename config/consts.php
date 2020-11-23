@@ -44,5 +44,11 @@ const ACTION_CSV_EXPORT = 'csvExport';
 /** csvImportアクション */
 const ACTION_CSV_IMPORT = 'csvImport';
 
+/** excelExportアクション */
+const ACTION_EXCEL_EXPORT = 'excelExport';
+
+/** excelImportアクション */
+const ACTION_EXCEL_IMPORT = 'excelImport';
+
 /** 権限エラーメッセージ */
 const MESSAGE_AUTH_ERROR = '権限エラーが発生しました';

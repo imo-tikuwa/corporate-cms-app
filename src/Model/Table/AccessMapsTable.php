@@ -76,6 +76,7 @@ class AccessMapsTable extends AppTable
 
         // GoogleMap地図座標
         $validator
+            ->requirePresence('location', true, 'GoogleMap地図座標を選択してください。')
             ->add('location', 'gmapJsonValid', [
                 'rule' => function ($value) {
                     if (!empty(array_diff(['zoom', 'latitude', 'longitude'], array_keys($value)))) {

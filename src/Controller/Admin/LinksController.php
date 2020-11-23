@@ -4,9 +4,15 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Controller\Admin\AppController;
+use App\Utils\CsvUtils;
+use App\Utils\ExcelUtils;
 use Cake\I18n\FrozenDate;
 use Cake\I18n\FrozenTime;
 use Cake\Utility\Hash;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx as XlsxReader;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx as XlsxWriter;
 
 /**
  * Links Controller
@@ -133,6 +139,7 @@ class LinksController extends AppController
     {
         if ($this->getRequest()->getParam('action') == 'edit') {
             $link = $this->Links->get($id);
+            $this->Links->touch($link);
         } else {
             $link = $this->Links->newEmptyEntity();
         }
@@ -226,5 +233,172 @@ class LinksController extends AppController
         $this->response = $this->response->withDownload("links-{$datetime->format('YmdHis')}.csv");
         $this->viewBuilder()->setClassName('CsvView.Csv');
         $this->set(compact('links', '_serialize', '_header', '_extract', '_csvEncoding'));
+    }
+
+    /**
+     * csv import method
+     * @return \Cake\Http\Response|NULL
+     */
+    public function csvImport()
+    {
+        $csv_import_file = @$_FILES["csv_import_file"]["tmp_name"];
+        if (is_uploaded_file($csv_import_file)) {
+            $conn = $this->Links->getConnection();
+            $conn->begin();
+            try {
+                $csv_data = CsvUtils::parseUtf8Csv($csv_import_file);
+                $insert_count = 0;
+                $update_count = 0;
+                foreach ($csv_data as $index => $csv_row) {
+                    if ($index == 0) {
+                        if ($this->Links->getCsvHeaders() != $csv_row) {
+                            throw new \Exception('HeaderCheckError');
+                        }
+                        continue;
+                    }
+
+                    $link = $this->Links->createEntityByCsvRow($csv_row);
+                    if ($link->isNew()) {
+                        $insert_count++;
+                    } else {
+                        $update_count++;
+                    }
+                    if (!$this->Links->save($link, ['atomic' => false])) {
+                        throw new \Exception('SaveError');
+                    }
+                }
+                if (!$conn->commit()) {
+                    throw new \Exception('CommitError');
+                }
+                $this->Flash->success("リンク集CSVの登録が完了しました。<br />新規：{$insert_count}件<br />更新：{$update_count}件", ['params' => ['escape' => false]]);
+            } catch (\Exception $e) {
+                $error_message = 'リンク集CSVの登録でエラーが発生しました。';
+                if (!empty($e->getMessage())) {
+                    $error_message .= "(" . $e->getMessage() . ")";
+                }
+                $this->Flash->error($error_message);
+                $conn->rollback();
+            }
+        }
+
+        return $this->redirect(['action' => 'index', '?' => _code('InitialOrders.Links')]);
+    }
+
+    /**
+     * excel export method
+     * @return void
+     */
+    public function excelExport()
+    {
+        $request = $this->getRequest()->getQueryParams();
+        $links = $this->_getQuery($request)->toArray();
+
+        $reader = new XlsxReader();
+        $spreadsheet = $reader->load(EXCEL_TEMPLATE_DIR . 'links_template.xlsx');
+        $data_sheet = $spreadsheet->getSheetByName('DATA');
+        $row_num = 2;
+
+        // 取得したデータをExcelに書き込む
+        foreach ($links as $link) {
+            // ID
+            $data_sheet->setCellValue("A{$row_num}", $link['id']);
+            // リンクカテゴリ
+            $cell_value = "";
+            if (isset($link['category']) && array_key_exists($link['category'], _code('Codes.Links.category'))) {
+                $cell_value = $link['category'] . ':' . _code('Codes.Links.category.' . $link['category']);
+            }
+            $data_sheet->setCellValue("B{$row_num}", $cell_value);
+            // リンクタイトル
+            $data_sheet->setCellValue("C{$row_num}", $link['title']);
+            // リンクURL
+            $data_sheet->setCellValue("D{$row_num}", $link['url']);
+            // リンク説明
+            $data_sheet->setCellValue("E{$row_num}", $link['description']);
+            // 作成日時
+            $cell_value = @$link['created']->i18nFormat('yyyy-MM-dd HH:mm:ss');
+            $data_sheet->setCellValue("F{$row_num}", $cell_value);
+            // 更新日時
+            $cell_value = @$link['modified']->i18nFormat('yyyy-MM-dd HH:mm:ss');
+            $data_sheet->setCellValue("G{$row_num}", $cell_value);
+            $row_num++;
+        }
+
+        // データ入力行のフォーマットを文字列に設定
+        $links_row_num = count($links) + 100;
+        $data_sheet->getStyle("A2:G{$links_row_num}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
+
+        // データ入力行に入力規則を設定（1048576はExcelの最大行数）
+        // リンクカテゴリ
+        $data_sheet->setDataValidation("B2:B1048576", ExcelUtils::getDataValidation("=OFFSET('LIST'!\$A\$2,0,0,COUNTA('LIST'!\$A:\$A)-1,1)"));
+
+        // 罫線設定、A2セルを選択、1行目固定、DATAシートをアクティブ化
+        $data_sheet->getStyle("A1:G{$links_row_num}")->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+        $data_sheet->setSelectedCell('A2');
+        $data_sheet->freezePane('A2');
+        $spreadsheet->setActiveSheetIndexByName('DATA');
+
+        $datetime = new \DateTime();
+        $datetime->setTimezone(new \DateTimeZone('Asia/Tokyo'));
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;');
+        header("Content-Disposition: attachment; filename=\"links-{$datetime->format('YmdHis')}.xlsx\"");
+        header('Cache-Control: max-age=0');
+        $writer = new XlsxWriter($spreadsheet);
+        $writer->save('php://output');
+        exit;
+    }
+
+    /**
+     * excel import method
+     * @return \Cake\Http\Response|NULL
+     */
+    public function excelImport()
+    {
+        $excel_import_file = @$_FILES["excel_import_file"]["tmp_name"];
+        if (is_uploaded_file($excel_import_file)) {
+            $conn = $this->Links->getConnection();
+            $conn->begin();
+            try {
+                $reader = new XlsxReader();
+                $spreadsheet = $reader->load($excel_import_file);
+                if (!ExcelUtils::checkExcelVersion($spreadsheet, $this->getRequest()->getParam('controller'))) {
+                    throw new \Exception('VersionCheckError');
+                }
+
+                $data_sheet = $spreadsheet->getSheetByName('DATA');
+                $data_sheet_info = $data_sheet->getHighestRowAndColumn();
+                $insert_count = 0;
+                $update_count = 0;
+                for ($row_num = 2; $row_num <= $data_sheet_info['row']; $row_num++) {
+                    $excel_row = $data_sheet->rangeToArray("A{$row_num}:{$data_sheet_info['column']}{$row_num}", '')[0];
+                    if (empty(array_filter($excel_row))) {
+                        continue;
+                    }
+
+                    $link = $this->Links->createEntityByExcelRow($excel_row);
+                    if ($link->isNew()) {
+                        $insert_count++;
+                    } else {
+                        $update_count++;
+                    }
+                    if (!$this->Links->save($link, ['atomic' => false])) {
+                        throw new \Exception('SaveError');
+                    }
+                }
+                if (!$conn->commit()) {
+                    throw new \Exception('CommitError');
+                }
+                $this->Flash->success("リンク集Excelの登録が完了しました。<br />新規：{$insert_count}件<br />更新：{$update_count}件", ['params' => ['escape' => false]]);
+            } catch (\Exception $e) {
+                $error_message = 'リンク集Excelの登録でエラーが発生しました。';
+                if (!empty($e->getMessage())) {
+                    $error_message .= "(" . $e->getMessage() . ")";
+                }
+                $this->Flash->error($error_message);
+                $conn->rollback();
+            }
+        }
+
+        return $this->redirect(['action' => 'index', '?' => _code('InitialOrders.Links')]);
     }
 }

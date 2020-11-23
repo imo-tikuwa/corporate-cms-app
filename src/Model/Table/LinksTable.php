@@ -62,6 +62,7 @@ class LinksTable extends AppTable
 
         // リンクカテゴリ
         $validator
+            ->requirePresence('category', true, 'リンクカテゴリを選択してください。')
             ->add('category', 'scalar', [
                 'rule' => 'isScalar',
                 'message' => 'リンクカテゴリを正しく入力してください。',
@@ -83,6 +84,7 @@ class LinksTable extends AppTable
 
         // リンクタイトル
         $validator
+            ->requirePresence('title', true, 'リンクタイトルを入力してください。')
             ->add('title', 'scalar', [
                 'rule' => 'isScalar',
                 'message' => 'リンクタイトルを正しく入力してください。',
@@ -97,6 +99,7 @@ class LinksTable extends AppTable
 
         // リンクURL
         $validator
+            ->requirePresence('url', true, 'リンクURLを入力してください。')
             ->add('url', 'scalar', [
                 'rule' => 'isScalar',
                 'message' => 'リンクURLを正しく入力してください。',
@@ -122,6 +125,32 @@ class LinksTable extends AppTable
     }
 
     /**
+     * CSV import validation rules.
+     *
+     * @param \Cake\Validation\Validator $validator Validator instance.
+     * @return \Cake\Validation\Validator
+     */
+    public function validationCsv(Validator $validator): Validator
+    {
+        $validator = $this->validationDefault($validator);
+
+        return $validator;
+    }
+
+    /**
+     * Excel import validation rules.
+     *
+     * @param \Cake\Validation\Validator $validator Validator instance.
+     * @return \Cake\Validation\Validator
+     */
+    public function validationExcel(Validator $validator): Validator
+    {
+        $validator = $this->validationDefault($validator);
+
+        return $validator;
+    }
+
+    /**
      * patchEntityのオーバーライド
      * ファイル項目、GoogleMap項目のJSON文字列を配列に変換する
      *
@@ -140,7 +169,9 @@ class LinksTable extends AppTable
         }
         $search_snippet[] = $data['title'];
         $search_snippet[] = $data['url'];
-        $search_snippet[] = strip_tags($data['description']);
+        if (isset($data['description']) && $data['description'] != '') {
+            $search_snippet[] = strip_tags($data['description']);
+        }
         $data['search_snippet'] = implode(' ', $search_snippet);
 
         return parent::patchEntity($entity, $data, $options);
@@ -181,11 +212,11 @@ class LinksTable extends AppTable
     }
 
     /**
-     * CSVの入力情報を取得する
+     * CSVの入力情報を元にエンティティを作成する
      * @param array $csv_row CSVの1行辺りの配列データ
-     * @return array データ登録用に変換した配列データ
+     * @return \App\Model\Entity\Link エンティティ
      */
-    public function getCsvData($csv_row)
+    public function createEntityByCsvRow($csv_row)
     {
         $csv_data = array_combine($this->getCsvColumns(), $csv_row);
 
@@ -196,9 +227,67 @@ class LinksTable extends AppTable
                 $csv_data['category'] = $code_key;
             }
         }
+
         unset($csv_data['created']);
         unset($csv_data['modified']);
 
-        return $csv_data;
+        // Csvの入力情報を元にエンティティを作成
+        if (!empty($csv_data['id'])) {
+            $link = $this->get($csv_data['id']);
+            $this->touch($link);
+        } else {
+            $link = $this->newEmptyEntity();
+        }
+        $link = $this->patchEntity($link, $csv_data, ['validate' => 'csv']);
+
+        return $link;
+    }
+
+    /**
+     * Excelカラム情報を取得する
+     * @return array
+     */
+    public function getExcelColumns()
+    {
+        return [
+            'id',
+            'category',
+            'title',
+            'url',
+            'description',
+            'created',
+            'modified',
+        ];
+    }
+
+    /**
+     * Excelの入力情報を元にエンティティを作成する
+     * @param array $excel_row Excelの1行辺りの配列データ
+     * @return \App\Model\Entity\Link エンティティ
+     */
+    public function createEntityByExcelRow($excel_row)
+    {
+        $excel_data = array_combine($this->getExcelColumns(), $excel_row);
+
+        // リンクカテゴリ
+        foreach (_code("Codes.Links.category") as $code_key => $code_value) {
+            if ("{$code_key}:{$code_value}" === $excel_data['category']) {
+                $excel_data['category'] = $code_key;
+            }
+        }
+
+        unset($excel_data['created']);
+        unset($excel_data['modified']);
+
+        // Excelの入力情報を元にエンティティを作成
+        if (!empty($excel_data['id'])) {
+            $link = $this->get($excel_data['id']);
+            $this->touch($link);
+        } else {
+            $link = $this->newEmptyEntity();
+        }
+        $link = $this->patchEntity($link, $excel_data, ['validate' => 'excel']);
+
+        return $link;
     }
 }

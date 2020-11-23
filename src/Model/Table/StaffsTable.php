@@ -65,6 +65,7 @@ class StaffsTable extends AppTable
 
         // スタッフ名
         $validator
+            ->requirePresence('name', true, 'スタッフ名を入力してください。')
             ->add('name', 'scalar', [
                 'rule' => 'isScalar',
                 'message' => 'スタッフ名を正しく入力してください。',
@@ -79,6 +80,7 @@ class StaffsTable extends AppTable
 
         // スタッフ名(英)
         $validator
+            ->requirePresence('name_en', true, 'スタッフ名(英)を入力してください。')
             ->add('name_en', 'scalar', [
                 'rule' => 'isScalar',
                 'message' => 'スタッフ名(英)を正しく入力してください。',
@@ -93,6 +95,7 @@ class StaffsTable extends AppTable
 
         // スタッフ役職
         $validator
+            ->requirePresence('staff_position', true, 'スタッフ役職を選択してください。')
             ->add('staff_position', 'scalar', [
                 'rule' => 'isScalar',
                 'message' => 'スタッフ役職を正しく入力してください。',
@@ -114,6 +117,7 @@ class StaffsTable extends AppTable
 
         // 画像表示位置
         $validator
+            ->requirePresence('photo_position', true, '画像表示位置を選択してください。')
             ->add('photo_position', 'scalar', [
                 'rule' => 'isScalar',
                 'message' => '画像表示位置を正しく入力してください。',
@@ -135,6 +139,7 @@ class StaffsTable extends AppTable
 
         // スタッフ画像
         $validator
+            ->requirePresence('photo', true, 'スタッフ画像は必須です')
             ->add('photo', 'fileJsonValid', [
                 'rule' => function ($values) {
                     foreach ($values as $value) {
@@ -211,9 +216,13 @@ class StaffsTable extends AppTable
         if (isset($data['photo_position']) && $data['photo_position'] != '') {
             $search_snippet[] = _code("Codes.Staffs.photo_position.{$data['photo_position']}");
         }
-        $search_snippet[] = strip_tags($data['description1']);
+        if (isset($data['description1']) && $data['description1'] != '') {
+            $search_snippet[] = strip_tags($data['description1']);
+        }
         $search_snippet[] = $data['midashi1'];
-        $search_snippet[] = strip_tags($data['description2']);
+        if (isset($data['description2']) && $data['description2'] != '') {
+            $search_snippet[] = strip_tags($data['description2']);
+        }
         $data['search_snippet'] = implode(' ', $search_snippet);
 
         return parent::patchEntity($entity, $data, $options);
@@ -260,31 +269,22 @@ class StaffsTable extends AppTable
     }
 
     /**
-     * CSVの入力情報を取得する
-     * @param array $csv_row CSVの1行辺りの配列データ
-     * @return array データ登録用に変換した配列データ
+     * Excelカラム情報を取得する
+     * @return array
      */
-    public function getCsvData($csv_row)
+    public function getExcelColumns()
     {
-        $csv_data = array_combine($this->getCsvColumns(), $csv_row);
-
-        // スタッフ役職
-        $codes = array_flip(_code("Codes.Staffs.staff_position"));
-        foreach ($codes as $code_value => $code_key) {
-            if ($code_value === $csv_data['staff_position']) {
-                $csv_data['staff_position'] = $code_key;
-            }
-        }
-        // 画像表示位置
-        $codes = array_flip(_code("Codes.Staffs.photo_position"));
-        foreach ($codes as $code_value => $code_key) {
-            if ($code_value === $csv_data['photo_position']) {
-                $csv_data['photo_position'] = $code_key;
-            }
-        }
-        unset($csv_data['created']);
-        unset($csv_data['modified']);
-
-        return $csv_data;
+        return [
+            'id',
+            'name',
+            'name_en',
+            'staff_position',
+            'photo_position',
+            'description1',
+            'midashi1',
+            'description2',
+            'created',
+            'modified',
+        ];
     }
 }

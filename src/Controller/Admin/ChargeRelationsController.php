@@ -141,6 +141,7 @@ class ChargeRelationsController extends AppController
     {
         if ($this->getRequest()->getParam('action') == 'edit') {
             $charge_relation = $this->ChargeRelations->get($id);
+            $this->ChargeRelations->touch($charge_relation);
         } else {
             $charge_relation = $this->ChargeRelations->newEmptyEntity();
         }

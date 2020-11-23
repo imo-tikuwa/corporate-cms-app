@@ -4,9 +4,14 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Controller\Admin\AppController;
+use App\Utils\ExcelUtils;
 use Cake\I18n\FrozenDate;
 use Cake\I18n\FrozenTime;
 use Cake\Utility\Hash;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx as XlsxReader;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx as XlsxWriter;
 
 /**
  * Contacts Controller
@@ -141,6 +146,7 @@ class ContactsController extends AppController
     {
         if ($this->getRequest()->getParam('action') == 'edit') {
             $contact = $this->Contacts->get($id);
+            $this->Contacts->touch($contact);
         } else {
             $contact = $this->Contacts->newEmptyEntity();
         }
@@ -238,5 +244,73 @@ class ContactsController extends AppController
         $this->response = $this->response->withDownload("contacts-{$datetime->format('YmdHis')}.csv");
         $this->viewBuilder()->setClassName('CsvView.Csv');
         $this->set(compact('contacts', '_serialize', '_header', '_extract', '_csvEncoding'));
+    }
+
+    /**
+     * excel export method
+     * @return void
+     */
+    public function excelExport()
+    {
+        $request = $this->getRequest()->getQueryParams();
+        $contacts = $this->_getQuery($request)->toArray();
+
+        $reader = new XlsxReader();
+        $spreadsheet = $reader->load(EXCEL_TEMPLATE_DIR . 'contacts_template.xlsx');
+        $data_sheet = $spreadsheet->getSheetByName('DATA');
+        $row_num = 2;
+
+        // 取得したデータをExcelに書き込む
+        foreach ($contacts as $contact) {
+            // ID
+            $data_sheet->setCellValue("A{$row_num}", $contact['id']);
+            // お名前
+            $data_sheet->setCellValue("B{$row_num}", $contact['name']);
+            // メールアドレス
+            $data_sheet->setCellValue("C{$row_num}", $contact['email']);
+            // お問い合わせ内容
+            $cell_value = "";
+            if (isset($contact['type']) && array_key_exists($contact['type'], _code('Codes.Contacts.type'))) {
+                $cell_value = $contact['type'] . ':' . _code('Codes.Contacts.type.' . $contact['type']);
+            }
+            $data_sheet->setCellValue("D{$row_num}", $cell_value);
+            // お電話番号
+            $data_sheet->setCellValue("E{$row_num}", $contact['tel']);
+            // ご希望日時／その他ご要望等
+            $data_sheet->setCellValue("F{$row_num}", $contact['content']);
+            // ホームページURL
+            $data_sheet->setCellValue("G{$row_num}", $contact['hp_url']);
+            // 作成日時
+            $cell_value = @$contact['created']->i18nFormat('yyyy-MM-dd HH:mm:ss');
+            $data_sheet->setCellValue("H{$row_num}", $cell_value);
+            // 更新日時
+            $cell_value = @$contact['modified']->i18nFormat('yyyy-MM-dd HH:mm:ss');
+            $data_sheet->setCellValue("I{$row_num}", $cell_value);
+            $row_num++;
+        }
+
+        // データ入力行のフォーマットを文字列に設定
+        $contacts_row_num = count($contacts) + 100;
+        $data_sheet->getStyle("A2:I{$contacts_row_num}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
+
+        // データ入力行に入力規則を設定（1048576はExcelの最大行数）
+        // お問い合わせ内容
+        $data_sheet->setDataValidation("D2:D1048576", ExcelUtils::getDataValidation("=OFFSET('LIST'!\$A\$2,0,0,COUNTA('LIST'!\$A:\$A)-1,1)"));
+
+        // 罫線設定、A2セルを選択、1行目固定、DATAシートをアクティブ化
+        $data_sheet->getStyle("A1:I{$contacts_row_num}")->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+        $data_sheet->setSelectedCell('A2');
+        $data_sheet->freezePane('A2');
+        $spreadsheet->setActiveSheetIndexByName('DATA');
+
+        $datetime = new \DateTime();
+        $datetime->setTimezone(new \DateTimeZone('Asia/Tokyo'));
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;');
+        header("Content-Disposition: attachment; filename=\"contacts-{$datetime->format('YmdHis')}.xlsx\"");
+        header('Cache-Control: max-age=0');
+        $writer = new XlsxWriter($spreadsheet);
+        $writer->save('php://output');
+        exit;
     }
 }

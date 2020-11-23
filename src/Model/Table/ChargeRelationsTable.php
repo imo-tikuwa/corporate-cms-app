@@ -74,6 +74,7 @@ class ChargeRelationsTable extends AppTable
 
         // 基本料金ID
         $validator
+            ->requirePresence('charge_id', true, '基本料金IDを選択してください。')
             ->add('charge_id', 'integer', [
                 'rule' => 'isInteger',
                 'message' => '基本料金IDを正しく入力してください。',
@@ -92,6 +93,7 @@ class ChargeRelationsTable extends AppTable
 
         // 料金マスタID
         $validator
+            ->requirePresence('charge_master_id', true, '料金マスタIDを選択してください。')
             ->add('charge_master_id', 'integer', [
                 'rule' => 'isInteger',
                 'message' => '料金マスタIDを正しく入力してください。',
@@ -140,13 +142,17 @@ class ChargeRelationsTable extends AppTable
     {
         // フリーワード検索のスニペット更新
         $search_snippet = [];
-        $charge = TableRegistry::getTableLocator()->get('Charges')->find()->select(['name'])->where(['id' => $data['charge_id']])->first();
-        if (!empty($charge)) {
-            $search_snippet[] = $charge->name;
+        if (isset($data['charge_id'])) {
+            $charge = TableRegistry::getTableLocator()->get('Charges')->find()->select(['name'])->where(['id' => $data['charge_id']])->first();
+            if (!empty($charge)) {
+                $search_snippet[] = $charge->name;
+            }
         }
-        $charge_master = TableRegistry::getTableLocator()->get('ChargeMasters')->find()->select(['name'])->where(['id' => $data['charge_master_id']])->first();
-        if (!empty($charge_master)) {
-            $search_snippet[] = $charge_master->name;
+        if (isset($data['charge_master_id'])) {
+            $charge_master = TableRegistry::getTableLocator()->get('ChargeMasters')->find()->select(['name'])->where(['id' => $data['charge_master_id']])->first();
+            if (!empty($charge_master)) {
+                $search_snippet[] = $charge_master->name;
+            }
         }
         $data['search_snippet'] = implode(' ', $search_snippet);
 
@@ -181,36 +187,5 @@ class ChargeRelationsTable extends AppTable
             'created',
             'modified',
         ];
-    }
-
-    /**
-     * CSVの入力情報を取得する
-     * @param array $csv_row CSVの1行辺りの配列データ
-     * @return array データ登録用に変換した配列データ
-     */
-    public function getCsvData($csv_row)
-    {
-        $csv_data = array_combine($this->getCsvColumns(), $csv_row);
-
-        // 基本料金ID
-        $charges = TableRegistry::getTableLocator()->get('Charges');
-        $charge_data = $charges->find()->select(['id'])->where(['name' => $csv_data['charge_id']])->first();
-        if (!empty($charge_data)) {
-            $csv_data['charge_id'] = (string)$charge_data->id;
-        } else {
-            $csv_data['charge_id'] = null;
-        }
-        // 料金マスタID
-        $charge_masters = TableRegistry::getTableLocator()->get('ChargeMasters');
-        $charge_master_data = $charge_masters->find()->select(['id'])->where(['name' => $csv_data['charge_master_id']])->first();
-        if (!empty($charge_master_data)) {
-            $csv_data['charge_master_id'] = (string)$charge_master_data->id;
-        } else {
-            $csv_data['charge_master_id'] = null;
-        }
-        unset($csv_data['created']);
-        unset($csv_data['modified']);
-
-        return $csv_data;
     }
 }

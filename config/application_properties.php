@@ -132,6 +132,20 @@ return [
             ],
         ],
     ],
+    'ExcelOptions' => [
+        'Charges' => [
+            'version' => 'b25b294cb4deb69ea00a4c3cf3113904801b6015e5956bd019a8570b1fe1d6040e944ef3cdee16d0a46503ca6e659a25f21cf9ceddc13f352a3c98138c15d6af',
+        ],
+        'Contacts' => [
+            'version' => 'a9b7d31e3124d1adecfe214becca4b0055420bc1746a940247751427d44aa90b24002dbec319ee33ef3835bf0a5d69d878785a5d276c689182b4c832a9703083',
+        ],
+        'Links' => [
+            'version' => '0f92b960b5c30cae9190fa500cb84e0b706f82609da69a143c9540f292a8b2d7ce8b1605b246a8dd31f4a6d91d7b0cc6fcd4a759a8ecbd3480306dea29a26b2d',
+        ],
+        'Staffs' => [
+            'version' => 'e0147c452c5c0fc01371e1659b3a04a59c6ad66f2f3011deee6f559c2353c829f1abae9c8fe05b17567249e06be74906c4ae4f850a78b7a4605b71ef3ff12f1b',
+        ],
+    ],
     'InitialOrders' => [
         'AccessMaps' => [
             'sort' => 'id',
@@ -189,6 +203,7 @@ return [
             ROLE_WRITE => 'リンク集書込',
             ROLE_DELETE => 'リンク集削除',
             ROLE_CSV_EXPORT => 'リンク集CSVエクスポート',
+            ROLE_CSV_IMPORT => 'リンク集CSVインポート',
         ],
         'Staffs' => [
             ROLE_READ => 'スタッフ読込',

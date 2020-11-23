@@ -65,6 +65,7 @@ class ContactsTable extends AppTable
 
         // お名前
         $validator
+            ->requirePresence('name', true, 'お名前を入力してください。')
             ->add('name', 'scalar', [
                 'rule' => 'isScalar',
                 'message' => 'お名前を正しく入力してください。',
@@ -79,6 +80,7 @@ class ContactsTable extends AppTable
 
         // メールアドレス
         $validator
+            ->requirePresence('email', true, 'メールアドレスを入力してください。')
             ->add('email', 'scalar', [
                 'rule' => 'isScalar',
                 'message' => 'メールアドレスを正しく入力してください。',
@@ -88,6 +90,7 @@ class ContactsTable extends AppTable
 
         // お問い合わせ内容
         $validator
+            ->requirePresence('type', true, 'お問い合わせ内容を選択してください。')
             ->add('type', 'scalar', [
                 'rule' => 'isScalar',
                 'message' => 'お問い合わせ内容を正しく入力してください。',
@@ -123,6 +126,7 @@ class ContactsTable extends AppTable
 
         // ご希望日時／その他ご要望等
         $validator
+            ->requirePresence('content', true, 'ご希望日時／その他ご要望等を入力してください。')
             ->add('content', 'scalar', [
                 'rule' => 'isScalar',
                 'message' => 'ご希望日時／その他ご要望等を正しく入力してください。',
@@ -167,7 +171,9 @@ class ContactsTable extends AppTable
             $search_snippet[] = _code("Codes.Contacts.type.{$data['type']}");
         }
         $search_snippet[] = $data['tel'];
-        $search_snippet[] = strip_tags($data['content']);
+        if (isset($data['content']) && $data['content'] != '') {
+            $search_snippet[] = strip_tags($data['content']);
+        }
         $search_snippet[] = $data['hp_url'];
         $data['search_snippet'] = implode(' ', $search_snippet);
 
@@ -213,24 +219,21 @@ class ContactsTable extends AppTable
     }
 
     /**
-     * CSVの入力情報を取得する
-     * @param array $csv_row CSVの1行辺りの配列データ
-     * @return array データ登録用に変換した配列データ
+     * Excelカラム情報を取得する
+     * @return array
      */
-    public function getCsvData($csv_row)
+    public function getExcelColumns()
     {
-        $csv_data = array_combine($this->getCsvColumns(), $csv_row);
-
-        // お問い合わせ内容
-        $codes = array_flip(_code("Codes.Contacts.type"));
-        foreach ($codes as $code_value => $code_key) {
-            if ($code_value === $csv_data['type']) {
-                $csv_data['type'] = $code_key;
-            }
-        }
-        unset($csv_data['created']);
-        unset($csv_data['modified']);
-
-        return $csv_data;
+        return [
+            'id',
+            'name',
+            'email',
+            'type',
+            'tel',
+            'content',
+            'hp_url',
+            'created',
+            'modified',
+        ];
     }
 }
