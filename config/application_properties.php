@@ -7,6 +7,8 @@ return [
             2 => ROLE_DELETE,
             3 => ROLE_CSV_EXPORT,
             4 => ROLE_CSV_IMPORT,
+            5 => ROLE_EXCEL_EXPORT,
+            6 => ROLE_EXCEL_IMPORT,
         ],
         'RoleBadgeClass' => [
             ROLE_READ => 'badge badge-primary',
@@ -14,6 +16,8 @@ return [
             ROLE_DELETE => 'badge badge-warning text-white',
             ROLE_CSV_EXPORT => 'badge badge-info',
             ROLE_CSV_IMPORT => 'badge badge-success',
+            ROLE_EXCEL_EXPORT => 'badge badge-info',
+            ROLE_EXCEL_IMPORT => 'badge badge-success',
         ],
     ],
     'BakedFunctions' => [
@@ -177,8 +181,21 @@ return [
         ],
     ],
     'AdminRoles' => [
-        'AccessMaps' => [
-            ROLE_WRITE => 'アクセスマップ書込',
+        'Links' => [
+            ROLE_READ => 'リンク集読込',
+            ROLE_WRITE => 'リンク集書込',
+            ROLE_DELETE => 'リンク集削除',
+            ROLE_CSV_EXPORT => 'リンク集CSVエクスポート',
+            ROLE_CSV_IMPORT => 'リンク集CSVインポート',
+            ROLE_EXCEL_EXPORT => 'リンク集Excelエクスポート',
+            ROLE_EXCEL_IMPORT => 'リンク集Excelインポート',
+        ],
+        'Staffs' => [
+            ROLE_READ => 'スタッフ読込',
+            ROLE_WRITE => 'スタッフ書込',
+            ROLE_DELETE => 'スタッフ削除',
+            ROLE_CSV_EXPORT => 'スタッフCSVエクスポート',
+            ROLE_EXCEL_EXPORT => 'スタッフExcelエクスポート',
         ],
         'ChargeMasters' => [
             ROLE_READ => '料金マスタ読込',
@@ -186,36 +203,28 @@ return [
             ROLE_DELETE => '料金マスタ削除',
             ROLE_CSV_EXPORT => '料金マスタCSVエクスポート',
         ],
+        'Charges' => [
+            ROLE_READ => '基本料金読込',
+            ROLE_WRITE => '基本料金書込',
+            ROLE_DELETE => '基本料金削除',
+            ROLE_CSV_EXPORT => '基本料金CSVエクスポート',
+            ROLE_EXCEL_EXPORT => '基本料金Excelエクスポート',
+        ],
         'ChargeRelations' => [
             ROLE_READ => '料金マッピング読込',
             ROLE_WRITE => '料金マッピング書込',
             ROLE_DELETE => '料金マッピング削除',
             ROLE_CSV_EXPORT => '料金マッピングCSVエクスポート',
         ],
-        'Charges' => [
-            ROLE_READ => '基本料金読込',
-            ROLE_WRITE => '基本料金書込',
-            ROLE_DELETE => '基本料金削除',
-            ROLE_CSV_EXPORT => '基本料金CSVエクスポート',
-        ],
-        'Links' => [
-            ROLE_READ => 'リンク集読込',
-            ROLE_WRITE => 'リンク集書込',
-            ROLE_DELETE => 'リンク集削除',
-            ROLE_CSV_EXPORT => 'リンク集CSVエクスポート',
-            ROLE_CSV_IMPORT => 'リンク集CSVインポート',
-        ],
-        'Staffs' => [
-            ROLE_READ => 'スタッフ読込',
-            ROLE_WRITE => 'スタッフ書込',
-            ROLE_DELETE => 'スタッフ削除',
-            ROLE_CSV_EXPORT => 'スタッフCSVエクスポート',
+        'AccessMaps' => [
+            ROLE_WRITE => 'アクセスマップ書込',
         ],
         'Contacts' => [
             ROLE_READ => 'お問い合わせ情報読込',
             ROLE_WRITE => 'お問い合わせ情報書込',
             ROLE_DELETE => 'お問い合わせ情報削除',
             ROLE_CSV_EXPORT => 'お問い合わせ情報CSVエクスポート',
+            ROLE_EXCEL_EXPORT => 'お問い合わせ情報Excelエクスポート',
         ],
     ],
     'Others' => [

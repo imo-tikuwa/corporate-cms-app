@@ -25,7 +25,7 @@ class ChargeRelationsController extends AppController
     public function initialize(): void
     {
         parent::initialize();
-        if (!in_array($this->getRequest()->getParam('action'), ['delete', 'csvExport'], true)) {
+        if (!in_array($this->getRequest()->getParam('action'), [ACTION_DELETE, ACTION_CSV_EXPORT], true)) {
             // 基本料金IDの選択肢
             $this->set('charges', $this->ChargeRelations->findForeignSelectionData('Charges', 'name', true));
             // 料金マスタIDの選択肢
