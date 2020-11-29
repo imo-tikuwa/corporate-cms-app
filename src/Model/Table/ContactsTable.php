@@ -165,16 +165,24 @@ class ContactsTable extends AppTable
     {
         // フリーワード検索のスニペット更新
         $search_snippet = [];
-        $search_snippet[] = $data['name'];
-        $search_snippet[] = $data['email'];
+        if (isset($data['name']) && $data['name'] != '') {
+            $search_snippet[] = $data['name'];
+        }
+        if (isset($data['email']) && $data['email'] != '') {
+            $search_snippet[] = $data['email'];
+        }
         if (isset($data['type']) && $data['type'] != '') {
             $search_snippet[] = _code("Codes.Contacts.type.{$data['type']}");
         }
-        $search_snippet[] = $data['tel'];
+        if (isset($data['tel']) && $data['tel'] != '') {
+            $search_snippet[] = $data['tel'];
+        }
         if (isset($data['content']) && $data['content'] != '') {
             $search_snippet[] = strip_tags($data['content']);
         }
-        $search_snippet[] = $data['hp_url'];
+        if (isset($data['hp_url']) && $data['hp_url'] != '') {
+            $search_snippet[] = $data['hp_url'];
+        }
         $data['search_snippet'] = implode(' ', $search_snippet);
 
         return parent::patchEntity($entity, $data, $options);

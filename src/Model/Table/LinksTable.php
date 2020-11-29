@@ -167,8 +167,12 @@ class LinksTable extends AppTable
         if (isset($data['category']) && $data['category'] != '') {
             $search_snippet[] = _code("Codes.Links.category.{$data['category']}");
         }
-        $search_snippet[] = $data['title'];
-        $search_snippet[] = $data['url'];
+        if (isset($data['title']) && $data['title'] != '') {
+            $search_snippet[] = $data['title'];
+        }
+        if (isset($data['url']) && $data['url'] != '') {
+            $search_snippet[] = $data['url'];
+        }
         if (isset($data['description']) && $data['description'] != '') {
             $search_snippet[] = strip_tags($data['description']);
         }

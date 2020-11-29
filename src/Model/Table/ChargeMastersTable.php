@@ -140,7 +140,9 @@ class ChargeMastersTable extends AppTable
     {
         // フリーワード検索のスニペット更新
         $search_snippet = [];
-        $search_snippet[] = $data['name'];
+        if (isset($data['name']) && $data['name'] != '') {
+            $search_snippet[] = $data['name'];
+        }
         $data['search_snippet'] = implode(' ', $search_snippet);
 
         return parent::patchEntity($entity, $data, $options);

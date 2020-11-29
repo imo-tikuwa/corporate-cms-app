@@ -208,8 +208,12 @@ class StaffsTable extends AppTable
 
         // フリーワード検索のスニペット更新
         $search_snippet = [];
-        $search_snippet[] = $data['name'];
-        $search_snippet[] = $data['name_en'];
+        if (isset($data['name']) && $data['name'] != '') {
+            $search_snippet[] = $data['name'];
+        }
+        if (isset($data['name_en']) && $data['name_en'] != '') {
+            $search_snippet[] = $data['name_en'];
+        }
         if (isset($data['staff_position']) && $data['staff_position'] != '') {
             $search_snippet[] = _code("Codes.Staffs.staff_position.{$data['staff_position']}");
         }
@@ -219,7 +223,9 @@ class StaffsTable extends AppTable
         if (isset($data['description1']) && $data['description1'] != '') {
             $search_snippet[] = strip_tags($data['description1']);
         }
-        $search_snippet[] = $data['midashi1'];
+        if (isset($data['midashi1']) && $data['midashi1'] != '') {
+            $search_snippet[] = $data['midashi1'];
+        }
         if (isset($data['description2']) && $data['description2'] != '') {
             $search_snippet[] = strip_tags($data['description2']);
         }

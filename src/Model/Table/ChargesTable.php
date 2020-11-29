@@ -114,8 +114,12 @@ class ChargesTable extends AppTable
     {
         // フリーワード検索のスニペット更新
         $search_snippet = [];
-        $search_snippet[] = $data['name'];
-        $search_snippet[] = $data['annotation'];
+        if (isset($data['name']) && $data['name'] != '') {
+            $search_snippet[] = $data['name'];
+        }
+        if (isset($data['annotation']) && $data['annotation'] != '') {
+            $search_snippet[] = $data['annotation'];
+        }
         $data['search_snippet'] = implode(' ', $search_snippet);
 
         return parent::patchEntity($entity, $data, $options);
