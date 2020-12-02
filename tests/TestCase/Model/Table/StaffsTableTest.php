@@ -31,6 +31,7 @@ class StaffsTableTest extends TestCase
      * staff valid data.
      */
     protected $valid_data;
+
     /**
      * setUp method
      *

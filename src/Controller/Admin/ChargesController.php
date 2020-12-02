@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 
 use App\Controller\Admin\AppController;
 use App\Utils\ExcelUtils;
+use Cake\Http\CallbackStream;
 use Cake\I18n\FrozenDate;
 use Cake\I18n\FrozenTime;
 use Cake\Utility\Hash;
@@ -180,8 +181,6 @@ class ChargesController extends AppController
     {
         $request = $this->getRequest()->getQueryParams();
         $charges = $this->_getQuery($request)->toArray();
-        $_serialize = 'charges';
-        $_header = $this->Charges->getCsvHeaders();
         $_extract = [
             // ID
             'id',
@@ -210,10 +209,15 @@ class ChargesController extends AppController
         $datetime = new \DateTime();
         $datetime->setTimezone(new \DateTimeZone('Asia/Tokyo'));
 
-        $_csvEncoding = 'UTF-8';
         $this->response = $this->response->withDownload("charges-{$datetime->format('YmdHis')}.csv");
         $this->viewBuilder()->setClassName('CsvView.Csv');
-        $this->set(compact('charges', '_serialize', '_header', '_extract', '_csvEncoding'));
+        $this->viewBuilder()->setOptions([
+            'serialize' => 'charges',
+            'header' => $this->Charges->getCsvHeaders(),
+            'extract' => $_extract,
+            'csvEncoding' => 'UTF-8'
+        ]);
+        $this->set(compact('charges'));
     }
 
     /**
@@ -260,12 +264,14 @@ class ChargesController extends AppController
 
         $datetime = new \DateTime();
         $datetime->setTimezone(new \DateTimeZone('Asia/Tokyo'));
-
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;');
-        header("Content-Disposition: attachment; filename=\"charges-{$datetime->format('YmdHis')}.xlsx\"");
-        header('Cache-Control: max-age=0');
         $writer = new XlsxWriter($spreadsheet);
-        $writer->save('php://output');
-        exit;
+        $stream = new CallbackStream(function () use ($writer) {
+            $writer->save('php://output');
+        });
+
+        return $this->response->withHeader('Content-Type', EXCEL_CONTENT_TYPE)
+        ->withHeader('Content-Disposition', "attachment; filename=\"charges-{$datetime->format('YmdHis')}.xlsx\"")
+        ->withHeader('Cache-Control', 'max-age=0')
+        ->withBody($stream);
     }
 }

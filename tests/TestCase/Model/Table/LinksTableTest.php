@@ -41,6 +41,7 @@ class LinksTableTest extends TestCase
      * link valid excel data.
      */
     protected $valid_excel_data;
+
     /**
      * setUp method
      *

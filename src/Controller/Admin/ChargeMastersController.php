@@ -179,8 +179,6 @@ class ChargeMastersController extends AppController
     {
         $request = $this->getRequest()->getQueryParams();
         $charge_masters = $this->_getQuery($request)->toArray();
-        $_serialize = 'charge_masters';
-        $_header = $this->ChargeMasters->getCsvHeaders();
         $_extract = [
             // ID
             'id',
@@ -223,9 +221,14 @@ class ChargeMastersController extends AppController
         $datetime = new \DateTime();
         $datetime->setTimezone(new \DateTimeZone('Asia/Tokyo'));
 
-        $_csvEncoding = 'UTF-8';
         $this->response = $this->response->withDownload("charge_masters-{$datetime->format('YmdHis')}.csv");
         $this->viewBuilder()->setClassName('CsvView.Csv');
-        $this->set(compact('charge_masters', '_serialize', '_header', '_extract', '_csvEncoding'));
+        $this->viewBuilder()->setOptions([
+            'serialize' => 'charge_masters',
+            'header' => $this->ChargeMasters->getCsvHeaders(),
+            'extract' => $_extract,
+            'csvEncoding' => 'UTF-8'
+        ]);
+        $this->set(compact('charge_masters'));
     }
 }

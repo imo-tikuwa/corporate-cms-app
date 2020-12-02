@@ -33,6 +33,7 @@ class ChargeRelationsTableTest extends TestCase
      * charge_relation valid data.
      */
     protected $valid_data;
+
     /**
      * setUp method
      *

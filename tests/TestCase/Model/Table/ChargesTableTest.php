@@ -32,6 +32,7 @@ class ChargesTableTest extends TestCase
      * charge valid data.
      */
     protected $valid_data;
+
     /**
      * setUp method
      *

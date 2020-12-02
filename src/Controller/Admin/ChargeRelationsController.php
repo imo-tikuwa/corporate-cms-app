@@ -191,8 +191,6 @@ class ChargeRelationsController extends AppController
     {
         $request = $this->getRequest()->getQueryParams();
         $charge_relations = $this->_getQuery($request)->toArray();
-        $_serialize = 'charge_relations';
-        $_header = $this->ChargeRelations->getCsvHeaders();
         $_extract = [
             // ID
             'id',
@@ -225,9 +223,14 @@ class ChargeRelationsController extends AppController
         $datetime = new \DateTime();
         $datetime->setTimezone(new \DateTimeZone('Asia/Tokyo'));
 
-        $_csvEncoding = 'UTF-8';
         $this->response = $this->response->withDownload("charge_relations-{$datetime->format('YmdHis')}.csv");
         $this->viewBuilder()->setClassName('CsvView.Csv');
-        $this->set(compact('charge_relations', '_serialize', '_header', '_extract', '_csvEncoding'));
+        $this->viewBuilder()->setOptions([
+            'serialize' => 'charge_relations',
+            'header' => $this->ChargeRelations->getCsvHeaders(),
+            'extract' => $_extract,
+            'csvEncoding' => 'UTF-8'
+        ]);
+        $this->set(compact('charge_relations'));
     }
 }

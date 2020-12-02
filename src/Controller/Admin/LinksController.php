@@ -6,6 +6,7 @@ namespace App\Controller\Admin;
 use App\Controller\Admin\AppController;
 use App\Utils\CsvUtils;
 use App\Utils\ExcelUtils;
+use Cake\Http\CallbackStream;
 use Cake\I18n\FrozenDate;
 use Cake\I18n\FrozenTime;
 use Cake\Utility\Hash;
@@ -189,8 +190,6 @@ class LinksController extends AppController
     {
         $request = $this->getRequest()->getQueryParams();
         $links = $this->_getQuery($request)->toArray();
-        $_serialize = 'links';
-        $_header = $this->Links->getCsvHeaders();
         $_extract = [
             // ID
             'id',
@@ -229,10 +228,15 @@ class LinksController extends AppController
         $datetime = new \DateTime();
         $datetime->setTimezone(new \DateTimeZone('Asia/Tokyo'));
 
-        $_csvEncoding = 'UTF-8';
         $this->response = $this->response->withDownload("links-{$datetime->format('YmdHis')}.csv");
         $this->viewBuilder()->setClassName('CsvView.Csv');
-        $this->set(compact('links', '_serialize', '_header', '_extract', '_csvEncoding'));
+        $this->viewBuilder()->setOptions([
+            'serialize' => 'links',
+            'header' => $this->Links->getCsvHeaders(),
+            'extract' => $_extract,
+            'csvEncoding' => 'UTF-8'
+        ]);
+        $this->set(compact('links'));
     }
 
     /**
@@ -241,12 +245,12 @@ class LinksController extends AppController
      */
     public function csvImport()
     {
-        $csv_import_file = @$_FILES["csv_import_file"]["tmp_name"];
-        if (is_uploaded_file($csv_import_file)) {
+        $csv_import_file = $this->getRequest()->getUploadedFile('csv_import_file');
+        if (!is_null($csv_import_file)) {
             $conn = $this->Links->getConnection();
             $conn->begin();
             try {
-                $csv_data = CsvUtils::parseUtf8Csv($csv_import_file);
+                $csv_data = CsvUtils::parseUtf8Csv($csv_import_file->getStream()->getMetadata('uri'));
                 $insert_count = 0;
                 $update_count = 0;
                 foreach ($csv_data as $index => $csv_row) {
@@ -339,13 +343,15 @@ class LinksController extends AppController
 
         $datetime = new \DateTime();
         $datetime->setTimezone(new \DateTimeZone('Asia/Tokyo'));
-
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;');
-        header("Content-Disposition: attachment; filename=\"links-{$datetime->format('YmdHis')}.xlsx\"");
-        header('Cache-Control: max-age=0');
         $writer = new XlsxWriter($spreadsheet);
-        $writer->save('php://output');
-        exit;
+        $stream = new CallbackStream(function () use ($writer) {
+            $writer->save('php://output');
+        });
+
+        return $this->response->withHeader('Content-Type', EXCEL_CONTENT_TYPE)
+        ->withHeader('Content-Disposition', "attachment; filename=\"links-{$datetime->format('YmdHis')}.xlsx\"")
+        ->withHeader('Cache-Control', 'max-age=0')
+        ->withBody($stream);
     }
 
     /**
@@ -354,13 +360,13 @@ class LinksController extends AppController
      */
     public function excelImport()
     {
-        $excel_import_file = @$_FILES["excel_import_file"]["tmp_name"];
-        if (is_uploaded_file($excel_import_file)) {
+        $excel_import_file = $this->getRequest()->getUploadedFile('excel_import_file');
+        if (!is_null($excel_import_file) && EXCEL_CONTENT_TYPE === $excel_import_file->getClientMediaType()) {
             $conn = $this->Links->getConnection();
             $conn->begin();
             try {
                 $reader = new XlsxReader();
-                $spreadsheet = $reader->load($excel_import_file);
+                $spreadsheet = $reader->load($excel_import_file->getStream()->getMetadata('uri'));
                 if (!ExcelUtils::checkExcelVersion($spreadsheet, $this->getRequest()->getParam('controller'))) {
                     throw new \Exception('VersionCheckError');
                 }

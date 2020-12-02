@@ -15,18 +15,6 @@ use Cake\Utility\Hash;
  */
 class AccessMapsController extends AppController
 {
-
-    /**
-     * Index method
-     *
-     * @return \Cake\Http\Response Redirects to index
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function index()
-    {
-        return $this->redirect(['action' => 'edit']);
-    }
-
     /**
      * Edit method
      *

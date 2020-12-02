@@ -31,6 +31,7 @@ class ContactsTableTest extends TestCase
      * contact valid data.
      */
     protected $valid_data;
+
     /**
      * setUp method
      *

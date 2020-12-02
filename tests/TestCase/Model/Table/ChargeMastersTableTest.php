@@ -32,6 +32,7 @@ class ChargeMastersTableTest extends TestCase
      * charge_master valid data.
      */
     protected $valid_data;
+
     /**
      * setUp method
      *

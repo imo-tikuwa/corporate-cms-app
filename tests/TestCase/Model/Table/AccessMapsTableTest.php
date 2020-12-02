@@ -31,6 +31,7 @@ class AccessMapsTableTest extends TestCase
      * access_map valid data.
      */
     protected $valid_data;
+
     /**
      * setUp method
      *
