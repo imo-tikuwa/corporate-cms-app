@@ -290,7 +290,7 @@ class LinksController extends AppController
 
     /**
      * excel export method
-     * @return void
+     * @return \Cake\Http\Response
      */
     public function excelExport()
     {
