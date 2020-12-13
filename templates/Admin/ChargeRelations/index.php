@@ -3,7 +3,7 @@ use App\Utils\AuthUtils;
 
 /**
  * @var \App\View\AppView $this
- * @var \App\Model\Entity\ChargeRelation[]|\Cake\Collection\CollectionInterface $charge_relations
+ * @var \App\Model\Entity\ChargeRelation[] $charge_relations
  */
 $this->assign('title', "料金マッピング");
 ?>

@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 
 use App\Controller\Admin\AppController;
 use App\Utils\CsvUtils;
+use App\Form\ExcelImportForm;
 use App\Utils\ExcelUtils;
 use Cake\Http\CallbackStream;
 use Cake\I18n\FrozenDate;
@@ -360,21 +361,20 @@ class LinksController extends AppController
      */
     public function excelImport()
     {
-        $excel_import_file = $this->getRequest()->getUploadedFile('excel_import_file');
-        if (!is_null($excel_import_file) && EXCEL_CONTENT_TYPE === $excel_import_file->getClientMediaType()) {
-            $conn = $this->Links->getConnection();
-            $conn->begin();
-            try {
-                $reader = new XlsxReader();
-                $spreadsheet = $reader->load($excel_import_file->getStream()->getMetadata('uri'));
-                if (!ExcelUtils::checkExcelVersion($spreadsheet, $this->getRequest()->getParam('controller'))) {
-                    throw new \Exception('VersionCheckError');
-                }
+        if ($this->getRequest()->is(['post'])) {
+            $form = new ExcelImportForm('Links');
+            if (!$form->validate($this->getRequest()->getData())) {
+                $this->Flash->error(implode('<br />', $form->getErrorMessages()), ['params' => ['escape' => false]]);
+                return $this->redirect(['action' => 'index', '?' => _code('InitialOrders.Links')]);
+            }
 
-                $data_sheet = $spreadsheet->getSheetByName('DATA');
+            try {
+                $conn = $this->Links->getConnection();
+                $conn->begin();
+
+                $data_sheet = $form->getSpreadsheet()->getSheetByName('DATA');
                 $data_sheet_info = $data_sheet->getHighestRowAndColumn();
-                $insert_count = 0;
-                $update_count = 0;
+                $insert_count = $update_count = 0;
                 for ($row_num = 2; $row_num <= $data_sheet_info['row']; $row_num++) {
                     $excel_row = $data_sheet->rangeToArray("A{$row_num}:{$data_sheet_info['column']}{$row_num}", '')[0];
                     if (empty(array_filter($excel_row))) {
@@ -382,11 +382,7 @@ class LinksController extends AppController
                     }
 
                     $link = $this->Links->createEntityByExcelRow($excel_row);
-                    if ($link->isNew()) {
-                        $insert_count++;
-                    } else {
-                        $update_count++;
-                    }
+                    $link->isNew() ? $insert_count++ : $update_count++;
                     if (!$this->Links->save($link, ['atomic' => false])) {
                         throw new \Exception('SaveError');
                     }

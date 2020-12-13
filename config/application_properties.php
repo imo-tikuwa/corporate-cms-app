@@ -138,16 +138,16 @@ return [
     ],
     'ExcelOptions' => [
         'Charges' => [
-            'version' => 'b25b294cb4deb69ea00a4c3cf3113904801b6015e5956bd019a8570b1fe1d6040e944ef3cdee16d0a46503ca6e659a25f21cf9ceddc13f352a3c98138c15d6af',
+            'version' => '4ebadae4534ef2d502226be3dc12bdd1d2ff13d3b9a1ce9d134a58717d9fcb886e450b29fa53be1d43ec40838cdd35c1eab634cb32163d7b85c799eb0bc170b8',
         ],
         'Contacts' => [
-            'version' => 'a9b7d31e3124d1adecfe214becca4b0055420bc1746a940247751427d44aa90b24002dbec319ee33ef3835bf0a5d69d878785a5d276c689182b4c832a9703083',
+            'version' => 'da3f2f085b89ff15a8351120da19a463b103f523107eed2ebdbe27107fd7ffe72042b143b616ce40487bcd3e353b18cec8491f68b71eabc09800309e55225c7b',
         ],
         'Links' => [
-            'version' => '0f92b960b5c30cae9190fa500cb84e0b706f82609da69a143c9540f292a8b2d7ce8b1605b246a8dd31f4a6d91d7b0cc6fcd4a759a8ecbd3480306dea29a26b2d',
+            'version' => '1b264f278aef7f064260e448911e4b16f07e1c5efaa8183245389c5ab7d67bd5ca44385f6d4799105243a1243c43b56a2a78666a86d0dfd40421f007d6e3a4ea',
         ],
         'Staffs' => [
-            'version' => 'e0147c452c5c0fc01371e1659b3a04a59c6ad66f2f3011deee6f559c2353c829f1abae9c8fe05b17567249e06be74906c4ae4f850a78b7a4605b71ef3ff12f1b',
+            'version' => '56f71fda424a6022ce654210e32bf4e4dbb1cb041d089a86e4049bdf1c2eed56fd1f9e646d4c8f1ddc89007ef77ea10cb9e4afaf06ee31941402956dca5aa6c5',
         ],
     ],
     'InitialOrders' => [

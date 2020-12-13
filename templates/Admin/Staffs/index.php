@@ -3,7 +3,7 @@ use App\Utils\AuthUtils;
 
 /**
  * @var \App\View\AppView $this
- * @var \App\Model\Entity\Staff[]|\Cake\Collection\CollectionInterface $staffs
+ * @var \App\Model\Entity\Staff[] $staffs
  */
 $this->assign('title', "スタッフ");
 ?>

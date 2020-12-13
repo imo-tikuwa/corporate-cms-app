@@ -3,7 +3,7 @@ use App\Utils\AuthUtils;
 
 /**
  * @var \App\View\AppView $this
- * @var \App\Model\Entity\Charge[]|\Cake\Collection\CollectionInterface $charges
+ * @var \App\Model\Entity\Charge[] $charges
  */
 $this->assign('title', "基本料金");
 ?>

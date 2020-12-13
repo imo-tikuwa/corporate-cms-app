@@ -3,7 +3,7 @@ use App\Utils\AuthUtils;
 
 /**
  * @var \App\View\AppView $this
- * @var \App\Model\Entity\Contact[]|\Cake\Collection\CollectionInterface $contacts
+ * @var \App\Model\Entity\Contact[] $contacts
  */
 $this->assign('title', "お問い合わせ情報");
 $this->Form->setTemplates([

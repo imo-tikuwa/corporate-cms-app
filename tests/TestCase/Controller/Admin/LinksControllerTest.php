@@ -603,15 +603,8 @@ class LinksControllerTest extends TestCase
         $this->post('/admin/links/delete/1');
         $this->assertResponseCode(302);
         $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
-    }
 
-    /**
-     * Test to throw an exception in get request with "delete method"
-     *
-     * @return void
-     */
-    public function testDeleteIfGetRequest(): void
-    {
+        $this->cleanup();
         $this->expectException(\Cake\Http\Exception\MethodNotAllowedException::class);
         $this->expectExceptionCode(405);
         $url = new \Cake\Http\ServerRequest([
@@ -946,6 +939,18 @@ class LinksControllerTest extends TestCase
         $this->assertResponseCode(302);
         $this->assertSession('リンク集Excelの登録が完了しました。<br />新規：0件<br />更新：0件', 'Flash.flash.0.message');
 
+        $this->cleanup();
+        $this->enableCsrfToken();
+        $this->configRequest([
+            'Content-Type' => 'multipart/form-data',
+        ]);
+        $this->session([
+            'Auth.Admin' => $this->super_admin
+        ]);
+        $this->post('/admin/links/excel-import');
+        $this->assertResponseCode(302);
+        $this->assertSession('ファイルを選択してください', 'Flash.flash.0.message');
+
         $this->session([
             'Auth.Admin' => $this->read_admin
         ]);
@@ -1009,6 +1014,18 @@ class LinksControllerTest extends TestCase
         ]);
         $this->assertResponseCode(302);
         $this->assertSession('リンク集Excelの登録が完了しました。<br />新規：0件<br />更新：0件', 'Flash.flash.0.message');
+
+        $this->cleanup();
+        $this->enableCsrfToken();
+        $this->configRequest([
+            'Content-Type' => 'multipart/form-data',
+        ]);
+        $this->session([
+            'Auth.Admin' => $this->excel_import_admin
+        ]);
+        $this->post('/admin/links/excel-import');
+        $this->assertResponseCode(302);
+        $this->assertSession('ファイルを選択してください', 'Flash.flash.0.message');
 
         $this->session([
             'Auth.Admin' => $this->no_authority_admin

@@ -3,7 +3,7 @@ use App\Utils\AuthUtils;
 
 /**
  * @var \App\View\AppView $this
- * @var \App\Model\Entity\Link[]|\Cake\Collection\CollectionInterface $links
+ * @var \App\Model\Entity\Link[] $links
  */
 $this->assign('title', "リンク集");
 ?>

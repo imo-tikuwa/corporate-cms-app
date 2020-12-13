@@ -3,7 +3,7 @@ use App\Utils\AuthUtils;
 
 /**
  * @var \App\View\AppView $this
- * @var \App\Model\Entity\ChargeMaster[]|\Cake\Collection\CollectionInterface $charge_masters
+ * @var \App\Model\Entity\ChargeMaster[] $charge_masters
  */
 $this->assign('title', "料金マスタ");
 ?>
