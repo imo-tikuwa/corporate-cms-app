@@ -1,7 +1,7 @@
 <?php
 /**
  * @var \App\View\AppView $this
- * @var \App\Model\Entity\ChargeMaster $chargeMaster
+ * @var \App\Model\Entity\ChargeMaster $charge_master
  */
 $this->assign('title', "料金マスタ詳細");
 ?>
@@ -11,35 +11,27 @@ $this->assign('title', "料金マスタ詳細");
       <table class="table table-hover table-borderless">
         <tr>
           <th scope="row">ID</th>
-          <td><?= h($chargeMaster->id) ?></td>
+          <td><?= h($charge_master->id) ?></td>
         </tr>
         <tr>
           <th scope="row">マスタ名</th>
-          <td><?= h($chargeMaster->name) ?></td>
+          <td><?= h($charge_master->name) ?></td>
         </tr>
         <tr>
           <th scope="row">基本料金</th>
-          <td><?= $this->Number->format($chargeMaster->basic_charge) ?>円</td>
+          <td><?= $this->Number->format($charge_master->basic_charge) ?>円</td>
         </tr>
         <tr>
           <th scope="row">キャンペーン料金</th>
-          <td><?= $this->Number->format($chargeMaster->campaign_charge) ?>円</td>
+          <td><?= $this->Number->format($charge_master->campaign_charge) ?>円</td>
         </tr>
         <tr>
           <th scope="row">作成日時</th>
-          <td>
-            <?php if (!is_null($chargeMaster->created)) { ?>
-              <?= h($chargeMaster->created->i18nFormat('yyyy/MM/dd HH:mm:ss')) ?>
-            <?php } ?>
-          </td>
+          <td><?= h($this->formatDate($charge_master->created, 'yyyy/MM/dd HH:mm:ss')) ?></td>
         </tr>
         <tr>
           <th scope="row">更新日時</th>
-          <td>
-            <?php if (!is_null($chargeMaster->modified)) { ?>
-              <?= h($chargeMaster->modified->i18nFormat('yyyy/MM/dd HH:mm:ss')) ?>
-            <?php } ?>
-          </td>
+          <td><?= h($this->formatDate($charge_master->modified, 'yyyy/MM/dd HH:mm:ss')) ?></td>
         </tr>
       </table>
     </div>

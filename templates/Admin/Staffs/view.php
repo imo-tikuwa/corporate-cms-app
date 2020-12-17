@@ -52,19 +52,11 @@ $this->assign('title', "スタッフ詳細");
         </tr>
         <tr>
           <th scope="row">作成日時</th>
-          <td>
-            <?php if (!is_null($staff->created)) { ?>
-              <?= h($staff->created->i18nFormat('yyyy/MM/dd HH:mm:ss')) ?>
-            <?php } ?>
-          </td>
+          <td><?= h($this->formatDate($staff->created, 'yyyy/MM/dd HH:mm:ss')) ?></td>
         </tr>
         <tr>
           <th scope="row">更新日時</th>
-          <td>
-            <?php if (!is_null($staff->modified)) { ?>
-              <?= h($staff->modified->i18nFormat('yyyy/MM/dd HH:mm:ss')) ?>
-            <?php } ?>
-          </td>
+          <td><?= h($this->formatDate($staff->modified, 'yyyy/MM/dd HH:mm:ss')) ?></td>
         </tr>
       </table>
     </div>

@@ -147,7 +147,12 @@ class LinksController extends AppController
         }
         if ($this->getRequest()->is(['patch', 'post', 'put'])) {
             $link = $this->Links->patchEntity($link, $this->getRequest()->getData());
-            if (!$link->hasErrors()) {
+            if ($link->hasErrors()) {
+                $this->Flash->set(implode('<br />', $link->getErrorMessages()), [
+                    'escape' => false,
+                    'element' => 'validation_error',
+                ]);
+            } else {
                 $conn = $this->Links->getConnection();
                 $conn->begin();
                 if ($this->Links->save($link, ['atomic' => false])) {
@@ -364,7 +369,7 @@ class LinksController extends AppController
         if ($this->getRequest()->is(['post'])) {
             $form = new ExcelImportForm('Links');
             if (!$form->validate($this->getRequest()->getData())) {
-                $this->Flash->error(implode('<br />', $form->getErrorMessages()), ['params' => ['escape' => false]]);
+                $this->Flash->error(implode('<br />', $form->getErrorMessages()), ['escape' => false]);
                 return $this->redirect(['action' => 'index', '?' => _code('InitialOrders.Links')]);
             }
 

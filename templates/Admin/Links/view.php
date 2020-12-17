@@ -31,19 +31,11 @@ $this->assign('title', "リンク集詳細");
         </tr>
         <tr>
           <th scope="row">作成日時</th>
-          <td>
-            <?php if (!is_null($link->created)) { ?>
-              <?= h($link->created->i18nFormat('yyyy/MM/dd HH:mm:ss')) ?>
-            <?php } ?>
-          </td>
+          <td><?= h($this->formatDate($link->created, 'yyyy/MM/dd HH:mm:ss')) ?></td>
         </tr>
         <tr>
           <th scope="row">更新日時</th>
-          <td>
-            <?php if (!is_null($link->modified)) { ?>
-              <?= h($link->modified->i18nFormat('yyyy/MM/dd HH:mm:ss')) ?>
-            <?php } ?>
-          </td>
+          <td><?= h($this->formatDate($link->modified, 'yyyy/MM/dd HH:mm:ss')) ?></td>
         </tr>
       </table>
     </div>

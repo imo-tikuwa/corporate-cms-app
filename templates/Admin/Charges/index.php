@@ -57,11 +57,7 @@ $this->assign('title', "基本料金");
               <td><?= $this->Html->link($charge->id, ['action' => ACTION_VIEW, $charge->id]) ?></td>
               <td><?= h($charge->name) ?></td>
               <td><?= h($charge->annotation) ?></td>
-              <td>
-                <?php if (!is_null($charge->modified)) { ?>
-                  <?= h($charge->modified->i18nFormat('yyyy/MM/dd HH:mm:ss')) ?>
-                <?php } ?>
-              </td>
+              <td><?= h($this->formatDate($charge->modified, 'yyyy/MM/dd HH:mm:ss')) ?></td>
               <td class="actions">
                 <div class="btn-group" role="group">
                   <button id="btnGroupDrop<?= $charge->id ?>" type="button" class="btn btn-sm btn-flat btn-outline-secondary dropdown-toggle index-dropdown-toggle" data-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false"></button>

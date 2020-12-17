@@ -61,11 +61,7 @@ $this->assign('title', "スタッフ");
               <td><?= h($staff->name_en) ?></td>
               <td><?= @h(_code("Codes.Staffs.staff_position.{$staff->staff_position}")) ?></td>
               <td><?= @h(_code("Codes.Staffs.photo_position.{$staff->photo_position}")) ?></td>
-              <td>
-                <?php if (!is_null($staff->modified)) { ?>
-                  <?= h($staff->modified->i18nFormat('yyyy/MM/dd HH:mm:ss')) ?>
-                <?php } ?>
-              </td>
+              <td><?= h($this->formatDate($staff->modified, 'yyyy/MM/dd HH:mm:ss')) ?></td>
               <td class="actions">
                 <div class="btn-group" role="group">
                   <button id="btnGroupDrop<?= $staff->id ?>" type="button" class="btn btn-sm btn-flat btn-outline-secondary dropdown-toggle index-dropdown-toggle" data-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false"></button>

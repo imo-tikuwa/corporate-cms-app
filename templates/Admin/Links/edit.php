@@ -5,9 +5,6 @@
  */
 $button_name = (!empty($link) && !$link->isNew()) ? "更新" : "登録";
 $this->assign('title', "リンク集{$button_name}");
-if ($link->hasErrors()) {
-  $this->assign('validation_error', $this->makeValidationErrorHtml($link->getErrorMessages()));
-}
 ?>
 <div class="col-md-12 mb-12">
   <div class="card">

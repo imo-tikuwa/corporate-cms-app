@@ -65,11 +65,7 @@ $this->Form->setTemplates([
               <td><?= h($contact->email) ?></td>
               <td><?= @h(_code("Codes.Contacts.type.{$contact->type}")) ?></td>
               <td><?= h($contact->tel) ?></td>
-              <td>
-                <?php if (!is_null($contact->modified)) { ?>
-                  <?= h($contact->modified->i18nFormat('yyyy/MM/dd HH:mm:ss')) ?>
-                <?php } ?>
-              </td>
+              <td><?= h($this->formatDate($contact->modified, 'yyyy/MM/dd HH:mm:ss')) ?></td>
               <td class="actions">
                 <div class="btn-group" role="group">
                   <button id="btnGroupDrop<?= $contact->id ?>" type="button" class="btn btn-sm btn-flat btn-outline-secondary dropdown-toggle index-dropdown-toggle" data-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false"></button>

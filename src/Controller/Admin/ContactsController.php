@@ -153,7 +153,12 @@ class ContactsController extends AppController
         }
         if ($this->getRequest()->is(['patch', 'post', 'put'])) {
             $contact = $this->Contacts->patchEntity($contact, $this->getRequest()->getData());
-            if (!$contact->hasErrors()) {
+            if ($contact->hasErrors()) {
+                $this->Flash->set(implode('<br />', $contact->getErrorMessages()), [
+                    'escape' => false,
+                    'element' => 'validation_error',
+                ]);
+            } else {
                 $conn = $this->Contacts->getConnection();
                 $conn->begin();
                 if ($this->Contacts->save($contact, ['atomic' => false])) {

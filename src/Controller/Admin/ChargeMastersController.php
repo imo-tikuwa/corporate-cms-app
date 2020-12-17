@@ -91,9 +91,9 @@ class ChargeMastersController extends AppController
      */
     public function view($id = null)
     {
-        $chargeMaster = $this->ChargeMasters->get($id);
+        $charge_master = $this->ChargeMasters->get($id);
 
-        $this->set('chargeMaster', $chargeMaster);
+        $this->set('charge_master', $charge_master);
     }
 
     /**
@@ -135,7 +135,12 @@ class ChargeMastersController extends AppController
         }
         if ($this->getRequest()->is(['patch', 'post', 'put'])) {
             $charge_master = $this->ChargeMasters->patchEntity($charge_master, $this->getRequest()->getData(), ['associated' => ['ChargeRelations']]);
-            if (!$charge_master->hasErrors()) {
+            if ($charge_master->hasErrors()) {
+                $this->Flash->set(implode('<br />', $charge_master->getErrorMessages()), [
+                    'escape' => false,
+                    'element' => 'validation_error',
+                ]);
+            } else {
                 $conn = $this->ChargeMasters->getConnection();
                 $conn->begin();
                 if ($this->ChargeMasters->save($charge_master, ['atomic' => false])) {

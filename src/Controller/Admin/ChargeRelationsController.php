@@ -103,9 +103,9 @@ class ChargeRelationsController extends AppController
      */
     public function view($id = null)
     {
-        $chargeRelation = $this->ChargeRelations->get($id, ['contain' => ['Charges', 'ChargeMasters']]);
+        $charge_relation = $this->ChargeRelations->get($id, ['contain' => ['Charges', 'ChargeMasters']]);
 
-        $this->set('chargeRelation', $chargeRelation);
+        $this->set('charge_relation', $charge_relation);
     }
 
     /**
@@ -147,7 +147,12 @@ class ChargeRelationsController extends AppController
         }
         if ($this->getRequest()->is(['patch', 'post', 'put'])) {
             $charge_relation = $this->ChargeRelations->patchEntity($charge_relation, $this->getRequest()->getData(), ['associated' => ['Charges', 'ChargeMasters']]);
-            if (!$charge_relation->hasErrors()) {
+            if ($charge_relation->hasErrors()) {
+                $this->Flash->set(implode('<br />', $charge_relation->getErrorMessages()), [
+                    'escape' => false,
+                    'element' => 'validation_error',
+                ]);
+            } else {
                 $conn = $this->ChargeRelations->getConnection();
                 $conn->begin();
                 if ($this->ChargeRelations->save($charge_relation, ['atomic' => false])) {

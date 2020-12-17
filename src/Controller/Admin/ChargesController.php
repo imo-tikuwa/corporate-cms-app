@@ -137,7 +137,12 @@ class ChargesController extends AppController
         }
         if ($this->getRequest()->is(['patch', 'post', 'put'])) {
             $charge = $this->Charges->patchEntity($charge, $this->getRequest()->getData(), ['associated' => ['ChargeRelations']]);
-            if (!$charge->hasErrors()) {
+            if ($charge->hasErrors()) {
+                $this->Flash->set(implode('<br />', $charge->getErrorMessages()), [
+                    'escape' => false,
+                    'element' => 'validation_error',
+                ]);
+            } else {
                 $conn = $this->Charges->getConnection();
                 $conn->begin();
                 if ($this->Charges->save($charge, ['atomic' => false])) {

@@ -136,7 +136,7 @@ class ChargeRelationsTable extends AppTable
      * @param EntityInterface $entity エンティティ
      * @param array $data エンティティに上書きするデータ
      * @param array $options オプション配列
-     * @return \Cake\Datasource\EntityInterface
+     * @return \App\Model\Entity\ChargeRelation
      */
     public function patchEntity(EntityInterface $entity, array $data, array $options = []): EntityInterface
     {

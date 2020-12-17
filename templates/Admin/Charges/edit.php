@@ -5,9 +5,6 @@
  */
 $button_name = (!empty($charge) && !$charge->isNew()) ? "更新" : "登録";
 $this->assign('title', "基本料金{$button_name}");
-if ($charge->hasErrors()) {
-  $this->assign('validation_error', $this->makeValidationErrorHtml($charge->getErrorMessages()));
-}
 ?>
 <div class="col-md-12 mb-12">
   <div class="card">

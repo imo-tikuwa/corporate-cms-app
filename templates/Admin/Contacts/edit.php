@@ -5,9 +5,6 @@
  */
 $button_name = (!empty($contact) && !$contact->isNew()) ? "更新" : "登録";
 $this->assign('title', "お問い合わせ情報{$button_name}");
-if ($contact->hasErrors()) {
-  $this->assign('validation_error', $this->makeValidationErrorHtml($contact->getErrorMessages()));
-}
 $this->Form->setTemplates([
   'nestingLabel' => '{{hidden}}{{input}}<label class="form-check-label col-form-label" {{attrs}}>{{text}}</label>'
 ]);

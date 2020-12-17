@@ -56,11 +56,7 @@ $this->assign('title', "料金マスタ");
               <td><?= h($charge_master->name) ?></td>
               <td><?= $this->Number->format($charge_master->basic_charge) ?>円</td>
               <td><?= $this->Number->format($charge_master->campaign_charge) ?>円</td>
-              <td>
-                <?php if (!is_null($charge_master->modified)) { ?>
-                  <?= h($charge_master->modified->i18nFormat('yyyy/MM/dd HH:mm:ss')) ?>
-                <?php } ?>
-              </td>
+              <td><?= h($this->formatDate($charge_master->modified, 'yyyy/MM/dd HH:mm:ss')) ?></td>
               <td class="actions">
                 <div class="btn-group" role="group">
                   <button id="btnGroupDrop<?= $charge_master->id ?>" type="button" class="btn btn-sm btn-flat btn-outline-secondary dropdown-toggle index-dropdown-toggle" data-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false"></button>

@@ -5,9 +5,6 @@
  */
 $button_name = (!empty($charge_relation) && !$charge_relation->isNew()) ? "更新" : "登録";
 $this->assign('title', "料金マッピング{$button_name}");
-if ($charge_relation->hasErrors()) {
-  $this->assign('validation_error', $this->makeValidationErrorHtml($charge_relation->getErrorMessages()));
-}
 ?>
 <div class="col-md-12 mb-12">
   <div class="card">

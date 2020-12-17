@@ -71,11 +71,7 @@ $this->assign('title', "リンク集");
               <td><?= @h(_code("Codes.Links.category.{$link->category}")) ?></td>
               <td><?= h($link->title) ?></td>
               <td><?= h($link->url) ?></td>
-              <td>
-                <?php if (!is_null($link->modified)) { ?>
-                  <?= h($link->modified->i18nFormat('yyyy/MM/dd HH:mm:ss')) ?>
-                <?php } ?>
-              </td>
+              <td><?= h($this->formatDate($link->modified, 'yyyy/MM/dd HH:mm:ss')) ?></td>
               <td class="actions">
                 <div class="btn-group" role="group">
                   <button id="btnGroupDrop<?= $link->id ?>" type="button" class="btn btn-sm btn-flat btn-outline-secondary dropdown-toggle index-dropdown-toggle" data-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false"></button>

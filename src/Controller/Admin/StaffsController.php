@@ -157,7 +157,12 @@ class StaffsController extends AppController
         }
         if ($this->getRequest()->is(['patch', 'post', 'put'])) {
             $staff = $this->Staffs->patchEntity($staff, $this->getRequest()->getData());
-            if (!$staff->hasErrors()) {
+            if ($staff->hasErrors()) {
+                $this->Flash->set(implode('<br />', $staff->getErrorMessages()), [
+                    'escape' => false,
+                    'element' => 'validation_error',
+                ]);
+            } else {
                 $conn = $this->Staffs->getConnection();
                 $conn->begin();
                 if ($this->Staffs->save($staff, ['atomic' => false])) {

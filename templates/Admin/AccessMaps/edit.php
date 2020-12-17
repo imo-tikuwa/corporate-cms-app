@@ -5,9 +5,6 @@
  */
 $button_name = (!empty($access_map) && !$access_map->isNew()) ? "更新" : "登録";
 $this->assign('title', "アクセスマップ{$button_name}");
-if ($access_map->hasErrors()) {
-  $this->assign('validation_error', $this->makeValidationErrorHtml($access_map->getErrorMessages()));
-}
 ?>
 <div class="col-md-12 mb-12">
   <div class="card">

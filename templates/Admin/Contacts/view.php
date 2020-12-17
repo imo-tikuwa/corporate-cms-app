@@ -39,19 +39,11 @@ $this->assign('title', "お問い合わせ情報詳細");
         </tr>
         <tr>
           <th scope="row">作成日時</th>
-          <td>
-            <?php if (!is_null($contact->created)) { ?>
-              <?= h($contact->created->i18nFormat('yyyy/MM/dd HH:mm:ss')) ?>
-            <?php } ?>
-          </td>
+          <td><?= h($this->formatDate($contact->created, 'yyyy/MM/dd HH:mm:ss')) ?></td>
         </tr>
         <tr>
           <th scope="row">更新日時</th>
-          <td>
-            <?php if (!is_null($contact->modified)) { ?>
-              <?= h($contact->modified->i18nFormat('yyyy/MM/dd HH:mm:ss')) ?>
-            <?php } ?>
-          </td>
+          <td><?= h($this->formatDate($contact->modified, 'yyyy/MM/dd HH:mm:ss')) ?></td>
         </tr>
       </table>
     </div>

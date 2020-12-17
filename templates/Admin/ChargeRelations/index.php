@@ -58,11 +58,7 @@ $this->assign('title', "料金マッピング");
               <td>
                 <?= $charge_relation->has('charge_master') ? $this->Html->link($charge_relation->charge_master->name, ['controller' => 'ChargeMasters', 'action' => ACTION_VIEW, $charge_relation->charge_master->id]) : '' ?>
               </td>
-              <td>
-                <?php if (!is_null($charge_relation->modified)) { ?>
-                  <?= h($charge_relation->modified->i18nFormat('yyyy/MM/dd HH:mm:ss')) ?>
-                <?php } ?>
-              </td>
+              <td><?= h($this->formatDate($charge_relation->modified, 'yyyy/MM/dd HH:mm:ss')) ?></td>
               <td class="actions">
                 <div class="btn-group" role="group">
                   <button id="btnGroupDrop<?= $charge_relation->id ?>" type="button" class="btn btn-sm btn-flat btn-outline-secondary dropdown-toggle index-dropdown-toggle" data-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false"></button>

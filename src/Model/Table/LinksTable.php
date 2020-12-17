@@ -158,7 +158,7 @@ class LinksTable extends AppTable
      * @param EntityInterface $entity エンティティ
      * @param array $data エンティティに上書きするデータ
      * @param array $options オプション配列
-     * @return \Cake\Datasource\EntityInterface
+     * @return \App\Model\Entity\Link
      */
     public function patchEntity(EntityInterface $entity, array $data, array $options = []): EntityInterface
     {
@@ -267,7 +267,7 @@ class LinksTable extends AppTable
     /**
      * Excelの入力情報を元にエンティティを作成する
      * @param array $excel_row Excelの1行辺りの配列データ
-     * @return \App\Model\Entity\Link エンティティ
+     * @return \App\Model\Entity\Link
      */
     public function createEntityByExcelRow($excel_row)
     {
