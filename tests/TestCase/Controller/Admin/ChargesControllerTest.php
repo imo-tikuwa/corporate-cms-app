@@ -28,6 +28,14 @@ class ChargesControllerTest extends TestCase
     ];
 
     /**
+     * By default, all fixtures attached to this class will be truncated and reloaded after each test.
+     * Set this to false to handle manually
+     *
+     * @var bool
+     */
+    public $autoFixtures = false;
+
+    /**
      * charges table.
      * @var \App\Model\Table\ChargesTable $Charges
      */
@@ -81,6 +89,8 @@ class ChargesControllerTest extends TestCase
      */
     public function setUp(): void
     {
+        $this->loadFixtures();
+
         parent::setUp();
         $Charges_config = $this->getTableLocator()->exists('Charges') ? [] : ['className' => \App\Model\Table\ChargesTable::class];
         /** @var \App\Model\Table\ChargesTable $Charges */
@@ -470,7 +480,7 @@ class ChargesControllerTest extends TestCase
         $this->assertResponseCode(302);
         $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
 
-        $this->loadFixtures('Charges');
+        $this->loadFixtures();
         $this->session([
             'Auth.Admin' => $this->delete_admin
         ]);

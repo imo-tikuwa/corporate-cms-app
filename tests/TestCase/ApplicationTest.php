@@ -49,7 +49,8 @@ class ApplicationTest extends IntegrationTestCase
             'Utilities',
             'OperationLogs',
             'CsvView',
-            'Cake3AdminBaker'
+            'Cake3AdminBaker',
+            'ErdGenerator'
         ];
         if (Configure::read('debug')) {
             $testPlugins[] = 'DebugKit';

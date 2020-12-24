@@ -27,6 +27,14 @@ class AccessMapsControllerTest extends TestCase
     ];
 
     /**
+     * By default, all fixtures attached to this class will be truncated and reloaded after each test.
+     * Set this to false to handle manually
+     *
+     * @var bool
+     */
+    public $autoFixtures = false;
+
+    /**
      * access_maps table.
      * @var \App\Model\Table\AccessMapsTable $AccessMaps
      */
@@ -65,6 +73,8 @@ class AccessMapsControllerTest extends TestCase
      */
     public function setUp(): void
     {
+        $this->loadFixtures();
+
         parent::setUp();
         $AccessMaps_config = $this->getTableLocator()->exists('AccessMaps') ? [] : ['className' => \App\Model\Table\AccessMapsTable::class];
         /** @var \App\Model\Table\AccessMapsTable $AccessMaps */

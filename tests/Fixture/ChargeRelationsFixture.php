@@ -79,6 +79,24 @@ class ChargeRelationsFixture extends TestFixture
             'default' => null,
             'comment' => '削除日時',
         ],
+        '_indexes' => [
+            'charge_id' => [
+                'type' => 'index',
+                'columns' => [
+                    'charge_id',
+                ],
+                'length' => [
+                ],
+            ],
+            'charge_master_id' => [
+                'type' => 'index',
+                'columns' => [
+                    'charge_master_id',
+                ],
+                'length' => [
+                ],
+            ],
+        ],
         '_constraints' => [
             'primary' => [
                 'type' => 'primary',
@@ -108,8 +126,8 @@ class ChargeRelationsFixture extends TestFixture
                 'charge_id' => 1,
                 'charge_master_id' => 1,
                 'search_snippet' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
-                'created' => '2020-12-13 11:07:26',
-                'modified' => '2020-12-13 11:07:26',
+                'created' => '2020-12-24 17:23:24',
+                'modified' => '2020-12-24 17:23:24',
                 'deleted' => null,
             ],
         ];

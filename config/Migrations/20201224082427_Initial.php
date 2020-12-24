@@ -197,6 +197,16 @@ class Initial extends AbstractMigration
                 'limit' => null,
                 'null' => true,
             ])
+            ->addIndex(
+                [
+                    'charge_id',
+                ]
+            )
+            ->addIndex(
+                [
+                    'charge_master_id',
+                ]
+            )
             ->create();
 
         $this->table('charges')

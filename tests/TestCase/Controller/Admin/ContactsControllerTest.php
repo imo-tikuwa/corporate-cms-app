@@ -27,6 +27,14 @@ class ContactsControllerTest extends TestCase
     ];
 
     /**
+     * By default, all fixtures attached to this class will be truncated and reloaded after each test.
+     * Set this to false to handle manually
+     *
+     * @var bool
+     */
+    public $autoFixtures = false;
+
+    /**
      * contacts table.
      * @var \App\Model\Table\ContactsTable $Contacts
      */
@@ -80,6 +88,8 @@ class ContactsControllerTest extends TestCase
      */
     public function setUp(): void
     {
+        $this->loadFixtures();
+
         parent::setUp();
         $Contacts_config = $this->getTableLocator()->exists('Contacts') ? [] : ['className' => \App\Model\Table\ContactsTable::class];
         /** @var \App\Model\Table\ContactsTable $Contacts */
@@ -469,7 +479,7 @@ class ContactsControllerTest extends TestCase
         $this->assertResponseCode(302);
         $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
 
-        $this->loadFixtures('Contacts');
+        $this->loadFixtures();
         $this->session([
             'Auth.Admin' => $this->delete_admin
         ]);

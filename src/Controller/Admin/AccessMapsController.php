@@ -29,7 +29,12 @@ class AccessMapsController extends AppController
         }
         if ($this->getRequest()->is(['patch', 'post', 'put'])) {
             $access_map = $this->AccessMaps->patchEntity($access_map, $this->getRequest()->getData());
-            if (!$access_map->hasErrors()) {
+            if ($access_map->hasErrors()) {
+                $this->Flash->set(implode('<br />', $access_map->getErrorMessages()), [
+                    'escape' => false,
+                    'element' => 'validation_error',
+                ]);
+            } else {
                 $conn = $this->AccessMaps->getConnection();
                 $conn->begin();
                 if ($this->AccessMaps->save($access_map, ['atomic' => false])) {
