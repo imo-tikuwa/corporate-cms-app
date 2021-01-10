@@ -78,13 +78,34 @@ class AccessMapsTable extends AppTable
         $validator
             ->requirePresence('location', true, 'GoogleMap地図座標を選択してください。')
             ->add('location', 'gmapJsonValid', [
-                'rule' => function ($value) {
-                    if (!empty(array_diff(['zoom', 'latitude', 'longitude'], array_keys($value)))) {
+                'rule' => function ($json) {
+                    if (!empty(array_diff(['zoom', 'latitude', 'longitude'], array_keys($json)))) {
                         return false;
                     }
                     return true;
                 },
                 'message' => 'GoogleMap地図座標のデータが正しくありません。',
+                'last' => true
+            ])
+            ->add('location', 'gmapZoomValid', [
+                'rule' => function ($json) {
+                    return is_numeric($json['zoom']);
+                },
+                'message' => 'GoogleMap地図座標のデータ(Zoomレベル)が正しくありません。',
+                'last' => true
+            ])
+            ->add('location', 'gmapLatitudeValid', [
+                'rule' => function ($json) {
+                    return is_numeric($json['latitude']);
+                },
+                'message' => 'GoogleMap地図座標のデータ(緯度)が正しくありません。',
+                'last' => true
+            ])
+            ->add('location', 'gmapLongitudeValid', [
+                'rule' => function ($json) {
+                    return is_numeric($json['longitude']);
+                },
+                'message' => 'GoogleMap地図座標のデータ(経度)が正しくありません。',
                 'last' => true
             ])
             ->notEmptyString('location', 'GoogleMap地図座標を選択してください。');

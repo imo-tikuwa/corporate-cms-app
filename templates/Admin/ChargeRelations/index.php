@@ -4,6 +4,7 @@ use App\Utils\AuthUtils;
 /**
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\ChargeRelation[] $charge_relations
+ * @var \App\Form\SearchForm $search_form
  */
 $this->assign('title', "料金マッピング");
 ?>
@@ -18,22 +19,20 @@ $this->assign('title', "料金マッピング");
         <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_CSV_EXPORT])) { ?>
           <button type="button" class="btn btn-flat btn-outline-secondary mr-2" onclick="location.href='<?= $this->Url->build(['action' => ACTION_CSV_EXPORT, '?' => $this->getRequest()->getQueryParams()]) ?>'">CSVエクスポート</button>
         <?php } ?>
-        <div class="freeword-search input-group">
-          <div class="input-group-prepend">
-            <div class="input-group-text">
-              <?= $this->Form->control('search_snippet_format', ['type' => 'radio', 'options' => _code('Others.search_snippet_format'), 'class' => 'form-check-label col-form-label col-form-label-sm charge_relations-freeword-search-snippet-format', 'default' => 'AND', 'value' => @$params['search_snippet_format'], 'label' => false, 'templates' => ['nestingLabel' => '{{hidden}}{{input}}<small><label {{attrs}}>{{text}}</label></small>', 'radioWrapper' => '{{label}}', 'inputContainer' => '{{content}}']]) ?>
+        <?= $this->Form->create($search_form, ['type' => 'get', 'id' => 'charge_relations-freeword-search-form']) ?>
+          <div class="freeword-search input-group">
+            <div class="input-group-prepend">
+              <div class="input-group-text">
+                <?= $this->Form->control('search_snippet_format', ['type' => 'radio', 'options' => _code('Others.search_snippet_format'), 'class' => 'form-check-label col-form-label col-form-label-sm charge_relations-freeword-search-snippet-format', 'default' => 'AND', 'label' => false, 'templates' => ['nestingLabel' => '{{hidden}}{{input}}<small><label {{attrs}}>{{text}}</label></small>', 'radioWrapper' => '{{label}}', 'inputContainer' => '{{content}}']]) ?>
+              </div>
+            </div>
+            <?= $this->Form->text('search_snippet', ['id' => 'charge_relations-freeword-search-snippet', 'class' => 'form-control rounded-0', 'style' => 'width: 200px;', 'placeholder' => 'フリーワード']) ?>
+            <div class="input-group-append">
+              <button type="submit" id="charge_relations-freeword-search-btn" class="btn btn-flat btn-outline-secondary"><i class="fas fa-search"></i></button>
             </div>
           </div>
-          <?= $this->Form->text('search_snippet', ['id' => 'charge_relations-freeword-search-snippet', 'class' => 'form-control rounded-0', 'value' => @$params['search_snippet'], 'style' => 'width: 200px;', 'placeholder' => 'フリーワード']) ?>
-          <div class="input-group-append">
-            <button type="button" id="charge_relations-freeword-search-btn" class="btn btn-flat btn-outline-secondary"><i class="fas fa-search"></i></button>
-          </div>
-        </div>
-        <?= $this->Form->create(null, ['type' => 'get', 'id' => 'charge_relations-freeword-search-form', 'class' => 'd-none']) ?>
-          <?= $this->Form->hidden('search_snippet', ['id' => 'charge_relations-freeword-hidden-search-snippet', 'value' => @$params['search_snippet']]) ?>
-          <?= $this->Form->hidden('search_snippet_format', ['id' => 'charge_relations-freeword-hidden-search-snippet-format', 'value' => @$params['search_snippet_format']]) ?>
-          <?= $this->Form->hidden('sort', ['value' => @$params['sort']]) ?>
-          <?= $this->Form->hidden('direction', ['value' => @$params['direction']]) ?>
+          <?= $this->Form->hidden('sort') ?>
+          <?= $this->Form->hidden('direction') ?>
         <?= $this->Form->end(); ?>
       </div>
     </div>
@@ -52,12 +51,8 @@ $this->assign('title', "料金マッピング");
           <?php foreach ($charge_relations as $charge_relation) { ?>
             <tr>
               <td><?= $this->Html->link($charge_relation->id, ['action' => ACTION_VIEW, $charge_relation->id]) ?></td>
-              <td>
-                <?= $charge_relation->has('charge') ? $this->Html->link($charge_relation->charge->name, ['controller' => 'Charges', 'action' => ACTION_VIEW, $charge_relation->charge->id]) : '' ?>
-              </td>
-              <td>
-                <?= $charge_relation->has('charge_master') ? $this->Html->link($charge_relation->charge_master->name, ['controller' => 'ChargeMasters', 'action' => ACTION_VIEW, $charge_relation->charge_master->id]) : '' ?>
-              </td>
+              <td><?= $charge_relation->has('charge') ? $this->Html->link($charge_relation->charge->name, ['controller' => 'Charges', 'action' => ACTION_VIEW, $charge_relation->charge->id]) : '' ?></td>
+              <td><?= $charge_relation->has('charge_master') ? $this->Html->link($charge_relation->charge_master->name, ['controller' => 'ChargeMasters', 'action' => ACTION_VIEW, $charge_relation->charge_master->id]) : '' ?></td>
               <td><?= h($this->formatDate($charge_relation->modified, 'yyyy/MM/dd HH:mm:ss')) ?></td>
               <td class="actions">
                 <div class="btn-group" role="group">
@@ -85,31 +80,46 @@ $this->assign('title', "料金マッピング");
 </div>
 
 <div class="modal search-form fade" id="charge_relations-search-form-modal" tabindex="-1" role="dialog" aria-labelledby="charge_relations-search-form-modal-label" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">料金マッピング検索</h5>
       </div>
       <div class="modal-body">
-        <?= $this->Form->create(null, ['type' => 'get', 'id' => 'charge_relations-search-form']) ?>
+        <?= $this->Form->create($search_form, ['type' => 'get', 'id' => 'charge_relations-search-form']) ?>
           <div class="row">
             <div class="col-md-12 col-sm-12">
               <div class="form-group">
-                <?= $this->Form->control('id', ['class' => 'form-control rounded-0', 'label' => 'ID', 'value' => @$params['id']]); ?>
+                <?= $this->Form->control('id', [
+                  'class' => 'form-control rounded-0',
+                  'label' => 'ID',
+                ]); ?>
               </div>
             </div>
           </div>
           <div class="row">
             <div class="col-md-12 col-sm-12">
               <div class="form-group">
-                <?= $this->Form->control('charge_id', ['id' => 'charge_id', 'type' => 'select', 'options' => $charges, 'class' => 'form-control', 'label' => '基本料金ID', 'value' => @$params['charge_id']]); ?>
+                <?= $this->Form->control('charge_id', [
+                  'id' => 'charge_id',
+                  'type' => 'select',
+                  'options' => $charges,
+                  'class' => 'form-control',
+                  'label' => '基本料金ID',
+                ]); ?>
               </div>
             </div>
           </div>
           <div class="row">
             <div class="col-md-12 col-sm-12">
               <div class="form-group">
-                <?= $this->Form->control('charge_master_id', ['id' => 'charge_master_id', 'type' => 'select', 'options' => $chargeMasters, 'class' => 'form-control', 'label' => '料金マスタID', 'value' => @$params['charge_master_id']]); ?>
+                <?= $this->Form->control('charge_master_id', [
+                  'id' => 'charge_master_id',
+                  'type' => 'select',
+                  'options' => $chargeMasters,
+                  'class' => 'form-control',
+                  'label' => '料金マスタID',
+                ]); ?>
               </div>
             </div>
           </div>
@@ -120,10 +130,23 @@ $this->assign('title', "料金マッピング");
                 <div class="freeword-search form-inline input-group">
                   <div class="input-group-prepend">
                     <div class="input-group-text">
-                      <?= $this->Form->control('search_snippet_format', ['type' => 'radio', 'id' => 'modal-search_snippet-format', 'options' => _code('Others.search_snippet_format'), 'class' => 'form-check-label col-form-label col-form-label-sm', 'default' => 'AND', 'value' => @$params['search_snippet_format'], 'label' => false, 'templates' => ['nestingLabel' => '{{hidden}}{{input}}<small><label {{attrs}}>{{text}}</label></small>', 'radioWrapper' => '{{label}}', 'inputContainer' => '{{content}}']]) ?>
+                      <?= $this->Form->control('search_snippet_format', [
+                        'id' => 'modal-search_snippet-format',
+                        'type' => 'radio',
+                        'options' => _code('Others.search_snippet_format'),
+                        'class' => 'form-check-label col-form-label col-form-label-sm',
+                        'label' => false,
+                        'default' => 'AND',
+                        'templates' => [
+                          'nestingLabel' => '{{hidden}}{{input}}<small><label {{attrs}}>{{text}}</label></small>',
+                          'radioWrapper' => '{{label}}', 'inputContainer' => '{{content}}'
+                        ],
+                      ]) ?>
                     </div>
                   </div>
-                  <?= $this->Form->text('search_snippet', ['class' => 'form-control rounded-0', 'value' => @$params['search_snippet']]) ?>
+                  <?= $this->Form->text('search_snippet', [
+                    'class' => 'form-control rounded-0',
+                  ]) ?>
                 </div>
               </div>
             </div>
@@ -131,12 +154,12 @@ $this->assign('title', "料金マッピング");
           <div class="row">
             <div class="col-md-12">
               <div class="form-group">
-                <?= $this->Form->button('検索', ['class' => "btn btn-flat btn-outline-secondary btn-block"]) ?>
+                <?= $this->Form->button('検索', ['class' => 'btn btn-flat btn-outline-secondary btn-block']) ?>
               </div>
             </div>
           </div>
-          <?= $this->Form->hidden('sort', ['value' => @$params['sort']]) ?>
-          <?= $this->Form->hidden('direction', ['value' => @$params['direction']]) ?>
+          <?= $this->Form->hidden('sort') ?>
+          <?= $this->Form->hidden('direction') ?>
         <?= $this->Form->end() ?>
       </div>
       <div class="modal-footer">　</div>

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Controller\Admin\AppController;
+use App\Form\SearchForm;
 use App\Utils\ExcelUtils;
 use Cake\Http\CallbackStream;
 use Cake\I18n\FrozenDate;
@@ -13,6 +14,8 @@ use PhpOffice\PhpSpreadsheet\Reader\Xlsx as XlsxReader;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx as XlsxWriter;
+use DateTime;
+use DateTimeZone;
 
 /**
  * Contacts Controller
@@ -39,11 +42,12 @@ class ContactsController extends AppController
     public function index()
     {
         $request = $this->getRequest()->getQueryParams();
-        $this->set('params', $request);
         $query = $this->_getQuery($request);
         $contacts = $this->paginate($query);
+        $search_form = new SearchForm();
+        $search_form->setData($request);
 
-        $this->set(compact('contacts'));
+        $this->set(compact('contacts', 'search_form'));
     }
 
     /**
@@ -262,6 +266,7 @@ class ContactsController extends AppController
     public function excelExport()
     {
         $request = $this->getRequest()->getQueryParams();
+        /** @var \App\Model\Entity\Contact[] $contacts */
         $contacts = $this->_getQuery($request)->toArray();
 
         $reader = new XlsxReader();
@@ -272,28 +277,28 @@ class ContactsController extends AppController
         // 取得したデータをExcelに書き込む
         foreach ($contacts as $contact) {
             // ID
-            $data_sheet->setCellValue("A{$row_num}", $contact['id']);
+            $data_sheet->setCellValue("A{$row_num}", $contact->id);
             // お名前
-            $data_sheet->setCellValue("B{$row_num}", $contact['name']);
+            $data_sheet->setCellValue("B{$row_num}", $contact->name);
             // メールアドレス
-            $data_sheet->setCellValue("C{$row_num}", $contact['email']);
+            $data_sheet->setCellValue("C{$row_num}", $contact->email);
             // お問い合わせ内容
-            $cell_value = "";
-            if (isset($contact['type']) && array_key_exists($contact['type'], _code('Codes.Contacts.type'))) {
-                $cell_value = $contact['type'] . ':' . _code('Codes.Contacts.type.' . $contact['type']);
+            $cell_value = '';
+            if (isset($contact->type) && array_key_exists($contact->type, _code('Codes.Contacts.type'))) {
+                $cell_value = $contact->type . ':' . _code('Codes.Contacts.type.' . $contact->type);
             }
             $data_sheet->setCellValue("D{$row_num}", $cell_value);
             // お電話番号
-            $data_sheet->setCellValue("E{$row_num}", $contact['tel']);
+            $data_sheet->setCellValue("E{$row_num}", $contact->tel);
             // ご希望日時／その他ご要望等
-            $data_sheet->setCellValue("F{$row_num}", $contact['content']);
+            $data_sheet->setCellValue("F{$row_num}", $contact->content);
             // ホームページURL
-            $data_sheet->setCellValue("G{$row_num}", $contact['hp_url']);
+            $data_sheet->setCellValue("G{$row_num}", $contact->hp_url);
             // 作成日時
-            $cell_value = @$contact['created']->i18nFormat('yyyy-MM-dd HH:mm:ss');
+            $cell_value = @$contact->created->i18nFormat('yyyy-MM-dd HH:mm:ss');
             $data_sheet->setCellValue("H{$row_num}", $cell_value);
             // 更新日時
-            $cell_value = @$contact['modified']->i18nFormat('yyyy-MM-dd HH:mm:ss');
+            $cell_value = @$contact->modified->i18nFormat('yyyy-MM-dd HH:mm:ss');
             $data_sheet->setCellValue("I{$row_num}", $cell_value);
             $row_num++;
         }
@@ -304,7 +309,7 @@ class ContactsController extends AppController
 
         // データ入力行に入力規則を設定（1048576はExcelの最大行数）
         // お問い合わせ内容
-        $data_sheet->setDataValidation("D2:D1048576", ExcelUtils::getDataValidation("=OFFSET('LIST'!\$A\$2,0,0,COUNTA('LIST'!\$A:\$A)-1,1)"));
+        $data_sheet->setDataValidation('D2:D1048576', ExcelUtils::getDataValidation("=OFFSET('LIST'!\$A\$2,0,0,COUNTA('LIST'!\$A:\$A)-1,1)"));
 
         // 罫線設定、A2セルを選択、1行目固定、DATAシートをアクティブ化
         $data_sheet->getStyle("A1:I{$contacts_row_num}")->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
@@ -312,15 +317,14 @@ class ContactsController extends AppController
         $data_sheet->freezePane('A2');
         $spreadsheet->setActiveSheetIndexByName('DATA');
 
-        $datetime = new \DateTime();
-        $datetime->setTimezone(new \DateTimeZone('Asia/Tokyo'));
+        $datetime = (new DateTime('now', new DateTimeZone('Asia/Tokyo')))->format('YmdHis');
         $writer = new XlsxWriter($spreadsheet);
         $stream = new CallbackStream(function () use ($writer) {
             $writer->save('php://output');
         });
 
         return $this->response->withHeader('Content-Type', EXCEL_CONTENT_TYPE)
-        ->withHeader('Content-Disposition', "attachment; filename=\"contacts-{$datetime->format('YmdHis')}.xlsx\"")
+        ->withHeader('Content-Disposition', "attachment; filename=\"contacts-{$datetime}.xlsx\"")
         ->withHeader('Cache-Control', 'max-age=0')
         ->withBody($stream);
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Controller\Admin\AppController;
+use App\Form\SearchForm;
 use App\Utils\ExcelUtils;
 use Cake\Http\CallbackStream;
 use Cake\I18n\FrozenDate;
@@ -13,6 +14,8 @@ use PhpOffice\PhpSpreadsheet\Reader\Xlsx as XlsxReader;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx as XlsxWriter;
+use DateTime;
+use DateTimeZone;
 
 /**
  * Staffs Controller
@@ -39,11 +42,12 @@ class StaffsController extends AppController
     public function index()
     {
         $request = $this->getRequest()->getQueryParams();
-        $this->set('params', $request);
         $query = $this->_getQuery($request);
         $staffs = $this->paginate($query);
+        $search_form = new SearchForm();
+        $search_form->setData($request);
 
-        $this->set(compact('staffs'));
+        $this->set(compact('staffs', 'search_form'));
     }
 
     /**
@@ -274,6 +278,7 @@ class StaffsController extends AppController
     public function excelExport()
     {
         $request = $this->getRequest()->getQueryParams();
+        /** @var \App\Model\Entity\Staff[] $staffs */
         $staffs = $this->_getQuery($request)->toArray();
 
         $reader = new XlsxReader();
@@ -284,34 +289,34 @@ class StaffsController extends AppController
         // 取得したデータをExcelに書き込む
         foreach ($staffs as $staff) {
             // ID
-            $data_sheet->setCellValue("A{$row_num}", $staff['id']);
+            $data_sheet->setCellValue("A{$row_num}", $staff->id);
             // スタッフ名
-            $data_sheet->setCellValue("B{$row_num}", $staff['name']);
+            $data_sheet->setCellValue("B{$row_num}", $staff->name);
             // スタッフ名(英)
-            $data_sheet->setCellValue("C{$row_num}", $staff['name_en']);
+            $data_sheet->setCellValue("C{$row_num}", $staff->name_en);
             // スタッフ役職
-            $cell_value = "";
-            if (isset($staff['staff_position']) && array_key_exists($staff['staff_position'], _code('Codes.Staffs.staff_position'))) {
-                $cell_value = $staff['staff_position'] . ':' . _code('Codes.Staffs.staff_position.' . $staff['staff_position']);
+            $cell_value = '';
+            if (isset($staff->staff_position) && array_key_exists($staff->staff_position, _code('Codes.Staffs.staff_position'))) {
+                $cell_value = $staff->staff_position . ':' . _code('Codes.Staffs.staff_position.' . $staff->staff_position);
             }
             $data_sheet->setCellValue("D{$row_num}", $cell_value);
             // 画像表示位置
-            $cell_value = "";
-            if (isset($staff['photo_position']) && array_key_exists($staff['photo_position'], _code('Codes.Staffs.photo_position'))) {
-                $cell_value = $staff['photo_position'] . ':' . _code('Codes.Staffs.photo_position.' . $staff['photo_position']);
+            $cell_value = '';
+            if (isset($staff->photo_position) && array_key_exists($staff->photo_position, _code('Codes.Staffs.photo_position'))) {
+                $cell_value = $staff->photo_position . ':' . _code('Codes.Staffs.photo_position.' . $staff->photo_position);
             }
             $data_sheet->setCellValue("E{$row_num}", $cell_value);
             // スタッフ説明1
-            $data_sheet->setCellValue("F{$row_num}", $staff['description1']);
+            $data_sheet->setCellValue("F{$row_num}", $staff->description1);
             // 見出し1
-            $data_sheet->setCellValue("G{$row_num}", $staff['midashi1']);
+            $data_sheet->setCellValue("G{$row_num}", $staff->midashi1);
             // スタッフ説明2
-            $data_sheet->setCellValue("H{$row_num}", $staff['description2']);
+            $data_sheet->setCellValue("H{$row_num}", $staff->description2);
             // 作成日時
-            $cell_value = @$staff['created']->i18nFormat('yyyy-MM-dd HH:mm:ss');
+            $cell_value = @$staff->created->i18nFormat('yyyy-MM-dd HH:mm:ss');
             $data_sheet->setCellValue("I{$row_num}", $cell_value);
             // 更新日時
-            $cell_value = @$staff['modified']->i18nFormat('yyyy-MM-dd HH:mm:ss');
+            $cell_value = @$staff->modified->i18nFormat('yyyy-MM-dd HH:mm:ss');
             $data_sheet->setCellValue("J{$row_num}", $cell_value);
             $row_num++;
         }
@@ -322,9 +327,9 @@ class StaffsController extends AppController
 
         // データ入力行に入力規則を設定（1048576はExcelの最大行数）
         // スタッフ役職
-        $data_sheet->setDataValidation("D2:D1048576", ExcelUtils::getDataValidation("=OFFSET('LIST'!\$A\$2,0,0,COUNTA('LIST'!\$A:\$A)-1,1)"));
+        $data_sheet->setDataValidation('D2:D1048576', ExcelUtils::getDataValidation("=OFFSET('LIST'!\$A\$2,0,0,COUNTA('LIST'!\$A:\$A)-1,1)"));
         // 画像表示位置
-        $data_sheet->setDataValidation("E2:E1048576", ExcelUtils::getDataValidation("=OFFSET('LIST'!\$B\$2,0,0,COUNTA('LIST'!\$B:\$B)-1,1)"));
+        $data_sheet->setDataValidation('E2:E1048576', ExcelUtils::getDataValidation("=OFFSET('LIST'!\$B\$2,0,0,COUNTA('LIST'!\$B:\$B)-1,1)"));
 
         // 罫線設定、A2セルを選択、1行目固定、DATAシートをアクティブ化
         $data_sheet->getStyle("A1:J{$staffs_row_num}")->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
@@ -332,15 +337,14 @@ class StaffsController extends AppController
         $data_sheet->freezePane('A2');
         $spreadsheet->setActiveSheetIndexByName('DATA');
 
-        $datetime = new \DateTime();
-        $datetime->setTimezone(new \DateTimeZone('Asia/Tokyo'));
+        $datetime = (new DateTime('now', new DateTimeZone('Asia/Tokyo')))->format('YmdHis');
         $writer = new XlsxWriter($spreadsheet);
         $stream = new CallbackStream(function () use ($writer) {
             $writer->save('php://output');
         });
 
         return $this->response->withHeader('Content-Type', EXCEL_CONTENT_TYPE)
-        ->withHeader('Content-Disposition', "attachment; filename=\"staffs-{$datetime->format('YmdHis')}.xlsx\"")
+        ->withHeader('Content-Disposition', "attachment; filename=\"staffs-{$datetime}.xlsx\"")
         ->withHeader('Cache-Control', 'max-age=0')
         ->withBody($stream);
     }

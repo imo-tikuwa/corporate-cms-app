@@ -6,13 +6,6 @@ $(function(){
             $('#charge_relations-freeword-search-btn').trigger('click');
         }
     });
-    $('#charge_relations-freeword-search-btn').on('click', function(){
-        let freeword_snippet = $('#charge_relations-freeword-search-snippet').val(),
-        freeword_snippet_format = $('.charge_relations-freeword-search-snippet-format:checked').val();
-        $('#charge_relations-freeword-hidden-search-snippet').val(freeword_snippet);
-        $('#charge_relations-freeword-hidden-search-snippet-format').val(freeword_snippet_format);
-        $('#charge_relations-freeword-search-form').submit();
-    });
 
     // 基本料金ID
     $('#charge_id').select2({

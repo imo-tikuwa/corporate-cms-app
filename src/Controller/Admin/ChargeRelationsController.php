@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Controller\Admin\AppController;
+use App\Form\SearchForm;
 use Cake\I18n\FrozenDate;
 use Cake\I18n\FrozenTime;
 use Cake\Utility\Hash;
@@ -48,11 +49,12 @@ class ChargeRelationsController extends AppController
     public function index()
     {
         $request = $this->getRequest()->getQueryParams();
-        $this->set('params', $request);
         $query = $this->_getQuery($request);
         $charge_relations = $this->paginate($query);
+        $search_form = new SearchForm();
+        $search_form->setData($request);
 
-        $this->set(compact('charge_relations'));
+        $this->set(compact('charge_relations', 'search_form'));
     }
 
     /**

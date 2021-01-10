@@ -6,6 +6,7 @@ namespace App\Controller\Admin;
 use App\Controller\Admin\AppController;
 use App\Utils\CsvUtils;
 use App\Form\ExcelImportForm;
+use App\Form\SearchForm;
 use App\Utils\ExcelUtils;
 use Cake\Http\CallbackStream;
 use Cake\I18n\FrozenDate;
@@ -15,6 +16,8 @@ use PhpOffice\PhpSpreadsheet\Reader\Xlsx as XlsxReader;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx as XlsxWriter;
+use DateTime;
+use DateTimeZone;
 
 /**
  * Links Controller
@@ -41,11 +44,12 @@ class LinksController extends AppController
     public function index()
     {
         $request = $this->getRequest()->getQueryParams();
-        $this->set('params', $request);
         $query = $this->_getQuery($request);
         $links = $this->paginate($query);
+        $search_form = new SearchForm();
+        $search_form->setData($request);
 
-        $this->set(compact('links'));
+        $this->set(compact('links', 'search_form'));
     }
 
     /**
@@ -280,7 +284,7 @@ class LinksController extends AppController
                 if (!$conn->commit()) {
                     throw new \Exception('CommitError');
                 }
-                $this->Flash->success("リンク集CSVの登録が完了しました。<br />新規：{$insert_count}件<br />更新：{$update_count}件", ['params' => ['escape' => false]]);
+                $this->Flash->success("リンク集CSVの登録が完了しました。<br />新規：{$insert_count}件<br />更新：{$update_count}件", ['escape' => false]);
             } catch (\Exception $e) {
                 $error_message = 'リンク集CSVの登録でエラーが発生しました。';
                 if (!empty($e->getMessage())) {
@@ -301,6 +305,7 @@ class LinksController extends AppController
     public function excelExport()
     {
         $request = $this->getRequest()->getQueryParams();
+        /** @var \App\Model\Entity\Link[] $links */
         $links = $this->_getQuery($request)->toArray();
 
         $reader = new XlsxReader();
@@ -311,24 +316,24 @@ class LinksController extends AppController
         // 取得したデータをExcelに書き込む
         foreach ($links as $link) {
             // ID
-            $data_sheet->setCellValue("A{$row_num}", $link['id']);
+            $data_sheet->setCellValue("A{$row_num}", $link->id);
             // リンクカテゴリ
-            $cell_value = "";
-            if (isset($link['category']) && array_key_exists($link['category'], _code('Codes.Links.category'))) {
-                $cell_value = $link['category'] . ':' . _code('Codes.Links.category.' . $link['category']);
+            $cell_value = '';
+            if (isset($link->category) && array_key_exists($link->category, _code('Codes.Links.category'))) {
+                $cell_value = $link->category . ':' . _code('Codes.Links.category.' . $link->category);
             }
             $data_sheet->setCellValue("B{$row_num}", $cell_value);
             // リンクタイトル
-            $data_sheet->setCellValue("C{$row_num}", $link['title']);
+            $data_sheet->setCellValue("C{$row_num}", $link->title);
             // リンクURL
-            $data_sheet->setCellValue("D{$row_num}", $link['url']);
+            $data_sheet->setCellValue("D{$row_num}", $link->url);
             // リンク説明
-            $data_sheet->setCellValue("E{$row_num}", $link['description']);
+            $data_sheet->setCellValue("E{$row_num}", $link->description);
             // 作成日時
-            $cell_value = @$link['created']->i18nFormat('yyyy-MM-dd HH:mm:ss');
+            $cell_value = @$link->created->i18nFormat('yyyy-MM-dd HH:mm:ss');
             $data_sheet->setCellValue("F{$row_num}", $cell_value);
             // 更新日時
-            $cell_value = @$link['modified']->i18nFormat('yyyy-MM-dd HH:mm:ss');
+            $cell_value = @$link->modified->i18nFormat('yyyy-MM-dd HH:mm:ss');
             $data_sheet->setCellValue("G{$row_num}", $cell_value);
             $row_num++;
         }
@@ -339,7 +344,7 @@ class LinksController extends AppController
 
         // データ入力行に入力規則を設定（1048576はExcelの最大行数）
         // リンクカテゴリ
-        $data_sheet->setDataValidation("B2:B1048576", ExcelUtils::getDataValidation("=OFFSET('LIST'!\$A\$2,0,0,COUNTA('LIST'!\$A:\$A)-1,1)"));
+        $data_sheet->setDataValidation('B2:B1048576', ExcelUtils::getDataValidation("=OFFSET('LIST'!\$A\$2,0,0,COUNTA('LIST'!\$A:\$A)-1,1)"));
 
         // 罫線設定、A2セルを選択、1行目固定、DATAシートをアクティブ化
         $data_sheet->getStyle("A1:G{$links_row_num}")->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
@@ -347,15 +352,14 @@ class LinksController extends AppController
         $data_sheet->freezePane('A2');
         $spreadsheet->setActiveSheetIndexByName('DATA');
 
-        $datetime = new \DateTime();
-        $datetime->setTimezone(new \DateTimeZone('Asia/Tokyo'));
+        $datetime = (new DateTime('now', new DateTimeZone('Asia/Tokyo')))->format('YmdHis');
         $writer = new XlsxWriter($spreadsheet);
         $stream = new CallbackStream(function () use ($writer) {
             $writer->save('php://output');
         });
 
         return $this->response->withHeader('Content-Type', EXCEL_CONTENT_TYPE)
-        ->withHeader('Content-Disposition', "attachment; filename=\"links-{$datetime->format('YmdHis')}.xlsx\"")
+        ->withHeader('Content-Disposition', "attachment; filename=\"links-{$datetime}.xlsx\"")
         ->withHeader('Cache-Control', 'max-age=0')
         ->withBody($stream);
     }
@@ -395,7 +399,7 @@ class LinksController extends AppController
                 if (!$conn->commit()) {
                     throw new \Exception('CommitError');
                 }
-                $this->Flash->success("リンク集Excelの登録が完了しました。<br />新規：{$insert_count}件<br />更新：{$update_count}件", ['params' => ['escape' => false]]);
+                $this->Flash->success("リンク集Excelの登録が完了しました。<br />新規：{$insert_count}件<br />更新：{$update_count}件", ['escape' => false]);
             } catch (\Exception $e) {
                 $error_message = 'リンク集Excelの登録でエラーが発生しました。';
                 if (!empty($e->getMessage())) {
