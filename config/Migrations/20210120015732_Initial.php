@@ -57,7 +57,7 @@ class Initial extends AbstractMigration
             ])
             ->create();
 
-        $this->table('admins')
+            $this->table('admins')
             ->addColumn('id', 'integer', [
                 'autoIncrement' => true,
                 'comment' => 'ID',
@@ -66,27 +66,50 @@ class Initial extends AbstractMigration
                 'null' => false,
             ])
             ->addPrimaryKey(['id'])
+            ->addColumn('name', 'string', [
+                'comment' => '名前',
+                'default' => null,
+                'limit' => 255,
+                'null' => false,
+            ])
             ->addColumn('mail', 'string', [
+                'comment' => 'メールアドレス',
                 'default' => null,
                 'limit' => 255,
                 'null' => false,
             ])
             ->addColumn('password', 'string', [
+                'comment' => 'パスワード',
                 'default' => null,
                 'limit' => 255,
                 'null' => false,
             ])
+            ->addColumn('use_otp', 'boolean', [
+                'comment' => '二段階認証を使用する？',
+                'default' => false,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addColumn('otp_secret', 'string', [
+                'comment' => '二段階認証用シークレットキー',
+                'default' => null,
+                'limit' => 255,
+                'null' => true,
+            ])
             ->addColumn('privilege', 'json', [
+                'comment' => '権限',
                 'default' => null,
                 'limit' => null,
                 'null' => true,
             ])
             ->addColumn('created', 'datetime', [
+                'comment' => '作成日時',
                 'default' => null,
                 'limit' => null,
                 'null' => true,
             ])
             ->addColumn('modified', 'datetime', [
+                'comment' => '更新日時',
                 'default' => null,
                 'limit' => null,
                 'null' => true,

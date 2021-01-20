@@ -97,8 +97,10 @@ class ChargeMastersControllerTest extends TestCase
 
         $super_admin = $this->Admins->newEntity([
             'id' => SUPER_USER_ID,
+            'name' => '',
             'mail' => 'admin@example.com',
             'password' => 'password',
+            'use_otp' => '0',
         ]);
         $this->Admins->save($super_admin);
         /** @var \App\Model\Entity\Admin $super_admin */
@@ -107,8 +109,10 @@ class ChargeMastersControllerTest extends TestCase
         ]);
 
         $read_admin = $this->Admins->newEntity([
+            'name' => '',
             'mail' => 'read@example.com',
             'password' => 'password',
+            'use_otp' => '0',
             'privilege' => [
                 'ChargeMasters' => [ROLE_READ],
             ]
@@ -120,8 +124,10 @@ class ChargeMastersControllerTest extends TestCase
         ]);
 
         $write_admin = $this->Admins->newEntity([
+            'name' => '',
             'mail' => 'write@example.com',
             'password' => 'password',
+            'use_otp' => '0',
             'privilege' => [
                 'ChargeMasters' => [ROLE_WRITE],
             ]
@@ -133,8 +139,10 @@ class ChargeMastersControllerTest extends TestCase
         ]);
 
         $delete_admin = $this->Admins->newEntity([
+            'name' => '',
             'mail' => 'delete@example.com',
             'password' => 'password',
+            'use_otp' => '0',
             'privilege' => [
                 'ChargeMasters' => [ROLE_DELETE],
             ]
@@ -146,8 +154,10 @@ class ChargeMastersControllerTest extends TestCase
         ]);
 
         $csv_export_admin = $this->Admins->newEntity([
+            'name' => '',
             'mail' => 'csv_export@example.com',
             'password' => 'password',
+            'use_otp' => '0',
             'privilege' => [
                 'ChargeMasters' => [ROLE_CSV_EXPORT],
             ]
@@ -159,8 +169,10 @@ class ChargeMastersControllerTest extends TestCase
         ]);
 
         $no_authority_admin = $this->Admins->newEntity([
+            'name' => '',
             'mail' => 'no_authority@example.com',
             'password' => 'password',
+            'use_otp' => '0',
             'privilege' => [
                 'ChargeMasters' => [],
             ]
@@ -181,7 +193,7 @@ class ChargeMastersControllerTest extends TestCase
     {
         $this->get('/admin/charge-masters');
         $this->assertResponseCode(302);
-        $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
+        $this->assertHeaderContains('location', '/admin/auth/login');
 
         $this->session([
             'Auth.Admin' => $this->super_admin
@@ -237,7 +249,7 @@ class ChargeMastersControllerTest extends TestCase
     {
         $this->get('/admin/charge-masters/view/1');
         $this->assertResponseCode(302);
-        $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
+        $this->assertHeaderContains('location', '/admin/auth/login');
 
         $this->session([
             'Auth.Admin' => $this->super_admin
@@ -293,7 +305,7 @@ class ChargeMastersControllerTest extends TestCase
     {
         $this->get('/admin/charge-masters/add');
         $this->assertResponseCode(302);
-        $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
+        $this->assertHeaderContains('location', '/admin/auth/login');
 
         $this->session([
             'Auth.Admin' => $this->super_admin
@@ -349,7 +361,7 @@ class ChargeMastersControllerTest extends TestCase
     {
         $this->get('/admin/charge-masters/edit/1');
         $this->assertResponseCode(302);
-        $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
+        $this->assertHeaderContains('location', '/admin/auth/login');
 
         $this->session([
             'Auth.Admin' => $this->super_admin
@@ -407,7 +419,7 @@ class ChargeMastersControllerTest extends TestCase
 
         $this->get('/admin/charge-masters/delete/1');
         $this->assertResponseCode(302);
-        $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
+        $this->assertHeaderContains('location', '/admin/auth/login');
 
         $this->session([
             'Auth.Admin' => $this->super_admin
@@ -482,7 +494,7 @@ class ChargeMastersControllerTest extends TestCase
     {
         $this->get('/admin/charge-masters/csv-export');
         $this->assertResponseCode(302);
-        $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
+        $this->assertHeaderContains('location', '/admin/auth/login');
 
         $this->session([
             'Auth.Admin' => $this->super_admin

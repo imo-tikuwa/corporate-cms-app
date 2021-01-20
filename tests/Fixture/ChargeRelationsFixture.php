@@ -126,8 +126,8 @@ class ChargeRelationsFixture extends TestFixture
                 'charge_id' => 1,
                 'charge_master_id' => 1,
                 'search_snippet' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
-                'created' => '2020-12-24 17:23:24',
-                'modified' => '2020-12-24 17:23:24',
+                'created' => '2021-01-20 11:01:19',
+                'modified' => '2021-01-20 11:01:19',
                 'deleted' => null,
             ],
         ];

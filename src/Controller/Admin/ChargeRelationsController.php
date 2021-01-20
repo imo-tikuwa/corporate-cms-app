@@ -8,6 +8,8 @@ use App\Form\SearchForm;
 use Cake\I18n\FrozenDate;
 use Cake\I18n\FrozenTime;
 use Cake\Utility\Hash;
+use DateTime;
+use DateTimeZone;
 
 /**
  * ChargeRelations Controller
@@ -227,10 +229,8 @@ class ChargeRelationsController extends AppController
             },
         ];
 
-        $datetime = new \DateTime();
-        $datetime->setTimezone(new \DateTimeZone('Asia/Tokyo'));
-
-        $this->response = $this->response->withDownload("charge_relations-{$datetime->format('YmdHis')}.csv");
+        $datetime = (new DateTime('now', new DateTimeZone('Asia/Tokyo')))->format('YmdHis');
+        $this->response = $this->response->withDownload("charge_relations-{$datetime}.csv");
         $this->viewBuilder()->setClassName('CsvView.Csv');
         $this->viewBuilder()->setOptions([
             'serialize' => 'charge_relations',
