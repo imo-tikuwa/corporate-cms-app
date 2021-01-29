@@ -16,7 +16,9 @@ class Initial extends AbstractMigration
      */
     public function up()
     {
-        $this->table('access_maps')
+        $this->table('access_maps', [
+                'comment' => 'アクセスマップ',
+            ])
             ->addColumn('id', 'integer', [
                 'autoIncrement' => true,
                 'comment' => 'ID',
@@ -57,7 +59,9 @@ class Initial extends AbstractMigration
             ])
             ->create();
 
-            $this->table('admins')
+        $this->table('admins', [
+                'comment' => '管理者情報',
+            ])
             ->addColumn('id', 'integer', [
                 'autoIncrement' => true,
                 'comment' => 'ID',
@@ -122,7 +126,9 @@ class Initial extends AbstractMigration
             ])
             ->create();
 
-        $this->table('charge_masters')
+        $this->table('charge_masters', [
+                'comment' => '料金マスタ',
+            ])
             ->addColumn('id', 'integer', [
                 'autoIncrement' => true,
                 'comment' => 'ID',
@@ -175,7 +181,9 @@ class Initial extends AbstractMigration
             ])
             ->create();
 
-        $this->table('charge_relations')
+        $this->table('charge_relations', [
+                'comment' => '料金マッピング',
+            ])
             ->addColumn('id', 'integer', [
                 'autoIncrement' => true,
                 'comment' => 'ID',
@@ -232,7 +240,9 @@ class Initial extends AbstractMigration
             )
             ->create();
 
-        $this->table('charges')
+        $this->table('charges', [
+                'comment' => '基本料金',
+            ])
             ->addColumn('id', 'integer', [
                 'autoIncrement' => true,
                 'comment' => 'ID',
@@ -279,7 +289,9 @@ class Initial extends AbstractMigration
             ])
             ->create();
 
-        $this->table('contacts')
+        $this->table('contacts', [
+                'comment' => 'お問い合わせ情報',
+            ])
             ->addColumn('id', 'integer', [
                 'autoIncrement' => true,
                 'comment' => 'ID',
@@ -350,7 +362,9 @@ class Initial extends AbstractMigration
             ])
             ->create();
 
-        $this->table('links')
+        $this->table('links', [
+                'comment' => 'リンク集',
+            ])
             ->addColumn('id', 'integer', [
                 'autoIncrement' => true,
                 'comment' => 'ID',
@@ -409,7 +423,9 @@ class Initial extends AbstractMigration
             ])
             ->create();
 
-        $this->table('operation_logs')
+        $this->table('operation_logs', [
+                'comment' => '操作ログ',
+            ])
             ->addColumn('id', 'integer', [
                 'autoIncrement' => true,
                 'comment' => 'ID',
@@ -454,7 +470,9 @@ class Initial extends AbstractMigration
             ])
             ->create();
 
-        $this->table('operation_logs_daily')
+        $this->table('operation_logs_daily', [
+                'comment' => '操作ログの集計(日毎)',
+            ])
             ->addColumn('id', 'integer', [
                 'autoIncrement' => true,
                 'comment' => 'ID',
@@ -489,7 +507,9 @@ class Initial extends AbstractMigration
             ])
             ->create();
 
-        $this->table('operation_logs_hourly')
+        $this->table('operation_logs_hourly', [
+                'comment' => '操作ログの集計(1時間毎)',
+            ])
             ->addColumn('id', 'integer', [
                 'autoIncrement' => true,
                 'comment' => 'ID',
@@ -524,7 +544,9 @@ class Initial extends AbstractMigration
             ])
             ->create();
 
-        $this->table('operation_logs_monthly')
+        $this->table('operation_logs_monthly', [
+                'comment' => '操作ログの集計(月毎)',
+            ])
             ->addColumn('id', 'integer', [
                 'autoIncrement' => true,
                 'comment' => 'ID',
@@ -559,7 +581,9 @@ class Initial extends AbstractMigration
             ])
             ->create();
 
-        $this->table('staffs')
+        $this->table('staffs', [
+                'comment' => 'スタッフ',
+            ])
             ->addColumn('id', 'integer', [
                 'autoIncrement' => true,
                 'comment' => 'ID',
