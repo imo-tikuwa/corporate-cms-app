@@ -20,7 +20,6 @@ use DateTimeZone;
  */
 class ChargeRelationsController extends AppController
 {
-
     /**
      * Initialize Method.
      * @return void

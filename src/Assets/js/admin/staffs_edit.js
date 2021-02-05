@@ -20,7 +20,7 @@ $(function(){
         language: "ja",
         theme: "explorer-fas",
         maxFileSize: 264000,
-        uploadUrl: "/admin/staffs/fileUpload/photo_file",
+        uploadUrl: "/admin/staffs/file-upload/photo_file",
         uploadAsync: true,
         showUpload: true,
         showCancel: false,

@@ -28,7 +28,6 @@ use DateTimeZone;
  */
 class LinksController extends AppController
 {
-
     /**
      * Paging setting.
      */

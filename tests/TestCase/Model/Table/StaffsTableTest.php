@@ -59,7 +59,7 @@ class StaffsTableTest extends TestCase
                     'size' => 775702,
                     'cur_name' => "9288ac73e78f44b37f81596ed38eb0f27da6f7bd.jpg",
                     'org_name' => "Test.jpg",
-                    'delete_url' => "/admin/staffs/fileDelete/photo_file",
+                    'delete_url' => "/admin/staffs/file-delete/photo_file",
                 ],
             ]),
             // スタッフ説明1

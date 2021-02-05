@@ -26,7 +26,6 @@ use DateTimeZone;
  */
 class ChargesController extends AppController
 {
-
     /**
      * Paging setting.
      */

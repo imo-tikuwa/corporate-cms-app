@@ -664,4 +664,396 @@ class StaffsControllerTest extends TestCase
         $this->assertResponseCode(302);
         $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
     }
+
+    /**
+     * Test fileUpload method
+     *
+     * @return void
+     */
+    public function testFileUpload(): void
+    {
+        $expected_success_json_keys = [
+            'initialPreview',
+            'initialPreviewConfig',
+            'append',
+            'org_name',
+            'cur_name',
+            'size',
+            'delete_url',
+            'key',
+        ];
+        $test_file_rename_after_names = [];
+        foreach (_code('FileUploadOptions.Staffs') as $input_name => $input_config) {
+            \Cake\Core\Configure::write("FileUploadOptions.Staffs.{$input_name}.create_thumbnail", false);
+
+            // create test file.
+            $test_file = $this->_createEmptyTestFile($input_config);
+
+            $this->cleanup();
+            $this->enableCsrfToken();
+            $this->get("/admin/staffs/file-upload/{$input_name}");
+            $this->assertResponseCode(302);
+            $this->assertHeaderContains('location', '/admin/auth/login');
+
+            $this->session([
+                'Auth.Admin' => $this->super_admin
+            ]);
+            $this->get("/admin/staffs/file-upload/{$input_name}");
+            $this->assertResponseCode(400);
+            $this->assertHeaderContains('Content-Type', 'application/json');
+            $json = json_decode((string)$this->_response->getBody(), true);
+            $this->assertStringContainsString('不正なリクエストです', $json['error']);
+
+            $this->session([
+                'Auth.Admin' => $this->super_admin
+            ]);
+            $this->configRequest([
+                'Content-Type' => 'multipart/form-data',
+                'files' => [
+                    $input_name => $test_file
+                ],
+            ]);
+            $this->post("/admin/staffs/file-upload/{$input_name}", [
+                $input_name => $test_file
+            ]);
+            $this->assertResponseCode(200);
+            $this->assertHeaderContains('Content-Type', 'application/json');
+            $acutual_response_json = json_decode((string)$this->_response->getBody(), true);
+            foreach ($expected_success_json_keys as $expected_success_json_key) {
+                $this->assertTrue(array_key_exists($expected_success_json_key, $acutual_response_json));
+            }
+            $test_file_rename_after_names[] = $acutual_response_json['key'];
+
+            // recreate test file.
+            $test_file = $this->_createEmptyTestFile($input_config);
+
+            $this->cleanup();
+            $this->enableCsrfToken();
+            $this->configRequest([
+                'Content-Type' => 'multipart/form-data',
+                'files' => [
+                    $input_name => $test_file
+                ],
+            ]);
+            $this->session([
+                'Auth.Admin' => $this->read_admin
+            ]);
+            $this->post("/admin/staffs/file-upload/{$input_name}", [
+                $input_name => $test_file
+            ]);
+            $this->assertResponseCode(302);
+            $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
+            $this->assertRedirectEquals('http://localhost/admin');
+
+            $this->cleanup();
+            $this->enableCsrfToken();
+            $this->configRequest([
+                'Content-Type' => 'multipart/form-data',
+                'files' => [
+                    $input_name => $test_file
+                ],
+            ]);
+            $this->session([
+                'Auth.Admin' => $this->write_admin
+            ]);
+            $this->post("/admin/staffs/file-upload/{$input_name}", [
+                $input_name => $test_file
+            ]);
+            $this->assertResponseCode(200);
+            $this->assertHeaderContains('Content-Type', 'application/json');
+            $acutual_response_json = json_decode((string)$this->_response->getBody(), true);
+            foreach ($expected_success_json_keys as $expected_success_json_key) {
+                $this->assertTrue(array_key_exists($expected_success_json_key, $acutual_response_json));
+            }
+            $test_file_rename_after_names[] = $acutual_response_json['key'];
+
+            // recreate test file.
+            $test_file = $this->_createEmptyTestFile($input_config);
+
+            $this->cleanup();
+            $this->enableCsrfToken();
+            $this->configRequest([
+                'Content-Type' => 'multipart/form-data',
+                'files' => [
+                    $input_name => $test_file
+                ],
+            ]);
+            $this->session([
+                'Auth.Admin' => $this->delete_admin
+            ]);
+            $this->post("/admin/staffs/file-upload/{$input_name}", [
+                $input_name => $test_file
+            ]);
+            $this->assertResponseCode(302);
+            $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
+            $this->assertRedirectEquals('http://localhost/admin');
+
+            $this->cleanup();
+            $this->enableCsrfToken();
+            $this->configRequest([
+                'Content-Type' => 'multipart/form-data',
+                'files' => [
+                    $input_name => $test_file
+                ],
+            ]);
+            $this->session([
+                'Auth.Admin' => $this->csv_export_admin
+            ]);
+            $this->post("/admin/staffs/file-upload/{$input_name}", [
+                $input_name => $test_file
+            ]);
+            $this->assertResponseCode(302);
+            $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
+            $this->assertRedirectEquals('http://localhost/admin');
+
+            $this->cleanup();
+            $this->enableCsrfToken();
+            $this->configRequest([
+                'Content-Type' => 'multipart/form-data',
+                'files' => [
+                    $input_name => $test_file
+                ],
+            ]);
+            $this->session([
+                'Auth.Admin' => $this->excel_export_admin
+            ]);
+            $this->post("/admin/staffs/file-upload/{$input_name}", [
+                $input_name => $test_file
+            ]);
+            $this->assertResponseCode(302);
+            $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
+            $this->assertRedirectEquals('http://localhost/admin');
+
+            $this->cleanup();
+            $this->enableCsrfToken();
+            $this->configRequest([
+                'Content-Type' => 'multipart/form-data',
+                'files' => [
+                    $input_name => $test_file
+                ],
+            ]);
+            $this->session([
+                'Auth.Admin' => $this->no_authority_admin
+            ]);
+            $this->post("/admin/staffs/file-upload/{$input_name}", [
+                $input_name => $test_file
+            ]);
+            $this->assertResponseCode(302);
+            $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
+            $this->assertRedirectEquals('http://localhost/admin');
+        }
+
+        // remove test file.
+        foreach (glob(TMP . 'phpunit_test_') as $test_file) {
+            unlink($test_file);
+        }
+        foreach ($test_file_rename_after_names as $test_file_rename_after_name) {
+            unlink(UPLOAD_FILE_BASE_DIR . DS . 'staffs' . DS . $test_file_rename_after_name);
+        }
+    }
+
+    /**
+     * Create an empty file for testing file uploads.
+     * @param array $input_config
+     * @return array Returns a mock array of $_FILES
+     */
+    private function _createEmptyTestFile(array $input_config)
+    {
+        $tmp_test_extension = !empty($input_config['allow_file_extensions']) ? $input_config['allow_file_extensions'][0] : 'jpg';
+        $tmp_test_file_name = uniqid('phpunit_test_') . '.' . $tmp_test_extension;
+        $tmp_test_file_path = TMP . $tmp_test_file_name;
+        touch($tmp_test_file_path);
+        $file = [
+            'name' => $tmp_test_file_name,
+            'type' => mime_content_type($tmp_test_file_path),
+            'tmp_name' => $tmp_test_file_path,
+            'error' => UPLOAD_ERR_OK,
+            'size' => filesize($tmp_test_file_path),
+        ];
+
+        return $file;
+    }
+
+    /**
+     * Test fileDelete method
+     *
+     * @return void
+     */
+    public function testFileDelete(): void
+    {
+        $test_file_rename_after_names = [];
+        foreach (_code('FileUploadOptions.Staffs') as $input_name => $input_config) {
+            \Cake\Core\Configure::write("FileUploadOptions.Staffs.{$input_name}.create_thumbnail", false);
+
+            // create test file.
+            $test_file = $this->_createEmptyTestFile($input_config);
+
+            $this->cleanup();
+            $this->enableCsrfToken();
+            $this->get("/admin/staffs/file-delete/{$input_name}");
+            $this->assertResponseCode(302);
+            $this->assertHeaderContains('location', '/admin/auth/login');
+
+            $this->session([
+                'Auth.Admin' => $this->super_admin
+            ]);
+            $this->get("/admin/staffs/file-delete/{$input_name}");
+            $this->assertResponseCode(400);
+            $this->assertHeaderContains('Content-Type', 'application/json');
+            $json = json_decode((string)$this->_response->getBody(), true);
+            $this->assertStringContainsString('不正なリクエストです', $json['error']);
+
+            $this->session([
+                'Auth.Admin' => $this->super_admin
+            ]);
+            $this->configRequest([
+                'Content-Type' => 'multipart/form-data',
+                'files' => [
+                    $input_name => $test_file
+                ],
+            ]);
+            $this->post("/admin/staffs/file-upload/{$input_name}", [
+                $input_name => $test_file
+            ]);
+            $this->assertResponseCode(200);
+            $this->assertHeaderContains('Content-Type', 'application/json');
+            $json = json_decode((string)$this->_response->getBody(), true);
+            $test_file_rename_after_names[] = $json['key'];
+
+            $this->post("/admin/staffs/file-delete/{$input_name}", [
+                'key' => $json['key'],
+            ]);
+            $acutual_response_json = json_decode((string)$this->_response->getBody(), true);
+            $this->assertTrue($acutual_response_json['status']);
+
+            // recreate test file.
+            $test_file = $this->_createEmptyTestFile($input_config);
+
+            $this->cleanup();
+            $this->enableCsrfToken();
+            $this->configRequest([
+                'Content-Type' => 'multipart/form-data',
+                'files' => [
+                    $input_name => $test_file
+                ],
+            ]);
+            $this->session([
+                'Auth.Admin' => $this->read_admin
+            ]);
+            $this->post("/admin/staffs/file-upload/{$input_name}", [
+                $input_name => $test_file
+            ]);
+            $this->assertResponseCode(302);
+            $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
+            $this->assertRedirectEquals('http://localhost/admin');
+
+            $this->cleanup();
+            $this->enableCsrfToken();
+            $this->configRequest([
+                'Content-Type' => 'multipart/form-data',
+                'files' => [
+                    $input_name => $test_file
+                ],
+            ]);
+            $this->session([
+                'Auth.Admin' => $this->write_admin
+            ]);
+            $this->post("/admin/staffs/file-upload/{$input_name}", [
+                $input_name => $test_file
+            ]);
+            $this->assertResponseCode(200);
+            $this->assertHeaderContains('Content-Type', 'application/json');
+            $json = json_decode((string)$this->_response->getBody(), true);
+            $test_file_rename_after_names[] = $json['key'];
+
+            $this->post("/admin/staffs/file-delete/{$input_name}", [
+                'key' => $json['key'],
+            ]);
+            $acutual_response_json = json_decode((string)$this->_response->getBody(), true);
+            $this->assertTrue($acutual_response_json['status']);
+
+            // recreate test file.
+            $test_file = $this->_createEmptyTestFile($input_config);
+
+            $this->cleanup();
+            $this->enableCsrfToken();
+            $this->configRequest([
+                'Content-Type' => 'multipart/form-data',
+                'files' => [
+                    $input_name => $test_file
+                ],
+            ]);
+            $this->session([
+                'Auth.Admin' => $this->delete_admin
+            ]);
+            $this->post("/admin/staffs/file-upload/{$input_name}", [
+                $input_name => $test_file
+            ]);
+            $this->assertResponseCode(302);
+            $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
+            $this->assertRedirectEquals('http://localhost/admin');
+
+            $this->cleanup();
+            $this->enableCsrfToken();
+            $this->configRequest([
+                'Content-Type' => 'multipart/form-data',
+                'files' => [
+                    $input_name => $test_file
+                ],
+            ]);
+            $this->session([
+                'Auth.Admin' => $this->csv_export_admin
+            ]);
+            $this->post("/admin/staffs/file-upload/{$input_name}", [
+                $input_name => $test_file
+            ]);
+            $this->assertResponseCode(302);
+            $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
+            $this->assertRedirectEquals('http://localhost/admin');
+
+            $this->cleanup();
+            $this->enableCsrfToken();
+            $this->configRequest([
+                'Content-Type' => 'multipart/form-data',
+                'files' => [
+                    $input_name => $test_file
+                ],
+            ]);
+            $this->session([
+                'Auth.Admin' => $this->excel_export_admin
+            ]);
+            $this->post("/admin/staffs/file-upload/{$input_name}", [
+                $input_name => $test_file
+            ]);
+            $this->assertResponseCode(302);
+            $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
+            $this->assertRedirectEquals('http://localhost/admin');
+
+            $this->cleanup();
+            $this->enableCsrfToken();
+            $this->configRequest([
+                'Content-Type' => 'multipart/form-data',
+                'files' => [
+                    $input_name => $test_file
+                ],
+            ]);
+            $this->session([
+                'Auth.Admin' => $this->no_authority_admin
+            ]);
+            $this->post("/admin/staffs/file-upload/{$input_name}", [
+                $input_name => $test_file
+            ]);
+            $this->assertResponseCode(302);
+            $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
+            $this->assertRedirectEquals('http://localhost/admin');
+        }
+
+        // remove test file.
+        foreach (glob(TMP . 'phpunit_test_') as $test_file) {
+            unlink($test_file);
+        }
+        foreach ($test_file_rename_after_names as $test_file_rename_after_name) {
+            unlink(UPLOAD_FILE_BASE_DIR . DS . 'staffs' . DS . $test_file_rename_after_name);
+        }
+    }
 }

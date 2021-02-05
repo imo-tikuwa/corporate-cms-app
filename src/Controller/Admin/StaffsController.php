@@ -16,6 +16,7 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx as XlsxWriter;
 use DateTime;
 use DateTimeZone;
+use App\Controller\FormFileTrait;
 
 /**
  * Staffs Controller
@@ -26,6 +27,8 @@ use DateTimeZone;
  */
 class StaffsController extends AppController
 {
+    /** ファイルアップロード/ファイル削除のためのTrait */
+    use FormFileTrait;
 
     /**
      * Paging setting.

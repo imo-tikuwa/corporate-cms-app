@@ -87,48 +87,49 @@ return [
             'controller' => 'Links',
             'label' => 'リンク集',
             'icon_class' => 'fas fa-external-link-alt',
-            'one_record_limited' => false,
         ],
         'Staffs' => [
             'controller' => 'Staffs',
             'label' => 'スタッフ',
             'icon_class' => 'fas fa-users',
-            'one_record_limited' => false,
         ],
         'ChargeMasters' => [
             'controller' => 'ChargeMasters',
             'label' => '料金マスタ',
             'icon_class' => 'fas fa-yen-sign',
-            'one_record_limited' => false,
         ],
         'Charges' => [
             'controller' => 'Charges',
             'label' => '基本料金',
             'icon_class' => 'fas fa-yen-sign',
-            'one_record_limited' => false,
         ],
         'ChargeRelations' => [
             'controller' => 'ChargeRelations',
             'label' => '料金マッピング',
             'icon_class' => 'fas fa-arrows-alt-h',
-            'one_record_limited' => false,
         ],
         'AccessMaps' => [
             'controller' => 'AccessMaps',
             'label' => 'アクセスマップ',
             'icon_class' => 'fas fa-map-marked-alt',
-            'one_record_limited' => true,
         ],
         'Contacts' => [
             'controller' => 'Contacts',
             'label' => 'お問い合わせ情報',
             'icon_class' => 'fas fa-question',
-            'one_record_limited' => false,
         ],
     ],
-    'ThumbnailOptions' => [
+    'FileUploadOptions' => [
         'Staffs' => [
             'photo_file' => [
+                'max_file_num' => 1,
+                'allow_file_extensions' => [
+                    0 => 'jpg',
+                    1 => 'jpeg',
+                    2 => 'gif',
+                    3 => 'png',
+                ],
+                'create_thumbnail' => true,
                 'thumbnail_width' => 180,
                 'thumbnail_height' => 120,
                 'thumbnail_aspect_ratio_keep' => true,

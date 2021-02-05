@@ -26,7 +26,6 @@ use DateTimeZone;
  */
 class ContactsController extends AppController
 {
-
     /**
      * Paging setting.
      */

@@ -12,13 +12,15 @@ $this->assign('title', "料金マッピング");
   <div class="card rounded-0">
     <div class="card-header">
       <div class="form-inline">
-        <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_ADD])) { ?>
-          <button type="button" class="btn btn-flat btn-outline-secondary mr-2" onclick="location.href='<?= $this->Url->build(['action' => ACTION_ADD]) ?>'">新規登録</button>
-        <?php } ?>
-        <button type="button" class="btn btn-flat btn-outline-secondary mr-2" data-toggle="modal" data-target="#charge_relations-search-form-modal">検索</button>
-        <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_CSV_EXPORT])) { ?>
-          <button type="button" class="btn btn-flat btn-outline-secondary mr-2" onclick="location.href='<?= $this->Url->build(['action' => ACTION_CSV_EXPORT, '?' => $this->getRequest()->getQueryParams()]) ?>'">CSVエクスポート</button>
-        <?php } ?>
+        <div class="btn-group mr-2" role="group">
+          <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_ADD])) { ?>
+            <button type="button" class="btn btn-flat btn-outline-secondary" onclick="location.href='<?= $this->Url->build(['action' => ACTION_ADD]) ?>'">新規登録</button>
+          <?php } ?>
+          <button type="button" class="btn btn-flat btn-outline-secondary" data-toggle="modal" data-target="#charge_relations-search-form-modal">検索</button>
+          <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_CSV_EXPORT])) { ?>
+            <button type="button" class="btn btn-flat btn-outline-secondary" onclick="location.href='<?= $this->Url->build(['action' => ACTION_CSV_EXPORT, '?' => $this->getRequest()->getQueryParams()]) ?>'">CSVエクスポート</button>
+          <?php } ?>
+        </div>
         <?= $this->Form->create($search_form, ['type' => 'get', 'id' => 'charge_relations-freeword-search-form']) ?>
           <div class="freeword-search input-group">
             <div class="input-group-prepend">

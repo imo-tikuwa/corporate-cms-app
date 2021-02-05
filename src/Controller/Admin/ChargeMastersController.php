@@ -20,7 +20,6 @@ use DateTimeZone;
  */
 class ChargeMastersController extends AppController
 {
-
     /**
      * Paging setting.
      */
