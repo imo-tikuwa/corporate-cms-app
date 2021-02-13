@@ -182,6 +182,52 @@ class LinksTable extends AppTable
     }
 
     /**
+     * ページネートに渡すクエリオブジェクトを生成する
+     * @param array $request リクエスト情報
+     * @return \Cake\ORM\Query $query
+     */
+    public function getSearchQuery($request)
+    {
+        $query = $this->find();
+        // ID
+        if (isset($request['id']) && !is_null($request['id']) && $request['id'] !== '') {
+            $query->where([$this->aliasField('id') => $request['id']]);
+        }
+        // リンクカテゴリ
+        if (isset($request['category']) && !is_null($request['category']) && $request['category'] !== '') {
+            $query->where([$this->aliasField('category') => $request['category']]);
+        }
+        // リンクタイトル
+        if (isset($request['title']) && !is_null($request['title']) && $request['title'] !== '') {
+            $query->where([$this->aliasField('title LIKE') => "%{$request['title']}%"]);
+        }
+        // リンクURL
+        if (isset($request['url']) && !is_null($request['url']) && $request['url'] !== '') {
+            $query->where([$this->aliasField('url LIKE') => "%{$request['url']}%"]);
+        }
+        // リンク説明
+        if (isset($request['description']) && !is_null($request['description']) && $request['description'] !== '') {
+            $query->where([$this->aliasField('description LIKE') => "%{$request['description']}%"]);
+        }
+        // フリーワード
+        if (isset($request['search_snippet']) && !is_null($request['search_snippet']) && $request['search_snippet'] !== '') {
+            $search_snippet_conditions = [];
+            foreach (explode(' ', str_replace('　', ' ', $request['search_snippet'])) as $search_snippet) {
+                $search_snippet_conditions[] = [$this->aliasField('search_snippet LIKE') => "%{$search_snippet}%"];
+            }
+            if (isset($request['search_snippet_format']) && $request['search_snippet_format'] == 'AND') {
+                $query->where($search_snippet_conditions);
+            } else {
+                $query->where(function ($exp) use ($search_snippet_conditions) {
+                    return $exp->or($search_snippet_conditions);
+                });
+            }
+        }
+
+        return $query;
+    }
+
+    /**
      * CSVヘッダー情報を取得する
      * @return array
      */

@@ -4,9 +4,6 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Controller\Admin\AppController;
-use Cake\I18n\FrozenDate;
-use Cake\I18n\FrozenTime;
-use Cake\Utility\Hash;
 
 /**
  * AccessMaps Controller

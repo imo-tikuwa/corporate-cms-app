@@ -101,8 +101,8 @@ class AccessMapsFixture extends TestFixture
                     'longitude' => 139.745443,
                 ],
                 'map_link' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
-                'created' => '2021-02-04 22:07:57',
-                'modified' => '2021-02-04 22:07:57',
+                'created' => '2021-02-12 20:44:40',
+                'modified' => '2021-02-12 20:44:40',
             ],
         ];
         parent::init();

@@ -112,6 +112,27 @@ class StaffsTableTest extends TestCase
     }
 
     /**
+     * Test getSearchQuery method
+     *
+     * @return void
+     */
+    public function testGetSearchQuery(): void
+    {
+        $query = $this->Staffs->getSearchQuery([]);
+        $staff = $query->select(['id'])->enableHydration(false)->first();
+
+        $this->assertInstanceOf('\Cake\ORM\Query', $query);
+        $this->assertTrue(array_key_exists('id', $staff));
+        $this->assertEquals(1, $staff['id']);
+
+        $query = $this->Staffs->getSearchQuery(['id' => 99999]);
+        $staff = $query->enableHydration(false)->first();
+
+        $this->assertInstanceOf('\Cake\ORM\Query', $query);
+        $this->assertNull($staff);
+    }
+
+    /**
      * Test getCsvHeaders method
      *
      * @return void

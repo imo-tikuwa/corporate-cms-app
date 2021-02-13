@@ -189,6 +189,60 @@ class ContactsTable extends AppTable
     }
 
     /**
+     * ページネートに渡すクエリオブジェクトを生成する
+     * @param array $request リクエスト情報
+     * @return \Cake\ORM\Query $query
+     */
+    public function getSearchQuery($request)
+    {
+        $query = $this->find();
+        // ID
+        if (isset($request['id']) && !is_null($request['id']) && $request['id'] !== '') {
+            $query->where([$this->aliasField('id') => $request['id']]);
+        }
+        // お名前
+        if (isset($request['name']) && !is_null($request['name']) && $request['name'] !== '') {
+            $query->where([$this->aliasField('name LIKE') => "%{$request['name']}%"]);
+        }
+        // メールアドレス
+        if (isset($request['email']) && !is_null($request['email']) && $request['email'] !== '') {
+            $query->where([$this->aliasField('email LIKE') => "%{$request['email']}%"]);
+        }
+        // お問い合わせ内容
+        if (isset($request['type']) && !is_null($request['type']) && $request['type'] !== '') {
+            $query->where([$this->aliasField('type') => $request['type']]);
+        }
+        // お電話番号
+        if (isset($request['tel']) && !is_null($request['tel']) && $request['tel'] !== '') {
+            $query->where([$this->aliasField('tel LIKE') => "%{$request['tel']}%"]);
+        }
+        // ご希望日時／その他ご要望等
+        if (isset($request['content']) && !is_null($request['content']) && $request['content'] !== '') {
+            $query->where([$this->aliasField('content LIKE') => "%{$request['content']}%"]);
+        }
+        // ホームページURL
+        if (isset($request['hp_url']) && !is_null($request['hp_url']) && $request['hp_url'] !== '') {
+            $query->where([$this->aliasField('hp_url LIKE') => "%{$request['hp_url']}%"]);
+        }
+        // フリーワード
+        if (isset($request['search_snippet']) && !is_null($request['search_snippet']) && $request['search_snippet'] !== '') {
+            $search_snippet_conditions = [];
+            foreach (explode(' ', str_replace('　', ' ', $request['search_snippet'])) as $search_snippet) {
+                $search_snippet_conditions[] = [$this->aliasField('search_snippet LIKE') => "%{$search_snippet}%"];
+            }
+            if (isset($request['search_snippet_format']) && $request['search_snippet_format'] == 'AND') {
+                $query->where($search_snippet_conditions);
+            } else {
+                $query->where(function ($exp) use ($search_snippet_conditions) {
+                    return $exp->or($search_snippet_conditions);
+                });
+            }
+        }
+
+        return $query;
+    }
+
+    /**
      * CSVヘッダー情報を取得する
      * @return array
      */

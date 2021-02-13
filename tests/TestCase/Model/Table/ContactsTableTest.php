@@ -99,6 +99,27 @@ class ContactsTableTest extends TestCase
     }
 
     /**
+     * Test getSearchQuery method
+     *
+     * @return void
+     */
+    public function testGetSearchQuery(): void
+    {
+        $query = $this->Contacts->getSearchQuery([]);
+        $contact = $query->select(['id'])->enableHydration(false)->first();
+
+        $this->assertInstanceOf('\Cake\ORM\Query', $query);
+        $this->assertTrue(array_key_exists('id', $contact));
+        $this->assertEquals(1, $contact['id']);
+
+        $query = $this->Contacts->getSearchQuery(['id' => 99999]);
+        $contact = $query->enableHydration(false)->first();
+
+        $this->assertInstanceOf('\Cake\ORM\Query', $query);
+        $this->assertNull($contact);
+    }
+
+    /**
      * Test getCsvHeaders method
      *
      * @return void

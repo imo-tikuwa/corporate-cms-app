@@ -45,70 +45,12 @@ class StaffsController extends AppController
     public function index()
     {
         $request = $this->getRequest()->getQueryParams();
-        $query = $this->_getQuery($request);
+        $query = $this->Staffs->getSearchQuery($request);
         $staffs = $this->paginate($query);
         $search_form = new SearchForm();
         $search_form->setData($request);
 
         $this->set(compact('staffs', 'search_form'));
-    }
-
-    /**
-     * ページネートに渡すクエリオブジェクトを生成する
-     * @param array $request リクエスト情報
-     * @return \Cake\ORM\Query $query
-     */
-    private function _getQuery($request)
-    {
-        $query = $this->Staffs->find();
-        // ID
-        if (isset($request['id']) && !is_null($request['id']) && $request['id'] !== '') {
-            $query->where([$this->Staffs->aliasField('id') => $request['id']]);
-        }
-        // スタッフ名
-        if (isset($request['name']) && !is_null($request['name']) && $request['name'] !== '') {
-            $query->where([$this->Staffs->aliasField('name LIKE') => "%{$request['name']}%"]);
-        }
-        // スタッフ名(英)
-        if (isset($request['name_en']) && !is_null($request['name_en']) && $request['name_en'] !== '') {
-            $query->where([$this->Staffs->aliasField('name_en LIKE') => "%{$request['name_en']}%"]);
-        }
-        // スタッフ役職
-        if (isset($request['staff_position']) && !is_null($request['staff_position']) && $request['staff_position'] !== '') {
-            $query->where([$this->Staffs->aliasField('staff_position') => $request['staff_position']]);
-        }
-        // 画像表示位置
-        if (isset($request['photo_position']) && !is_null($request['photo_position']) && $request['photo_position'] !== '') {
-            $query->where([$this->Staffs->aliasField('photo_position') => $request['photo_position']]);
-        }
-        // スタッフ説明1
-        if (isset($request['description1']) && !is_null($request['description1']) && $request['description1'] !== '') {
-            $query->where([$this->Staffs->aliasField('description1') => $request['description1']]);
-        }
-        // 見出し1
-        if (isset($request['midashi1']) && !is_null($request['midashi1']) && $request['midashi1'] !== '') {
-            $query->where([$this->Staffs->aliasField('midashi1 LIKE') => "%{$request['midashi1']}%"]);
-        }
-        // スタッフ説明2
-        if (isset($request['description2']) && !is_null($request['description2']) && $request['description2'] !== '') {
-            $query->where([$this->Staffs->aliasField('description2') => $request['description2']]);
-        }
-        // フリーワード
-        if (isset($request['search_snippet']) && !is_null($request['search_snippet']) && $request['search_snippet'] !== '') {
-            $search_snippet_conditions = [];
-            foreach (explode(' ', str_replace('　', ' ', $request['search_snippet'])) as $search_snippet) {
-                $search_snippet_conditions[] = [$this->Staffs->aliasField('search_snippet LIKE') => "%{$search_snippet}%"];
-            }
-            if (isset($request['search_snippet_format']) && $request['search_snippet_format'] == 'AND') {
-                $query->where($search_snippet_conditions);
-            } else {
-                $query->where(function ($exp) use ($search_snippet_conditions) {
-                    return $exp->or($search_snippet_conditions);
-                });
-            }
-        }
-
-        return $query;
     }
 
     /**
@@ -212,7 +154,7 @@ class StaffsController extends AppController
     public function csvExport()
     {
         $request = $this->getRequest()->getQueryParams();
-        $staffs = $this->_getQuery($request)->toArray();
+        $staffs = $this->Staffs->getSearchQuery($request)->toArray();
         $_extract = [
             // ID
             'id',
@@ -280,7 +222,7 @@ class StaffsController extends AppController
     {
         $request = $this->getRequest()->getQueryParams();
         /** @var \App\Model\Entity\Staff[] $staffs */
-        $staffs = $this->_getQuery($request)->toArray();
+        $staffs = $this->Staffs->getSearchQuery($request)->toArray();
 
         $reader = new XlsxReader();
         $spreadsheet = $reader->load(EXCEL_TEMPLATE_DIR . 'staffs_template.xlsx');

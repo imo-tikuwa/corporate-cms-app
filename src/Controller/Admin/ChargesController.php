@@ -41,50 +41,12 @@ class ChargesController extends AppController
     public function index()
     {
         $request = $this->getRequest()->getQueryParams();
-        $query = $this->_getQuery($request);
+        $query = $this->Charges->getSearchQuery($request);
         $charges = $this->paginate($query);
         $search_form = new SearchForm();
         $search_form->setData($request);
 
         $this->set(compact('charges', 'search_form'));
-    }
-
-    /**
-     * ページネートに渡すクエリオブジェクトを生成する
-     * @param array $request リクエスト情報
-     * @return \Cake\ORM\Query $query
-     */
-    private function _getQuery($request)
-    {
-        $query = $this->Charges->find();
-        // ID
-        if (isset($request['id']) && !is_null($request['id']) && $request['id'] !== '') {
-            $query->where([$this->Charges->aliasField('id') => $request['id']]);
-        }
-        // プラン名
-        if (isset($request['name']) && !is_null($request['name']) && $request['name'] !== '') {
-            $query->where([$this->Charges->aliasField('name LIKE') => "%{$request['name']}%"]);
-        }
-        // プラン名下注釈
-        if (isset($request['annotation']) && !is_null($request['annotation']) && $request['annotation'] !== '') {
-            $query->where([$this->Charges->aliasField('annotation LIKE') => "%{$request['annotation']}%"]);
-        }
-        // フリーワード
-        if (isset($request['search_snippet']) && !is_null($request['search_snippet']) && $request['search_snippet'] !== '') {
-            $search_snippet_conditions = [];
-            foreach (explode(' ', str_replace('　', ' ', $request['search_snippet'])) as $search_snippet) {
-                $search_snippet_conditions[] = [$this->Charges->aliasField('search_snippet LIKE') => "%{$search_snippet}%"];
-            }
-            if (isset($request['search_snippet_format']) && $request['search_snippet_format'] == 'AND') {
-                $query->where($search_snippet_conditions);
-            } else {
-                $query->where(function ($exp) use ($search_snippet_conditions) {
-                    return $exp->or($search_snippet_conditions);
-                });
-            }
-        }
-
-        return $query;
     }
 
     /**
@@ -188,7 +150,7 @@ class ChargesController extends AppController
     public function csvExport()
     {
         $request = $this->getRequest()->getQueryParams();
-        $charges = $this->_getQuery($request)->toArray();
+        $charges = $this->Charges->getSearchQuery($request)->toArray();
         $_extract = [
             // ID
             'id',
@@ -234,7 +196,7 @@ class ChargesController extends AppController
     {
         $request = $this->getRequest()->getQueryParams();
         /** @var \App\Model\Entity\Charge[] $charges */
-        $charges = $this->_getQuery($request)->toArray();
+        $charges = $this->Charges->getSearchQuery($request)->toArray();
 
         $reader = new XlsxReader();
         $spreadsheet = $reader->load(EXCEL_TEMPLATE_DIR . 'charges_template.xlsx');

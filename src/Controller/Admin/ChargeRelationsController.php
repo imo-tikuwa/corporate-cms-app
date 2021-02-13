@@ -50,51 +50,12 @@ class ChargeRelationsController extends AppController
     public function index()
     {
         $request = $this->getRequest()->getQueryParams();
-        $query = $this->_getQuery($request);
+        $query = $this->ChargeRelations->getSearchQuery($request);
         $charge_relations = $this->paginate($query);
         $search_form = new SearchForm();
         $search_form->setData($request);
 
         $this->set(compact('charge_relations', 'search_form'));
-    }
-
-    /**
-     * ページネートに渡すクエリオブジェクトを生成する
-     * @param array $request リクエスト情報
-     * @return \Cake\ORM\Query $query
-     */
-    private function _getQuery($request)
-    {
-        $query = $this->ChargeRelations->find();
-        // ID
-        if (isset($request['id']) && !is_null($request['id']) && $request['id'] !== '') {
-            $query->where([$this->ChargeRelations->aliasField('id') => $request['id']]);
-        }
-        // 基本料金ID
-        if (isset($request['charge_id']) && !is_null($request['charge_id']) && $request['charge_id'] !== '') {
-            $query->where(['Charges.id' => $request['charge_id']]);
-        }
-        // 料金マスタID
-        if (isset($request['charge_master_id']) && !is_null($request['charge_master_id']) && $request['charge_master_id'] !== '') {
-            $query->where(['ChargeMasters.id' => $request['charge_master_id']]);
-        }
-        // フリーワード
-        if (isset($request['search_snippet']) && !is_null($request['search_snippet']) && $request['search_snippet'] !== '') {
-            $search_snippet_conditions = [];
-            foreach (explode(' ', str_replace('　', ' ', $request['search_snippet'])) as $search_snippet) {
-                $search_snippet_conditions[] = [$this->ChargeRelations->aliasField('search_snippet LIKE') => "%{$search_snippet}%"];
-            }
-            if (isset($request['search_snippet_format']) && $request['search_snippet_format'] == 'AND') {
-                $query->where($search_snippet_conditions);
-            } else {
-                $query->where(function ($exp) use ($search_snippet_conditions) {
-                    return $exp->or($search_snippet_conditions);
-                });
-            }
-        }
-        $query->group('ChargeRelations.id');
-
-        return $query->contain(['Charges', 'ChargeMasters']);
     }
 
     /**
@@ -198,7 +159,7 @@ class ChargeRelationsController extends AppController
     public function csvExport()
     {
         $request = $this->getRequest()->getQueryParams();
-        $charge_relations = $this->_getQuery($request)->toArray();
+        $charge_relations = $this->ChargeRelations->getSearchQuery($request)->toArray();
         $_extract = [
             // ID
             'id',

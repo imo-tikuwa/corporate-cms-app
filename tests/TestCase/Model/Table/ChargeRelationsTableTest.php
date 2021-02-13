@@ -130,6 +130,27 @@ class ChargeRelationsTableTest extends TestCase
     }
 
     /**
+     * Test getSearchQuery method
+     *
+     * @return void
+     */
+    public function testGetSearchQuery(): void
+    {
+        $query = $this->ChargeRelations->getSearchQuery([]);
+        $charge_relation = $query->select(['id'])->enableHydration(false)->first();
+
+        $this->assertInstanceOf('\Cake\ORM\Query', $query);
+        $this->assertTrue(array_key_exists('id', $charge_relation));
+        $this->assertEquals(1, $charge_relation['id']);
+
+        $query = $this->ChargeRelations->getSearchQuery(['id' => 99999]);
+        $charge_relation = $query->enableHydration(false)->first();
+
+        $this->assertInstanceOf('\Cake\ORM\Query', $query);
+        $this->assertNull($charge_relation);
+    }
+
+    /**
      * Test getCsvHeaders method
      *
      * @return void

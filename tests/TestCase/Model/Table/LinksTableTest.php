@@ -165,6 +165,27 @@ class LinksTableTest extends TestCase
     }
 
     /**
+     * Test getSearchQuery method
+     *
+     * @return void
+     */
+    public function testGetSearchQuery(): void
+    {
+        $query = $this->Links->getSearchQuery([]);
+        $link = $query->select(['id'])->enableHydration(false)->first();
+
+        $this->assertInstanceOf('\Cake\ORM\Query', $query);
+        $this->assertTrue(array_key_exists('id', $link));
+        $this->assertEquals(1, $link['id']);
+
+        $query = $this->Links->getSearchQuery(['id' => 99999]);
+        $link = $query->enableHydration(false)->first();
+
+        $this->assertInstanceOf('\Cake\ORM\Query', $query);
+        $this->assertNull($link);
+    }
+
+    /**
      * Test getCsvHeaders method
      *
      * @return void

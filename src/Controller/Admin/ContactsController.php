@@ -41,66 +41,12 @@ class ContactsController extends AppController
     public function index()
     {
         $request = $this->getRequest()->getQueryParams();
-        $query = $this->_getQuery($request);
+        $query = $this->Contacts->getSearchQuery($request);
         $contacts = $this->paginate($query);
         $search_form = new SearchForm();
         $search_form->setData($request);
 
         $this->set(compact('contacts', 'search_form'));
-    }
-
-    /**
-     * ページネートに渡すクエリオブジェクトを生成する
-     * @param array $request リクエスト情報
-     * @return \Cake\ORM\Query $query
-     */
-    private function _getQuery($request)
-    {
-        $query = $this->Contacts->find();
-        // ID
-        if (isset($request['id']) && !is_null($request['id']) && $request['id'] !== '') {
-            $query->where([$this->Contacts->aliasField('id') => $request['id']]);
-        }
-        // お名前
-        if (isset($request['name']) && !is_null($request['name']) && $request['name'] !== '') {
-            $query->where([$this->Contacts->aliasField('name LIKE') => "%{$request['name']}%"]);
-        }
-        // メールアドレス
-        if (isset($request['email']) && !is_null($request['email']) && $request['email'] !== '') {
-            $query->where([$this->Contacts->aliasField('email LIKE') => "%{$request['email']}%"]);
-        }
-        // お問い合わせ内容
-        if (isset($request['type']) && !is_null($request['type']) && $request['type'] !== '') {
-            $query->where([$this->Contacts->aliasField('type') => $request['type']]);
-        }
-        // お電話番号
-        if (isset($request['tel']) && !is_null($request['tel']) && $request['tel'] !== '') {
-            $query->where([$this->Contacts->aliasField('tel LIKE') => "%{$request['tel']}%"]);
-        }
-        // ご希望日時／その他ご要望等
-        if (isset($request['content']) && !is_null($request['content']) && $request['content'] !== '') {
-            $query->where([$this->Contacts->aliasField('content LIKE') => "%{$request['content']}%"]);
-        }
-        // ホームページURL
-        if (isset($request['hp_url']) && !is_null($request['hp_url']) && $request['hp_url'] !== '') {
-            $query->where([$this->Contacts->aliasField('hp_url LIKE') => "%{$request['hp_url']}%"]);
-        }
-        // フリーワード
-        if (isset($request['search_snippet']) && !is_null($request['search_snippet']) && $request['search_snippet'] !== '') {
-            $search_snippet_conditions = [];
-            foreach (explode(' ', str_replace('　', ' ', $request['search_snippet'])) as $search_snippet) {
-                $search_snippet_conditions[] = [$this->Contacts->aliasField('search_snippet LIKE') => "%{$search_snippet}%"];
-            }
-            if (isset($request['search_snippet_format']) && $request['search_snippet_format'] == 'AND') {
-                $query->where($search_snippet_conditions);
-            } else {
-                $query->where(function ($exp) use ($search_snippet_conditions) {
-                    return $exp->or($search_snippet_conditions);
-                });
-            }
-        }
-
-        return $query;
     }
 
     /**
@@ -204,7 +150,7 @@ class ContactsController extends AppController
     public function csvExport()
     {
         $request = $this->getRequest()->getQueryParams();
-        $contacts = $this->_getQuery($request)->toArray();
+        $contacts = $this->Contacts->getSearchQuery($request)->toArray();
         $_extract = [
             // ID
             'id',
@@ -264,7 +210,7 @@ class ContactsController extends AppController
     {
         $request = $this->getRequest()->getQueryParams();
         /** @var \App\Model\Entity\Contact[] $contacts */
-        $contacts = $this->_getQuery($request)->toArray();
+        $contacts = $this->Contacts->getSearchQuery($request)->toArray();
 
         $reader = new XlsxReader();
         $spreadsheet = $reader->load(EXCEL_TEMPLATE_DIR . 'contacts_template.xlsx');

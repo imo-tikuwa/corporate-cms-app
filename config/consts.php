@@ -5,7 +5,7 @@ const SITE_NAME = 'CorporateCMS';
 /** サイト名(短) */
 const SITE_NAME_SHORT = 'CC';
 
-/** スーパーユーザーのアカウントID(権限チェック不要で全ての機能にアクセス可能) */
+/** 管理者のアカウントID(権限チェック不要で全ての機能にアクセス可能) */
 const SUPER_USER_ID = 1;
 
 /** Read権限 */

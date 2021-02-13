@@ -92,6 +92,27 @@ class ChargesTableTest extends TestCase
     }
 
     /**
+     * Test getSearchQuery method
+     *
+     * @return void
+     */
+    public function testGetSearchQuery(): void
+    {
+        $query = $this->Charges->getSearchQuery([]);
+        $charge = $query->select(['id'])->enableHydration(false)->first();
+
+        $this->assertInstanceOf('\Cake\ORM\Query', $query);
+        $this->assertTrue(array_key_exists('id', $charge));
+        $this->assertEquals(1, $charge['id']);
+
+        $query = $this->Charges->getSearchQuery(['id' => 99999]);
+        $charge = $query->enableHydration(false)->first();
+
+        $this->assertInstanceOf('\Cake\ORM\Query', $query);
+        $this->assertNull($charge);
+    }
+
+    /**
      * Test getCsvHeaders method
      *
      * @return void

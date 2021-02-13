@@ -24,7 +24,7 @@ if (!empty($functions) && count($functions) > 0) {
 		}
 	}
 }
-// スーパーユーザーのみ権限管理可能
+// 管理者のみ権限管理可能
 if (AuthUtils::isSuperUser($this->getRequest())) {
 	$active_class = ($this->name == 'Account') ? ' active' : '';
 	$html .= "<li class=\"nav-item mt-3\"><a href=\"/admin/account\" class=\"nav-link{$active_class}\" ><i class=\"fas fa-user-shield mr-2\"></i><p>アカウント/権限管理</p></a></li>";

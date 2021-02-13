@@ -235,6 +235,64 @@ class StaffsTable extends AppTable
     }
 
     /**
+     * ページネートに渡すクエリオブジェクトを生成する
+     * @param array $request リクエスト情報
+     * @return \Cake\ORM\Query $query
+     */
+    public function getSearchQuery($request)
+    {
+        $query = $this->find();
+        // ID
+        if (isset($request['id']) && !is_null($request['id']) && $request['id'] !== '') {
+            $query->where([$this->aliasField('id') => $request['id']]);
+        }
+        // スタッフ名
+        if (isset($request['name']) && !is_null($request['name']) && $request['name'] !== '') {
+            $query->where([$this->aliasField('name LIKE') => "%{$request['name']}%"]);
+        }
+        // スタッフ名(英)
+        if (isset($request['name_en']) && !is_null($request['name_en']) && $request['name_en'] !== '') {
+            $query->where([$this->aliasField('name_en LIKE') => "%{$request['name_en']}%"]);
+        }
+        // スタッフ役職
+        if (isset($request['staff_position']) && !is_null($request['staff_position']) && $request['staff_position'] !== '') {
+            $query->where([$this->aliasField('staff_position') => $request['staff_position']]);
+        }
+        // 画像表示位置
+        if (isset($request['photo_position']) && !is_null($request['photo_position']) && $request['photo_position'] !== '') {
+            $query->where([$this->aliasField('photo_position') => $request['photo_position']]);
+        }
+        // スタッフ説明1
+        if (isset($request['description1']) && !is_null($request['description1']) && $request['description1'] !== '') {
+            $query->where([$this->aliasField('description1') => $request['description1']]);
+        }
+        // 見出し1
+        if (isset($request['midashi1']) && !is_null($request['midashi1']) && $request['midashi1'] !== '') {
+            $query->where([$this->aliasField('midashi1 LIKE') => "%{$request['midashi1']}%"]);
+        }
+        // スタッフ説明2
+        if (isset($request['description2']) && !is_null($request['description2']) && $request['description2'] !== '') {
+            $query->where([$this->aliasField('description2') => $request['description2']]);
+        }
+        // フリーワード
+        if (isset($request['search_snippet']) && !is_null($request['search_snippet']) && $request['search_snippet'] !== '') {
+            $search_snippet_conditions = [];
+            foreach (explode(' ', str_replace('　', ' ', $request['search_snippet'])) as $search_snippet) {
+                $search_snippet_conditions[] = [$this->aliasField('search_snippet LIKE') => "%{$search_snippet}%"];
+            }
+            if (isset($request['search_snippet_format']) && $request['search_snippet_format'] == 'AND') {
+                $query->where($search_snippet_conditions);
+            } else {
+                $query->where(function ($exp) use ($search_snippet_conditions) {
+                    return $exp->or($search_snippet_conditions);
+                });
+            }
+        }
+
+        return $query;
+    }
+
+    /**
      * CSVヘッダー情報を取得する
      * @return array
      */

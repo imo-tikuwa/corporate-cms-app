@@ -94,6 +94,27 @@ class ChargeMastersTableTest extends TestCase
     }
 
     /**
+     * Test getSearchQuery method
+     *
+     * @return void
+     */
+    public function testGetSearchQuery(): void
+    {
+        $query = $this->ChargeMasters->getSearchQuery([]);
+        $charge_master = $query->select(['id'])->enableHydration(false)->first();
+
+        $this->assertInstanceOf('\Cake\ORM\Query', $query);
+        $this->assertTrue(array_key_exists('id', $charge_master));
+        $this->assertEquals(1, $charge_master['id']);
+
+        $query = $this->ChargeMasters->getSearchQuery(['id' => 99999]);
+        $charge_master = $query->enableHydration(false)->first();
+
+        $this->assertInstanceOf('\Cake\ORM\Query', $query);
+        $this->assertNull($charge_master);
+    }
+
+    /**
      * Test getCsvHeaders method
      *
      * @return void

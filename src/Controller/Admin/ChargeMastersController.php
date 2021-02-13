@@ -35,54 +35,12 @@ class ChargeMastersController extends AppController
     public function index()
     {
         $request = $this->getRequest()->getQueryParams();
-        $query = $this->_getQuery($request);
+        $query = $this->ChargeMasters->getSearchQuery($request);
         $charge_masters = $this->paginate($query);
         $search_form = new SearchForm();
         $search_form->setData($request);
 
         $this->set(compact('charge_masters', 'search_form'));
-    }
-
-    /**
-     * ページネートに渡すクエリオブジェクトを生成する
-     * @param array $request リクエスト情報
-     * @return \Cake\ORM\Query $query
-     */
-    private function _getQuery($request)
-    {
-        $query = $this->ChargeMasters->find();
-        // ID
-        if (isset($request['id']) && !is_null($request['id']) && $request['id'] !== '') {
-            $query->where([$this->ChargeMasters->aliasField('id') => $request['id']]);
-        }
-        // マスタ名
-        if (isset($request['name']) && !is_null($request['name']) && $request['name'] !== '') {
-            $query->where([$this->ChargeMasters->aliasField('name LIKE') => "%{$request['name']}%"]);
-        }
-        // 基本料金
-        if (isset($request['basic_charge']) && !is_null($request['basic_charge']) && $request['basic_charge'] !== '') {
-            $query->where([$this->ChargeMasters->aliasField('basic_charge <=') => $request['basic_charge']]);
-        }
-        // キャンペーン料金
-        if (isset($request['campaign_charge']) && !is_null($request['campaign_charge']) && $request['campaign_charge'] !== '') {
-            $query->where([$this->ChargeMasters->aliasField('campaign_charge <=') => $request['campaign_charge']]);
-        }
-        // フリーワード
-        if (isset($request['search_snippet']) && !is_null($request['search_snippet']) && $request['search_snippet'] !== '') {
-            $search_snippet_conditions = [];
-            foreach (explode(' ', str_replace('　', ' ', $request['search_snippet'])) as $search_snippet) {
-                $search_snippet_conditions[] = [$this->ChargeMasters->aliasField('search_snippet LIKE') => "%{$search_snippet}%"];
-            }
-            if (isset($request['search_snippet_format']) && $request['search_snippet_format'] == 'AND') {
-                $query->where($search_snippet_conditions);
-            } else {
-                $query->where(function ($exp) use ($search_snippet_conditions) {
-                    return $exp->or($search_snippet_conditions);
-                });
-            }
-        }
-
-        return $query;
     }
 
     /**
@@ -186,7 +144,7 @@ class ChargeMastersController extends AppController
     public function csvExport()
     {
         $request = $this->getRequest()->getQueryParams();
-        $charge_masters = $this->_getQuery($request)->toArray();
+        $charge_masters = $this->ChargeMasters->getSearchQuery($request)->toArray();
         $_extract = [
             // ID
             'id',

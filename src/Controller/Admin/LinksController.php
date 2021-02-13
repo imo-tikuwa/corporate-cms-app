@@ -9,6 +9,7 @@ use App\Form\ExcelImportForm;
 use App\Form\SearchForm;
 use App\Utils\ExcelUtils;
 use Cake\Http\CallbackStream;
+use Cake\Core\Exception\CakeException;
 use Cake\I18n\FrozenDate;
 use Cake\I18n\FrozenTime;
 use Cake\Utility\Hash;
@@ -43,58 +44,12 @@ class LinksController extends AppController
     public function index()
     {
         $request = $this->getRequest()->getQueryParams();
-        $query = $this->_getQuery($request);
+        $query = $this->Links->getSearchQuery($request);
         $links = $this->paginate($query);
         $search_form = new SearchForm();
         $search_form->setData($request);
 
         $this->set(compact('links', 'search_form'));
-    }
-
-    /**
-     * ページネートに渡すクエリオブジェクトを生成する
-     * @param array $request リクエスト情報
-     * @return \Cake\ORM\Query $query
-     */
-    private function _getQuery($request)
-    {
-        $query = $this->Links->find();
-        // ID
-        if (isset($request['id']) && !is_null($request['id']) && $request['id'] !== '') {
-            $query->where([$this->Links->aliasField('id') => $request['id']]);
-        }
-        // リンクカテゴリ
-        if (isset($request['category']) && !is_null($request['category']) && $request['category'] !== '') {
-            $query->where([$this->Links->aliasField('category') => $request['category']]);
-        }
-        // リンクタイトル
-        if (isset($request['title']) && !is_null($request['title']) && $request['title'] !== '') {
-            $query->where([$this->Links->aliasField('title LIKE') => "%{$request['title']}%"]);
-        }
-        // リンクURL
-        if (isset($request['url']) && !is_null($request['url']) && $request['url'] !== '') {
-            $query->where([$this->Links->aliasField('url LIKE') => "%{$request['url']}%"]);
-        }
-        // リンク説明
-        if (isset($request['description']) && !is_null($request['description']) && $request['description'] !== '') {
-            $query->where([$this->Links->aliasField('description LIKE') => "%{$request['description']}%"]);
-        }
-        // フリーワード
-        if (isset($request['search_snippet']) && !is_null($request['search_snippet']) && $request['search_snippet'] !== '') {
-            $search_snippet_conditions = [];
-            foreach (explode(' ', str_replace('　', ' ', $request['search_snippet'])) as $search_snippet) {
-                $search_snippet_conditions[] = [$this->Links->aliasField('search_snippet LIKE') => "%{$search_snippet}%"];
-            }
-            if (isset($request['search_snippet_format']) && $request['search_snippet_format'] == 'AND') {
-                $query->where($search_snippet_conditions);
-            } else {
-                $query->where(function ($exp) use ($search_snippet_conditions) {
-                    return $exp->or($search_snippet_conditions);
-                });
-            }
-        }
-
-        return $query;
     }
 
     /**
@@ -198,7 +153,7 @@ class LinksController extends AppController
     public function csvExport()
     {
         $request = $this->getRequest()->getQueryParams();
-        $links = $this->_getQuery($request)->toArray();
+        $links = $this->Links->getSearchQuery($request)->toArray();
         $_extract = [
             // ID
             'id',
@@ -263,7 +218,7 @@ class LinksController extends AppController
                 foreach ($csv_data as $index => $csv_row) {
                     if ($index == 0) {
                         if ($this->Links->getCsvHeaders() != $csv_row) {
-                            throw new \Exception('HeaderCheckError');
+                            throw new CakeException('HeaderCheckError');
                         }
                         continue;
                     }
@@ -275,14 +230,14 @@ class LinksController extends AppController
                         $update_count++;
                     }
                     if (!$this->Links->save($link, ['atomic' => false])) {
-                        throw new \Exception('SaveError');
+                        throw new CakeException('SaveError');
                     }
                 }
                 if (!$conn->commit()) {
-                    throw new \Exception('CommitError');
+                    throw new CakeException('CommitError');
                 }
                 $this->Flash->success("リンク集CSVの登録が完了しました。<br />新規：{$insert_count}件<br />更新：{$update_count}件", ['escape' => false]);
-            } catch (\Exception $e) {
+            } catch (CakeException $e) {
                 $error_message = 'リンク集CSVの登録でエラーが発生しました。';
                 if (!empty($e->getMessage())) {
                     $error_message .= "(" . $e->getMessage() . ")";
@@ -303,7 +258,7 @@ class LinksController extends AppController
     {
         $request = $this->getRequest()->getQueryParams();
         /** @var \App\Model\Entity\Link[] $links */
-        $links = $this->_getQuery($request)->toArray();
+        $links = $this->Links->getSearchQuery($request)->toArray();
 
         $reader = new XlsxReader();
         $spreadsheet = $reader->load(EXCEL_TEMPLATE_DIR . 'links_template.xlsx');
@@ -390,14 +345,14 @@ class LinksController extends AppController
                     $link = $this->Links->createEntityByExcelRow($excel_row);
                     $link->isNew() ? $insert_count++ : $update_count++;
                     if (!$this->Links->save($link, ['atomic' => false])) {
-                        throw new \Exception('SaveError');
+                        throw new CakeException('SaveError');
                     }
                 }
                 if (!$conn->commit()) {
-                    throw new \Exception('CommitError');
+                    throw new CakeException('CommitError');
                 }
                 $this->Flash->success("リンク集Excelの登録が完了しました。<br />新規：{$insert_count}件<br />更新：{$update_count}件", ['escape' => false]);
-            } catch (\Exception $e) {
+            } catch (CakeException $e) {
                 $error_message = 'リンク集Excelの登録でエラーが発生しました。';
                 if (!empty($e->getMessage())) {
                     $error_message .= "(" . $e->getMessage() . ")";
