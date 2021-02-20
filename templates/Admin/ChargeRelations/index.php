@@ -108,6 +108,7 @@ $this->assign('title', "料金マッピング");
                   'options' => $charges,
                   'class' => 'form-control',
                   'label' => '基本料金ID',
+                  'empty' => '　',
                 ]); ?>
               </div>
             </div>
@@ -121,6 +122,7 @@ $this->assign('title', "料金マッピング");
                   'options' => $chargeMasters,
                   'class' => 'form-control',
                   'label' => '料金マスタID',
+                  'empty' => '　',
                 ]); ?>
               </div>
             </div>

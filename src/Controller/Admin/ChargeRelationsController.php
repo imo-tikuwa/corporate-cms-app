@@ -15,6 +15,8 @@ use DateTimeZone;
  * ChargeRelations Controller
  *
  * @property \App\Model\Table\ChargeRelationsTable $ChargeRelations
+ * @property \App\Model\Table\ChargesTable $Charges
+ * @property \App\Model\Table\ChargeMastersTable $ChargeMasters
  *
  * @method \App\Model\Entity\ChargeRelation[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
@@ -27,11 +29,17 @@ class ChargeRelationsController extends AppController
     public function initialize(): void
     {
         parent::initialize();
+
+        $this->loadModel('Charges');
+        $this->loadModel('ChargeMasters');
+
         if (!in_array($this->getRequest()->getParam('action'), [ACTION_DELETE, ACTION_CSV_EXPORT], true)) {
             // 基本料金IDの選択肢
-            $this->set('charges', $this->ChargeRelations->findForeignSelectionData('Charges', 'name', true));
+            $charges = $this->Charges->find('list', ['keyField' => 'id', 'valueField' => 'name'])->toArray();
             // 料金マスタIDの選択肢
-            $this->set('chargeMasters', $this->ChargeRelations->findForeignSelectionData('ChargeMasters', 'name', true));
+            $chargeMasters = $this->ChargeMasters->find('list', ['keyField' => 'id', 'valueField' => 'name'])->toArray();
+
+            $this->set(compact('charges', 'chargeMasters'));
         }
     }
 
