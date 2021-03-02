@@ -151,7 +151,7 @@ class ContactsController extends AppController
     {
         $request = $this->getRequest()->getQueryParams();
         $contacts = $this->Contacts->getSearchQuery($request)->toArray();
-        $_extract = [
+        $extract = [
             // ID
             'id',
             // お名前
@@ -196,7 +196,7 @@ class ContactsController extends AppController
         $this->viewBuilder()->setOptions([
             'serialize' => 'contacts',
             'header' => $this->Contacts->getCsvHeaders(),
-            'extract' => $_extract,
+            'extract' => $extract,
             'csvEncoding' => 'UTF-8'
         ]);
         $this->set(compact('contacts'));
@@ -238,10 +238,10 @@ class ContactsController extends AppController
             // ホームページURL
             $data_sheet->setCellValue("G{$row_num}", $contact->hp_url);
             // 作成日時
-            $cell_value = @$contact->created->i18nFormat('yyyy-MM-dd HH:mm:ss');
+            $cell_value = ($contact->created instanceof FrozenTime) ? $contact->created->i18nFormat('yyyy-MM-dd HH:mm:ss') : null;
             $data_sheet->setCellValue("H{$row_num}", $cell_value);
             // 更新日時
-            $cell_value = @$contact->modified->i18nFormat('yyyy-MM-dd HH:mm:ss');
+            $cell_value = ($contact->modified instanceof FrozenTime) ? $contact->modified->i18nFormat('yyyy-MM-dd HH:mm:ss') : null;
             $data_sheet->setCellValue("I{$row_num}", $cell_value);
             $row_num++;
         }

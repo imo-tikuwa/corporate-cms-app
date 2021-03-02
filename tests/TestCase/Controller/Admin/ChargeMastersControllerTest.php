@@ -87,29 +87,21 @@ class ChargeMastersControllerTest extends TestCase
         $this->loadFixtures();
 
         parent::setUp();
-        $ChargeMasters_config = $this->getTableLocator()->exists('ChargeMasters') ? [] : ['className' => \App\Model\Table\ChargeMastersTable::class];
+        $charge_masters_config = $this->getTableLocator()->exists('ChargeMasters') ? [] : ['className' => \App\Model\Table\ChargeMastersTable::class];
         /** @var \App\Model\Table\ChargeMastersTable $ChargeMasters */
-        $this->ChargeMasters = $this->getTableLocator()->get('ChargeMasters', $ChargeMasters_config);
+        $this->ChargeMasters = $this->getTableLocator()->get('ChargeMasters', $charge_masters_config);
 
         $admins_config = $this->getTableLocator()->exists('Admins') ? [] : ['className' => \App\Model\Table\AdminsTable::class];
         /** @var \App\Model\Table\AdminsTable $Admins */
         $this->Admins = $this->getTableLocator()->get('Admins', $admins_config);
 
-        $super_admin = $this->Admins->newEntity([
-            'id' => SUPER_USER_ID,
-            'name' => '',
-            'mail' => 'admin@example.com',
-            'password' => 'password',
-            'use_otp' => '0',
-        ]);
-        $this->Admins->save($super_admin);
         /** @var \App\Model\Entity\Admin $super_admin */
         $this->super_admin = $this->Admins->get(SUPER_USER_ID, [
             'finder' => 'auth',
         ]);
 
         $read_admin = $this->Admins->newEntity([
-            'name' => '',
+            'name' => 'READ権限のみ',
             'mail' => 'read@example.com',
             'password' => 'password',
             'use_otp' => '0',
@@ -124,7 +116,7 @@ class ChargeMastersControllerTest extends TestCase
         ]);
 
         $write_admin = $this->Admins->newEntity([
-            'name' => '',
+            'name' => 'WRITE権限のみ',
             'mail' => 'write@example.com',
             'password' => 'password',
             'use_otp' => '0',
@@ -139,7 +131,7 @@ class ChargeMastersControllerTest extends TestCase
         ]);
 
         $delete_admin = $this->Admins->newEntity([
-            'name' => '',
+            'name' => 'DELETE権限のみ',
             'mail' => 'delete@example.com',
             'password' => 'password',
             'use_otp' => '0',
@@ -154,7 +146,7 @@ class ChargeMastersControllerTest extends TestCase
         ]);
 
         $csv_export_admin = $this->Admins->newEntity([
-            'name' => '',
+            'name' => 'CSV_EXPORT権限のみ',
             'mail' => 'csv_export@example.com',
             'password' => 'password',
             'use_otp' => '0',
@@ -169,7 +161,7 @@ class ChargeMastersControllerTest extends TestCase
         ]);
 
         $no_authority_admin = $this->Admins->newEntity([
-            'name' => '',
+            'name' => '権限なし',
             'mail' => 'no_authority@example.com',
             'password' => 'password',
             'use_otp' => '0',

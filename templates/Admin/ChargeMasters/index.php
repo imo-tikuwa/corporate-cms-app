@@ -14,15 +14,25 @@ $this->assign('title', "料金マスタ");
       <div class="form-inline">
         <div class="btn-group mr-2" role="group">
           <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_ADD])) { ?>
-            <a class="btn btn-flat btn-outline-secondary" href="<?= $this->Url->build(['action' => ACTION_ADD]) ?>">新規登録</a>
+            <a class="btn btn-flat btn-outline-secondary d-none d-md-inline" href="<?= $this->Url->build(['action' => ACTION_ADD]) ?>">新規登録</a>
           <?php } ?>
-          <a class="btn btn-flat btn-outline-secondary" href="javascript:void(0);" data-toggle="modal" data-target="#charge_masters-search-form-modal">検索</a>
+          <a class="btn btn-flat btn-outline-secondary d-none d-md-inline" href="javascript:void(0);" data-toggle="modal" data-target="#charge_masters-search-form-modal">検索</a>
           <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_CSV_EXPORT])) { ?>
-            <a class="btn btn-flat btn-outline-secondary" href="<?= $this->Url->build(['action' => ACTION_CSV_EXPORT, '?' => $this->getRequest()->getQueryParams()]) ?>">CSVエクスポート</a>
+            <a class="btn btn-flat btn-outline-secondary d-none d-md-inline" href="<?= $this->Url->build(['action' => ACTION_CSV_EXPORT, '?' => $this->getRequest()->getQueryParams()]) ?>">CSVエクスポート</a>
           <?php } ?>
+          <a class="btn btn-flat btn-outline-secondary dropdown-toggle d-md-none" href="#" role="button" id="sp-action-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">アクション</a>
+          <div class="dropdown-menu" aria-labelledby="sp-action-link">
+            <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_ADD])) { ?>
+              <a class="dropdown-item" href="<?= $this->Url->build(['action' => ACTION_ADD]) ?>">新規登録</a>
+            <?php } ?>
+            <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal" data-target="#charge_masters-search-form-modal">検索</a>
+            <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_CSV_EXPORT])) { ?>
+              <a class="dropdown-item" href="<?= $this->Url->build(['action' => ACTION_CSV_EXPORT, '?' => $this->getRequest()->getQueryParams()]) ?>">CSVエクスポート</a>
+            <?php } ?>
+          </div>
         </div>
         <?= $this->Form->create($search_form, ['type' => 'get', 'id' => 'charge_masters-freeword-search-form']) ?>
-          <div class="freeword-search input-group">
+          <div class="freeword-search input-group d-none d-md-flex">
             <div class="input-group-prepend">
               <div class="input-group-text">
                 <?= $this->Form->control('search_snippet_format', ['type' => 'radio', 'options' => _code('Others.search_snippet_format'), 'class' => 'form-check-label col-form-label col-form-label-sm charge_masters-freeword-search-snippet-format', 'default' => 'AND', 'label' => false, 'templates' => ['nestingLabel' => '{{hidden}}{{input}}<small><label {{attrs}}>{{text}}</label></small>', 'radioWrapper' => '{{label}}', 'inputContainer' => '{{content}}']]) ?>
@@ -38,46 +48,48 @@ $this->assign('title', "料金マスタ");
         <?= $this->Form->end(); ?>
       </div>
     </div>
-    <div class="card-body table-responsive p-0">
-      <table class="table table-hover text-nowrap">
-        <thead>
-          <tr>
-            <th scope="col"><?= $this->Paginator->sort('id', 'ID') ?></th>
-            <th scope="col"><?= $this->Paginator->sort('name', 'マスタ名') ?></th>
-            <th scope="col"><?= $this->Paginator->sort('basic_charge', '基本料金') ?></th>
-            <th scope="col"><?= $this->Paginator->sort('campaign_charge', 'キャンペーン料金') ?></th>
-            <th scope="col"><?= $this->Paginator->sort('modified', '更新日時') ?></th>
-            <th scope="col" class="actions">操作</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php foreach ($charge_masters as $charge_master) { ?>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover text-nowrap">
+          <thead>
             <tr>
-              <td><?= $this->Html->link($charge_master->id, ['action' => ACTION_VIEW, $charge_master->id]) ?></td>
-              <td><?= h($charge_master->name) ?></td>
-              <td><?= $this->Number->format($charge_master->basic_charge) ?>円</td>
-              <td><?= $this->Number->format($charge_master->campaign_charge) ?>円</td>
-              <td><?= h($this->formatDate($charge_master->modified, 'yyyy/MM/dd HH:mm:ss')) ?></td>
-              <td class="actions">
-                <div class="btn-group" role="group">
-                  <button id="btnGroupDrop<?= $charge_master->id ?>" type="button" class="btn btn-sm btn-flat btn-outline-secondary dropdown-toggle index-dropdown-toggle" data-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false"></button>
-                  <div class="dropdown-menu" aria-labelledby="btnGroupDrop<?= $charge_master->id ?>">
-                    <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_VIEW])) { ?>
-                      <?= $this->Html->link('詳細', ['action' => ACTION_VIEW, $charge_master->id], ['class' => 'dropdown-item']) ?>
-                    <?php } ?>
-                    <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_EDIT])) { ?>
-                      <?= $this->Html->link('編集', ['action' => ACTION_EDIT, $charge_master->id], ['class' => 'dropdown-item']) ?>
-                    <?php } ?>
-                    <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_DELETE])) { ?>
-                      <?= $this->Form->postLink('削除', ['action' => ACTION_DELETE, $charge_master->id], ['class' => 'dropdown-item', 'confirm' => __('ID {0} を削除します。よろしいですか？', $charge_master->id)]) ?>
-                    <?php } ?>
-                  </div>
-                </div>
-              </td>
+              <th scope="col"><?= $this->Paginator->sort('id', 'ID') ?></th>
+              <th scope="col"><?= $this->Paginator->sort('name', 'マスタ名') ?></th>
+              <th scope="col"><?= $this->Paginator->sort('basic_charge', '基本料金') ?></th>
+              <th scope="col"><?= $this->Paginator->sort('campaign_charge', 'キャンペーン料金') ?></th>
+              <th scope="col"><?= $this->Paginator->sort('modified', '更新日時') ?></th>
+              <th scope="col" class="actions">操作</th>
             </tr>
-          <?php } ?>
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            <?php foreach ($charge_masters as $charge_master) { ?>
+              <tr>
+                <td><?= $this->Html->link($charge_master->id, ['action' => ACTION_VIEW, $charge_master->id]) ?></td>
+                <td><?= h($charge_master->name) ?></td>
+                <td><?= $this->Number->format($charge_master->basic_charge) ?>円</td>
+                <td><?= $this->Number->format($charge_master->campaign_charge) ?>円</td>
+                <td><?= h($this->formatDate($charge_master->modified, 'yyyy/MM/dd HH:mm:ss')) ?></td>
+                <td class="actions">
+                  <div class="btn-group" role="group">
+                    <button id="btnGroupDrop<?= $charge_master->id ?>" type="button" class="btn btn-sm btn-flat btn-outline-secondary dropdown-toggle index-dropdown-toggle" data-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false"></button>
+                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop<?= $charge_master->id ?>">
+                      <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_VIEW])) { ?>
+                        <?= $this->Html->link('詳細', ['action' => ACTION_VIEW, $charge_master->id], ['class' => 'dropdown-item']) ?>
+                      <?php } ?>
+                      <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_EDIT])) { ?>
+                        <?= $this->Html->link('編集', ['action' => ACTION_EDIT, $charge_master->id], ['class' => 'dropdown-item']) ?>
+                      <?php } ?>
+                      <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_DELETE])) { ?>
+                        <?= $this->Form->postLink('削除', ['action' => ACTION_DELETE, $charge_master->id], ['class' => 'dropdown-item', 'confirm' => __('ID {0} を削除します。よろしいですか？', $charge_master->id)]) ?>
+                      <?php } ?>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            <?php } ?>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
   <?= $this->element('pager') ?>
@@ -169,7 +181,8 @@ $this->assign('title', "料金マスタ");
                         'default' => 'AND',
                         'templates' => [
                           'nestingLabel' => '{{hidden}}{{input}}<small><label {{attrs}}>{{text}}</label></small>',
-                          'radioWrapper' => '{{label}}', 'inputContainer' => '{{content}}'
+                          'radioWrapper' => '{{label}}',
+                          'inputContainer' => '{{content}}'
                         ],
                       ]) ?>
                     </div>

@@ -101,29 +101,21 @@ class LinksControllerTest extends TestCase
         $this->loadFixtures();
 
         parent::setUp();
-        $Links_config = $this->getTableLocator()->exists('Links') ? [] : ['className' => \App\Model\Table\LinksTable::class];
+        $links_config = $this->getTableLocator()->exists('Links') ? [] : ['className' => \App\Model\Table\LinksTable::class];
         /** @var \App\Model\Table\LinksTable $Links */
-        $this->Links = $this->getTableLocator()->get('Links', $Links_config);
+        $this->Links = $this->getTableLocator()->get('Links', $links_config);
 
         $admins_config = $this->getTableLocator()->exists('Admins') ? [] : ['className' => \App\Model\Table\AdminsTable::class];
         /** @var \App\Model\Table\AdminsTable $Admins */
         $this->Admins = $this->getTableLocator()->get('Admins', $admins_config);
 
-        $super_admin = $this->Admins->newEntity([
-            'id' => SUPER_USER_ID,
-            'name' => '',
-            'mail' => 'admin@example.com',
-            'password' => 'password',
-            'use_otp' => '0',
-        ]);
-        $this->Admins->save($super_admin);
         /** @var \App\Model\Entity\Admin $super_admin */
         $this->super_admin = $this->Admins->get(SUPER_USER_ID, [
             'finder' => 'auth',
         ]);
 
         $read_admin = $this->Admins->newEntity([
-            'name' => '',
+            'name' => 'READ権限のみ',
             'mail' => 'read@example.com',
             'password' => 'password',
             'use_otp' => '0',
@@ -138,7 +130,7 @@ class LinksControllerTest extends TestCase
         ]);
 
         $write_admin = $this->Admins->newEntity([
-            'name' => '',
+            'name' => 'WRITE権限のみ',
             'mail' => 'write@example.com',
             'password' => 'password',
             'use_otp' => '0',
@@ -153,7 +145,7 @@ class LinksControllerTest extends TestCase
         ]);
 
         $delete_admin = $this->Admins->newEntity([
-            'name' => '',
+            'name' => 'DELETE権限のみ',
             'mail' => 'delete@example.com',
             'password' => 'password',
             'use_otp' => '0',
@@ -168,7 +160,7 @@ class LinksControllerTest extends TestCase
         ]);
 
         $csv_export_admin = $this->Admins->newEntity([
-            'name' => '',
+            'name' => 'CSV_EXPORT権限のみ',
             'mail' => 'csv_export@example.com',
             'password' => 'password',
             'use_otp' => '0',
@@ -183,7 +175,7 @@ class LinksControllerTest extends TestCase
         ]);
 
         $csv_import_admin = $this->Admins->newEntity([
-            'name' => '',
+            'name' => 'CSV_IMPORT権限のみ',
             'mail' => 'csv_import@example.com',
             'password' => 'password',
             'use_otp' => '0',
@@ -198,7 +190,7 @@ class LinksControllerTest extends TestCase
         ]);
 
         $excel_export_admin = $this->Admins->newEntity([
-            'name' => '',
+            'name' => 'EXCEL_EXPORT権限のみ',
             'mail' => 'excel_export@example.com',
             'password' => 'password',
             'use_otp' => '0',
@@ -213,7 +205,7 @@ class LinksControllerTest extends TestCase
         ]);
 
         $excel_import_admin = $this->Admins->newEntity([
-            'name' => '',
+            'name' => 'EXCEL_IMPORT権限のみ',
             'mail' => 'excel_import@example.com',
             'password' => 'password',
             'use_otp' => '0',
@@ -228,7 +220,7 @@ class LinksControllerTest extends TestCase
         ]);
 
         $no_authority_admin = $this->Admins->newEntity([
-            'name' => '',
+            'name' => '権限なし',
             'mail' => 'no_authority@example.com',
             'password' => 'password',
             'use_otp' => '0',

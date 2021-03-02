@@ -76,29 +76,21 @@ class AccessMapsControllerTest extends TestCase
         $this->loadFixtures();
 
         parent::setUp();
-        $AccessMaps_config = $this->getTableLocator()->exists('AccessMaps') ? [] : ['className' => \App\Model\Table\AccessMapsTable::class];
+        $access_maps_config = $this->getTableLocator()->exists('AccessMaps') ? [] : ['className' => \App\Model\Table\AccessMapsTable::class];
         /** @var \App\Model\Table\AccessMapsTable $AccessMaps */
-        $this->AccessMaps = $this->getTableLocator()->get('AccessMaps', $AccessMaps_config);
+        $this->AccessMaps = $this->getTableLocator()->get('AccessMaps', $access_maps_config);
 
         $admins_config = $this->getTableLocator()->exists('Admins') ? [] : ['className' => \App\Model\Table\AdminsTable::class];
         /** @var \App\Model\Table\AdminsTable $Admins */
         $this->Admins = $this->getTableLocator()->get('Admins', $admins_config);
 
-        $super_admin = $this->Admins->newEntity([
-            'id' => SUPER_USER_ID,
-            'name' => '',
-            'mail' => 'admin@example.com',
-            'password' => 'password',
-            'use_otp' => '0',
-        ]);
-        $this->Admins->save($super_admin);
         /** @var \App\Model\Entity\Admin $super_admin */
         $this->super_admin = $this->Admins->get(SUPER_USER_ID, [
             'finder' => 'auth',
         ]);
 
         $read_admin = $this->Admins->newEntity([
-            'name' => '',
+            'name' => 'READ権限のみ',
             'mail' => 'read@example.com',
             'password' => 'password',
             'use_otp' => '0',
@@ -113,7 +105,7 @@ class AccessMapsControllerTest extends TestCase
         ]);
 
         $write_admin = $this->Admins->newEntity([
-            'name' => '',
+            'name' => 'WRITE権限のみ',
             'mail' => 'write@example.com',
             'password' => 'password',
             'use_otp' => '0',
@@ -128,7 +120,7 @@ class AccessMapsControllerTest extends TestCase
         ]);
 
         $no_authority_admin = $this->Admins->newEntity([
-            'name' => '',
+            'name' => '権限なし',
             'mail' => 'no_authority@example.com',
             'password' => 'password',
             'use_otp' => '0',

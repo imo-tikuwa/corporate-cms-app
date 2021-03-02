@@ -151,7 +151,7 @@ class ChargesController extends AppController
     {
         $request = $this->getRequest()->getQueryParams();
         $charges = $this->Charges->getSearchQuery($request)->toArray();
-        $_extract = [
+        $extract = [
             // ID
             'id',
             // プラン名
@@ -182,7 +182,7 @@ class ChargesController extends AppController
         $this->viewBuilder()->setOptions([
             'serialize' => 'charges',
             'header' => $this->Charges->getCsvHeaders(),
-            'extract' => $_extract,
+            'extract' => $extract,
             'csvEncoding' => 'UTF-8'
         ]);
         $this->set(compact('charges'));
@@ -212,10 +212,10 @@ class ChargesController extends AppController
             // プラン名下注釈
             $data_sheet->setCellValue("C{$row_num}", $charge->annotation);
             // 作成日時
-            $cell_value = @$charge->created->i18nFormat('yyyy-MM-dd HH:mm:ss');
+            $cell_value = ($charge->created instanceof FrozenTime) ? $charge->created->i18nFormat('yyyy-MM-dd HH:mm:ss') : null;
             $data_sheet->setCellValue("D{$row_num}", $cell_value);
             // 更新日時
-            $cell_value = @$charge->modified->i18nFormat('yyyy-MM-dd HH:mm:ss');
+            $cell_value = ($charge->modified instanceof FrozenTime) ? $charge->modified->i18nFormat('yyyy-MM-dd HH:mm:ss') : null;
             $data_sheet->setCellValue("E{$row_num}", $cell_value);
             $row_num++;
         }

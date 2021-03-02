@@ -168,7 +168,7 @@ class ChargeRelationsController extends AppController
     {
         $request = $this->getRequest()->getQueryParams();
         $charge_relations = $this->ChargeRelations->getSearchQuery($request)->toArray();
-        $_extract = [
+        $extract = [
             // ID
             'id',
             // 基本料金ID
@@ -203,7 +203,7 @@ class ChargeRelationsController extends AppController
         $this->viewBuilder()->setOptions([
             'serialize' => 'charge_relations',
             'header' => $this->ChargeRelations->getCsvHeaders(),
-            'extract' => $_extract,
+            'extract' => $extract,
             'csvEncoding' => 'UTF-8'
         ]);
         $this->set(compact('charge_relations'));

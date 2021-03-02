@@ -1,7 +1,7 @@
 $(function(){
 
     // CSVインポート
-    $('#csv-import-btn').on('click', function(){
+    $('.csv-import-btn').on('click', function(){
         $('#csv-import-file').trigger('click');
     });
     $('#csv-import-file').on('change', function(){
@@ -9,7 +9,7 @@ $(function(){
     });
 
     // Excelインポート
-    $('#excel-import-btn').on('click', function(){
+    $('.excel-import-btn').on('click', function(){
         $('#excel-import-file').trigger('click');
     });
     $('#excel-import-file').on('change', function(){

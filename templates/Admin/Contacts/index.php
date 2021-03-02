@@ -18,18 +18,31 @@ $this->Form->setTemplates([
       <div class="form-inline">
         <div class="btn-group mr-2" role="group">
           <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_ADD])) { ?>
-            <a class="btn btn-flat btn-outline-secondary" href="<?= $this->Url->build(['action' => ACTION_ADD]) ?>">新規登録</a>
+            <a class="btn btn-flat btn-outline-secondary d-none d-md-inline" href="<?= $this->Url->build(['action' => ACTION_ADD]) ?>">新規登録</a>
           <?php } ?>
-          <a class="btn btn-flat btn-outline-secondary" href="javascript:void(0);" data-toggle="modal" data-target="#contacts-search-form-modal">検索</a>
+          <a class="btn btn-flat btn-outline-secondary d-none d-md-inline" href="javascript:void(0);" data-toggle="modal" data-target="#contacts-search-form-modal">検索</a>
           <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_CSV_EXPORT])) { ?>
-            <a class="btn btn-flat btn-outline-secondary" href="<?= $this->Url->build(['action' => ACTION_CSV_EXPORT, '?' => $this->getRequest()->getQueryParams()]) ?>">CSVエクスポート</a>
+            <a class="btn btn-flat btn-outline-secondary d-none d-md-inline" href="<?= $this->Url->build(['action' => ACTION_CSV_EXPORT, '?' => $this->getRequest()->getQueryParams()]) ?>">CSVエクスポート</a>
           <?php } ?>
           <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_EXCEL_EXPORT])) { ?>
-            <a class="btn btn-flat btn-outline-secondary" href="<?= $this->Url->build(['action' => ACTION_EXCEL_EXPORT, '?' => $this->getRequest()->getQueryParams()]) ?>">Excelエクスポート</a>
+            <a class="btn btn-flat btn-outline-secondary d-none d-md-inline" href="<?= $this->Url->build(['action' => ACTION_EXCEL_EXPORT, '?' => $this->getRequest()->getQueryParams()]) ?>">Excelエクスポート</a>
           <?php } ?>
+          <a class="btn btn-flat btn-outline-secondary dropdown-toggle d-md-none" href="#" role="button" id="sp-action-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">アクション</a>
+          <div class="dropdown-menu" aria-labelledby="sp-action-link">
+            <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_ADD])) { ?>
+              <a class="dropdown-item" href="<?= $this->Url->build(['action' => ACTION_ADD]) ?>">新規登録</a>
+            <?php } ?>
+            <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal" data-target="#contacts-search-form-modal">検索</a>
+            <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_CSV_EXPORT])) { ?>
+              <a class="dropdown-item" href="<?= $this->Url->build(['action' => ACTION_CSV_EXPORT, '?' => $this->getRequest()->getQueryParams()]) ?>">CSVエクスポート</a>
+            <?php } ?>
+            <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_EXCEL_EXPORT])) { ?>
+              <a class="dropdown-item" href="<?= $this->Url->build(['action' => ACTION_EXCEL_EXPORT, '?' => $this->getRequest()->getQueryParams()]) ?>">Excelエクスポート</a>
+            <?php } ?>
+          </div>
         </div>
         <?= $this->Form->create($search_form, ['type' => 'get', 'id' => 'contacts-freeword-search-form']) ?>
-          <div class="freeword-search input-group">
+          <div class="freeword-search input-group d-none d-md-flex">
             <div class="input-group-prepend">
               <div class="input-group-text">
                 <?= $this->Form->control('search_snippet_format', ['type' => 'radio', 'options' => _code('Others.search_snippet_format'), 'class' => 'form-check-label col-form-label col-form-label-sm contacts-freeword-search-snippet-format', 'default' => 'AND', 'label' => false, 'templates' => ['nestingLabel' => '{{hidden}}{{input}}<small><label {{attrs}}>{{text}}</label></small>', 'radioWrapper' => '{{label}}', 'inputContainer' => '{{content}}']]) ?>
@@ -45,48 +58,50 @@ $this->Form->setTemplates([
         <?= $this->Form->end(); ?>
       </div>
     </div>
-    <div class="card-body table-responsive p-0">
-      <table class="table table-hover text-nowrap">
-        <thead>
-          <tr>
-            <th scope="col"><?= $this->Paginator->sort('id', 'ID') ?></th>
-            <th scope="col"><?= $this->Paginator->sort('name', 'お名前') ?></th>
-            <th scope="col"><?= $this->Paginator->sort('email', 'メールアドレス') ?></th>
-            <th scope="col"><?= $this->Paginator->sort('type', 'お問い合わせ内容') ?></th>
-            <th scope="col"><?= $this->Paginator->sort('tel', 'お電話番号') ?></th>
-            <th scope="col"><?= $this->Paginator->sort('modified', '更新日時') ?></th>
-            <th scope="col" class="actions">操作</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php foreach ($contacts as $contact) { ?>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover text-nowrap">
+          <thead>
             <tr>
-              <td><?= $this->Html->link($contact->id, ['action' => ACTION_VIEW, $contact->id]) ?></td>
-              <td><?= h($contact->name) ?></td>
-              <td><?= h($contact->email) ?></td>
-              <td><?= @h(_code("Codes.Contacts.type.{$contact->type}")) ?></td>
-              <td><?= h($contact->tel) ?></td>
-              <td><?= h($this->formatDate($contact->modified, 'yyyy/MM/dd HH:mm:ss')) ?></td>
-              <td class="actions">
-                <div class="btn-group" role="group">
-                  <button id="btnGroupDrop<?= $contact->id ?>" type="button" class="btn btn-sm btn-flat btn-outline-secondary dropdown-toggle index-dropdown-toggle" data-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false"></button>
-                  <div class="dropdown-menu" aria-labelledby="btnGroupDrop<?= $contact->id ?>">
-                    <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_VIEW])) { ?>
-                      <?= $this->Html->link('詳細', ['action' => ACTION_VIEW, $contact->id], ['class' => 'dropdown-item']) ?>
-                    <?php } ?>
-                    <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_EDIT])) { ?>
-                      <?= $this->Html->link('編集', ['action' => ACTION_EDIT, $contact->id], ['class' => 'dropdown-item']) ?>
-                    <?php } ?>
-                    <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_DELETE])) { ?>
-                      <?= $this->Form->postLink('削除', ['action' => ACTION_DELETE, $contact->id], ['class' => 'dropdown-item', 'confirm' => __('ID {0} を削除します。よろしいですか？', $contact->id)]) ?>
-                    <?php } ?>
-                  </div>
-                </div>
-              </td>
+              <th scope="col"><?= $this->Paginator->sort('id', 'ID') ?></th>
+              <th scope="col"><?= $this->Paginator->sort('name', 'お名前') ?></th>
+              <th scope="col"><?= $this->Paginator->sort('email', 'メールアドレス') ?></th>
+              <th scope="col"><?= $this->Paginator->sort('type', 'お問い合わせ内容') ?></th>
+              <th scope="col"><?= $this->Paginator->sort('tel', 'お電話番号') ?></th>
+              <th scope="col"><?= $this->Paginator->sort('modified', '更新日時') ?></th>
+              <th scope="col" class="actions">操作</th>
             </tr>
-          <?php } ?>
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            <?php foreach ($contacts as $contact) { ?>
+              <tr>
+                <td><?= $this->Html->link($contact->id, ['action' => ACTION_VIEW, $contact->id]) ?></td>
+                <td><?= h($contact->name) ?></td>
+                <td><?= h($contact->email) ?></td>
+                <td><?= @h(_code("Codes.Contacts.type.{$contact->type}")) ?></td>
+                <td><?= h($contact->tel) ?></td>
+                <td><?= h($this->formatDate($contact->modified, 'yyyy/MM/dd HH:mm:ss')) ?></td>
+                <td class="actions">
+                  <div class="btn-group" role="group">
+                    <button id="btnGroupDrop<?= $contact->id ?>" type="button" class="btn btn-sm btn-flat btn-outline-secondary dropdown-toggle index-dropdown-toggle" data-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false"></button>
+                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop<?= $contact->id ?>">
+                      <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_VIEW])) { ?>
+                        <?= $this->Html->link('詳細', ['action' => ACTION_VIEW, $contact->id], ['class' => 'dropdown-item']) ?>
+                      <?php } ?>
+                      <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_EDIT])) { ?>
+                        <?= $this->Html->link('編集', ['action' => ACTION_EDIT, $contact->id], ['class' => 'dropdown-item']) ?>
+                      <?php } ?>
+                      <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_DELETE])) { ?>
+                        <?= $this->Form->postLink('削除', ['action' => ACTION_DELETE, $contact->id], ['class' => 'dropdown-item', 'confirm' => __('ID {0} を削除します。よろしいですか？', $contact->id)]) ?>
+                      <?php } ?>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            <?php } ?>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
   <?= $this->element('pager') ?>
@@ -189,7 +204,8 @@ $this->Form->setTemplates([
                         'default' => 'AND',
                         'templates' => [
                           'nestingLabel' => '{{hidden}}{{input}}<small><label {{attrs}}>{{text}}</label></small>',
-                          'radioWrapper' => '{{label}}', 'inputContainer' => '{{content}}'
+                          'radioWrapper' => '{{label}}',
+                          'inputContainer' => '{{content}}'
                         ],
                       ]) ?>
                     </div>

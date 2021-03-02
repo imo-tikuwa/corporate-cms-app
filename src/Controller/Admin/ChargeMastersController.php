@@ -145,7 +145,7 @@ class ChargeMastersController extends AppController
     {
         $request = $this->getRequest()->getQueryParams();
         $charge_masters = $this->ChargeMasters->getSearchQuery($request)->toArray();
-        $_extract = [
+        $extract = [
             // ID
             'id',
             // マスタ名
@@ -190,7 +190,7 @@ class ChargeMastersController extends AppController
         $this->viewBuilder()->setOptions([
             'serialize' => 'charge_masters',
             'header' => $this->ChargeMasters->getCsvHeaders(),
-            'extract' => $_extract,
+            'extract' => $extract,
             'csvEncoding' => 'UTF-8'
         ]);
         $this->set(compact('charge_masters'));

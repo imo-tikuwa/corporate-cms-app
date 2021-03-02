@@ -154,7 +154,7 @@ class LinksController extends AppController
     {
         $request = $this->getRequest()->getQueryParams();
         $links = $this->Links->getSearchQuery($request)->toArray();
-        $_extract = [
+        $extract = [
             // ID
             'id',
             // リンクカテゴリ
@@ -195,7 +195,7 @@ class LinksController extends AppController
         $this->viewBuilder()->setOptions([
             'serialize' => 'links',
             'header' => $this->Links->getCsvHeaders(),
-            'extract' => $_extract,
+            'extract' => $extract,
             'csvEncoding' => 'UTF-8'
         ]);
         $this->set(compact('links'));
@@ -282,10 +282,10 @@ class LinksController extends AppController
             // リンク説明
             $data_sheet->setCellValue("E{$row_num}", $link->description);
             // 作成日時
-            $cell_value = @$link->created->i18nFormat('yyyy-MM-dd HH:mm:ss');
+            $cell_value = ($link->created instanceof FrozenTime) ? $link->created->i18nFormat('yyyy-MM-dd HH:mm:ss') : null;
             $data_sheet->setCellValue("F{$row_num}", $cell_value);
             // 更新日時
-            $cell_value = @$link->modified->i18nFormat('yyyy-MM-dd HH:mm:ss');
+            $cell_value = ($link->modified instanceof FrozenTime) ? $link->modified->i18nFormat('yyyy-MM-dd HH:mm:ss') : null;
             $data_sheet->setCellValue("G{$row_num}", $cell_value);
             $row_num++;
         }

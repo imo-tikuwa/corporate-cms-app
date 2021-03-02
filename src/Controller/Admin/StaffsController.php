@@ -155,7 +155,7 @@ class StaffsController extends AppController
     {
         $request = $this->getRequest()->getQueryParams();
         $staffs = $this->Staffs->getSearchQuery($request)->toArray();
-        $_extract = [
+        $extract = [
             // ID
             'id',
             // スタッフ名
@@ -208,7 +208,7 @@ class StaffsController extends AppController
         $this->viewBuilder()->setOptions([
             'serialize' => 'staffs',
             'header' => $this->Staffs->getCsvHeaders(),
-            'extract' => $_extract,
+            'extract' => $extract,
             'csvEncoding' => 'UTF-8'
         ]);
         $this->set(compact('staffs'));
@@ -256,10 +256,10 @@ class StaffsController extends AppController
             // スタッフ説明2
             $data_sheet->setCellValue("H{$row_num}", $staff->description2);
             // 作成日時
-            $cell_value = @$staff->created->i18nFormat('yyyy-MM-dd HH:mm:ss');
+            $cell_value = ($staff->created instanceof FrozenTime) ? $staff->created->i18nFormat('yyyy-MM-dd HH:mm:ss') : null;
             $data_sheet->setCellValue("I{$row_num}", $cell_value);
             // 更新日時
-            $cell_value = @$staff->modified->i18nFormat('yyyy-MM-dd HH:mm:ss');
+            $cell_value = ($staff->modified instanceof FrozenTime) ? $staff->modified->i18nFormat('yyyy-MM-dd HH:mm:ss') : null;
             $data_sheet->setCellValue("J{$row_num}", $cell_value);
             $row_num++;
         }
