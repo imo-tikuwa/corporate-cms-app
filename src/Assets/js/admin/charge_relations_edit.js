@@ -1,4 +1,4 @@
-$(function(){
+$(() => {
 
     // 基本料金ID
     $('#charge_id').select2({

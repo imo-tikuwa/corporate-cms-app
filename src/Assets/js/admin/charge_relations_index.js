@@ -1,7 +1,7 @@
-$(function(){
+$(() => {
 
     // フリーワード検索
-    $('#charge_relations-freeword-search-snippet').on('keypress', function(e) {
+    $('#charge_relations-freeword-search-snippet').on('keypress', e => {
         if (e.keyCode == 13) {
             $('#charge_relations-freeword-search-btn').trigger('click');
         }

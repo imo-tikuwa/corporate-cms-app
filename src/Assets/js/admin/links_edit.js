@@ -1,4 +1,4 @@
-$(function(){
+$(() => {
 
     // リンクカテゴリ
     $('#category').select2({
