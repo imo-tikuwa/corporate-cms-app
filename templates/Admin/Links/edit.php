@@ -35,7 +35,7 @@ $this->assign('title', "リンク集{$button_name}");
             <?= $this->Form->control('description', ['type' => 'textarea', 'class' => 'form-control rounded-0 ', 'label' => false, 'required' => false, 'error' => false, 'rows' => '3', 'maxlength' => '500']); ?>
           </div>
         </div>
-        <div class="col-md-12">
+        <div class="col-lg-12 col-md-12 col-sm-12">
           <?= $this->Form->button($button_name, ['class' => "btn btn-flat btn-outline-secondary"]) ?>
         </div>
       </div>

@@ -5,8 +5,6 @@ namespace App\Controller\Admin;
 
 use App\Controller\Admin\AppController;
 use App\Form\SearchForm;
-use Cake\I18n\FrozenDate;
-use Cake\I18n\FrozenTime;
 use Cake\Utility\Hash;
 use DateTime;
 use DateTimeZone;
@@ -95,7 +93,11 @@ class ChargeMastersController extends AppController
             $charge_master = $this->ChargeMasters->newEmptyEntity();
         }
         if ($this->getRequest()->is(['patch', 'post', 'put'])) {
-            $charge_master = $this->ChargeMasters->patchEntity($charge_master, $this->getRequest()->getData(), ['associated' => ['ChargeRelations']]);
+            $charge_master = $this->ChargeMasters->patchEntity($charge_master, $this->getRequest()->getData(), [
+                'associated' => [
+                    'ChargeRelations',
+                ]
+            ]);
             if ($charge_master->hasErrors()) {
                 $this->Flash->set(implode('<br />', $charge_master->getErrorMessages()), [
                     'escape' => false,
@@ -152,35 +154,19 @@ class ChargeMastersController extends AppController
             'name',
             // 基本料金
             function ($row) {
-                if (!empty($row['basic_charge'])) {
-                    return $row['basic_charge'] . "円";
-                }
-
-                return "";
+                return !is_null($row['basic_charge']) ? "{$row['basic_charge']}円" : null;
             },
             // キャンペーン料金
             function ($row) {
-                if (!empty($row['campaign_charge'])) {
-                    return $row['campaign_charge'] . "円";
-                }
-
-                return "";
+                return !is_null($row['campaign_charge']) ? "{$row['campaign_charge']}円" : null;
             },
             // 作成日時
             function ($row) {
-                if ($row['created'] instanceof FrozenTime) {
-                    return @$row['created']->i18nFormat('yyyy-MM-dd HH:mm:ss');
-                }
-
-                return "";
+                return $row['created']?->i18nFormat('yyyy-MM-dd HH:mm:ss');
             },
             // 更新日時
             function ($row) {
-                if ($row['modified'] instanceof FrozenTime) {
-                    return @$row['modified']->i18nFormat('yyyy-MM-dd HH:mm:ss');
-                }
-
-                return "";
+                return $row['modified']?->i18nFormat('yyyy-MM-dd HH:mm:ss');
             },
         ];
 

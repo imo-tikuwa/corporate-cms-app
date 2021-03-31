@@ -7,8 +7,6 @@ use App\Controller\Admin\AppController;
 use App\Form\SearchForm;
 use App\Utils\ExcelUtils;
 use Cake\Http\CallbackStream;
-use Cake\I18n\FrozenDate;
-use Cake\I18n\FrozenTime;
 use Cake\Utility\Hash;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as XlsxReader;
 use PhpOffice\PhpSpreadsheet\Style\Border;
@@ -168,7 +166,7 @@ class StaffsController extends AppController
                     return _code('Codes.Staffs.staff_position.' . $row['staff_position']);
                 }
 
-                return "";
+                return null;
             },
             // 画像表示位置
             function ($row) {
@@ -176,7 +174,7 @@ class StaffsController extends AppController
                     return _code('Codes.Staffs.photo_position.' . $row['photo_position']);
                 }
 
-                return "";
+                return null;
             },
             // スタッフ説明1
             'description1',
@@ -186,19 +184,11 @@ class StaffsController extends AppController
             'description2',
             // 作成日時
             function ($row) {
-                if ($row['created'] instanceof FrozenTime) {
-                    return @$row['created']->i18nFormat('yyyy-MM-dd HH:mm:ss');
-                }
-
-                return "";
+                return $row['created']?->i18nFormat('yyyy-MM-dd HH:mm:ss');
             },
             // 更新日時
             function ($row) {
-                if ($row['modified'] instanceof FrozenTime) {
-                    return @$row['modified']->i18nFormat('yyyy-MM-dd HH:mm:ss');
-                }
-
-                return "";
+                return $row['modified']?->i18nFormat('yyyy-MM-dd HH:mm:ss');
             },
         ];
 
@@ -256,11 +246,9 @@ class StaffsController extends AppController
             // スタッフ説明2
             $data_sheet->setCellValue("H{$row_num}", $staff->description2);
             // 作成日時
-            $cell_value = ($staff->created instanceof FrozenTime) ? $staff->created->i18nFormat('yyyy-MM-dd HH:mm:ss') : null;
-            $data_sheet->setCellValue("I{$row_num}", $cell_value);
+            $data_sheet->setCellValue("I{$row_num}", $staff->created?->i18nFormat('yyyy-MM-dd HH:mm:ss'));
             // 更新日時
-            $cell_value = ($staff->modified instanceof FrozenTime) ? $staff->modified->i18nFormat('yyyy-MM-dd HH:mm:ss') : null;
-            $data_sheet->setCellValue("J{$row_num}", $cell_value);
+            $data_sheet->setCellValue("J{$row_num}", $staff->modified?->i18nFormat('yyyy-MM-dd HH:mm:ss'));
             $row_num++;
         }
 

@@ -1,4 +1,5 @@
 $(() => {
+    const csrf_token = $("input[name='_csrfToken']").val();
 
     // スタッフ役職
     $('#staff_position').select2({
@@ -15,7 +16,6 @@ $(() => {
     });
 
     // スタッフ画像
-    var photo_csrf_token = $("input[name='_csrfToken']").val();
     $("#photo-file-input").fileinput({
         language: "ja",
         theme: "explorer-fas",
@@ -30,10 +30,10 @@ $(() => {
         removeFromPreviewOnError: true,
         autoOrientImage: false,
         uploadExtraData: {
-            "_csrfToken": photo_csrf_token,
+            "_csrfToken": csrf_token,
         },
         deleteExtraData: {
-            "_csrfToken": photo_csrf_token,
+            "_csrfToken": csrf_token,
         },
         overwriteInitial: false,
         initialPreview: $("#photo-file-hidden").data('initial-preview'),
@@ -68,12 +68,7 @@ $(() => {
             dragIcon: '<i class="fas fa-arrows-alt-v"></i>',
             showUpload: false,
         },
-        allowedFileExtensions: [
-            'jpg',
-            'jpeg',
-            'gif',
-            'png',
-        ],
+        allowedFileExtensions: ['jpg', 'jpeg', 'gif', 'png'],
         maxFileCount: 1,
     }).on('filebatchselected', (e, files) => {
         if (Object.keys(files).length > 0) {

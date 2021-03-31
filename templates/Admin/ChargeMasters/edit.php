@@ -39,7 +39,7 @@ $this->assign('title', "料金マスタ{$button_name}");
             </div>
           </div>
         </div>
-        <div class="col-md-12">
+        <div class="col-lg-12 col-md-12 col-sm-12">
           <?= $this->Form->button($button_name, ['class' => "btn btn-flat btn-outline-secondary"]) ?>
         </div>
       </div>

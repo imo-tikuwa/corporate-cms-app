@@ -5,8 +5,6 @@ namespace App\Controller\Admin;
 
 use App\Controller\Admin\AppController;
 use App\Form\SearchForm;
-use Cake\I18n\FrozenDate;
-use Cake\I18n\FrozenTime;
 use Cake\Utility\Hash;
 use DateTime;
 use DateTimeZone;
@@ -75,7 +73,12 @@ class ChargeRelationsController extends AppController
      */
     public function view($id = null)
     {
-        $charge_relation = $this->ChargeRelations->get($id, ['contain' => ['Charges', 'ChargeMasters']]);
+        $charge_relation = $this->ChargeRelations->get($id, [
+            'contain' => [
+                'Charges',
+                'ChargeMasters',
+            ]
+        ]);
 
         $this->set('charge_relation', $charge_relation);
     }
@@ -118,7 +121,12 @@ class ChargeRelationsController extends AppController
             $charge_relation = $this->ChargeRelations->newEmptyEntity();
         }
         if ($this->getRequest()->is(['patch', 'post', 'put'])) {
-            $charge_relation = $this->ChargeRelations->patchEntity($charge_relation, $this->getRequest()->getData(), ['associated' => ['Charges', 'ChargeMasters']]);
+            $charge_relation = $this->ChargeRelations->patchEntity($charge_relation, $this->getRequest()->getData(), [
+                'associated' => [
+                    'Charges',
+                    'ChargeMasters',
+                ]
+            ]);
             if ($charge_relation->hasErrors()) {
                 $this->Flash->set(implode('<br />', $charge_relation->getErrorMessages()), [
                     'escape' => false,
@@ -181,19 +189,11 @@ class ChargeRelationsController extends AppController
             },
             // 作成日時
             function ($row) {
-                if ($row['created'] instanceof FrozenTime) {
-                    return @$row['created']->i18nFormat('yyyy-MM-dd HH:mm:ss');
-                }
-
-                return "";
+                return $row['created']?->i18nFormat('yyyy-MM-dd HH:mm:ss');
             },
             // 更新日時
             function ($row) {
-                if ($row['modified'] instanceof FrozenTime) {
-                    return @$row['modified']->i18nFormat('yyyy-MM-dd HH:mm:ss');
-                }
-
-                return "";
+                return $row['modified']?->i18nFormat('yyyy-MM-dd HH:mm:ss');
             },
         ];
 

@@ -43,19 +43,19 @@ $this->assign('title', "スタッフ{$button_name}");
             $photo_initial_preview = [];
             $photo_initial_preview_config = [];
             if (!empty($staff['photo'])) foreach ($staff['photo'] as $each_data) {
-                $photo_initial_preview[] = "/" . UPLOAD_FILE_BASE_DIR_NAME . "/staffs/{$each_data['cur_name']}";
-                $photo_initial_preview_config[] = [
-                    "caption" => $each_data['org_name'],
-                    "size" => $each_data['size'],
-                    "url" =>  $each_data['delete_url'],
-                    "key" => $each_data['key'],
-                    "downloadUrl" => "/" . UPLOAD_FILE_BASE_DIR_NAME . "/staffs/{$each_data['key']}",
-                ];
+              $photo_initial_preview[] = "/" . UPLOAD_FILE_BASE_DIR_NAME . "/staffs/{$each_data['cur_name']}";
+              $photo_initial_preview_config[] = [
+                "caption" => $each_data['org_name'],
+                "size" => $each_data['size'],
+                "url" =>  $each_data['delete_url'],
+                "key" => $each_data['key'],
+                "downloadUrl" => "/" . UPLOAD_FILE_BASE_DIR_NAME . "/staffs/{$each_data['key']}",
+              ];
             }
             ?>
             <?= $this->Form->hidden('photo', ['id' => 'photo-file-hidden', 'required' => false, 'error' => false, 'value' => !empty($staff['photo']) ? json_encode($staff['photo']) : '',
-                'data-initial-preview' => json_encode($photo_initial_preview),
-                'data-initial-preview-config' => json_encode($photo_initial_preview_config)
+              'data-initial-preview' => json_encode($photo_initial_preview),
+              'data-initial-preview-config' => json_encode($photo_initial_preview_config)
             ]); ?>
           </div>
         </div>
@@ -77,7 +77,7 @@ $this->assign('title', "スタッフ{$button_name}");
             <?= $this->Form->control('description2', ['type' => 'textarea', 'class' => 'form-control rounded-0 ', 'label' => false, 'required' => false, 'error' => false, 'rows' => '5', 'maxlength' => '1000']); ?>
           </div>
         </div>
-        <div class="col-md-12">
+        <div class="col-lg-12 col-md-12 col-sm-12">
           <?= $this->Form->button($button_name, ['class' => "btn btn-flat btn-outline-secondary"]) ?>
         </div>
       </div>

@@ -10,8 +10,6 @@ use App\Form\SearchForm;
 use App\Utils\ExcelUtils;
 use Cake\Http\CallbackStream;
 use Cake\Core\Exception\CakeException;
-use Cake\I18n\FrozenDate;
-use Cake\I18n\FrozenTime;
 use Cake\Utility\Hash;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as XlsxReader;
 use PhpOffice\PhpSpreadsheet\Style\Border;
@@ -163,7 +161,7 @@ class LinksController extends AppController
                     return _code('Codes.Links.category.' . $row['category']);
                 }
 
-                return "";
+                return null;
             },
             // リンクタイトル
             'title',
@@ -173,19 +171,11 @@ class LinksController extends AppController
             'description',
             // 作成日時
             function ($row) {
-                if ($row['created'] instanceof FrozenTime) {
-                    return @$row['created']->i18nFormat('yyyy-MM-dd HH:mm:ss');
-                }
-
-                return "";
+                return $row['created']?->i18nFormat('yyyy-MM-dd HH:mm:ss');
             },
             // 更新日時
             function ($row) {
-                if ($row['modified'] instanceof FrozenTime) {
-                    return @$row['modified']->i18nFormat('yyyy-MM-dd HH:mm:ss');
-                }
-
-                return "";
+                return $row['modified']?->i18nFormat('yyyy-MM-dd HH:mm:ss');
             },
         ];
 
@@ -282,11 +272,9 @@ class LinksController extends AppController
             // リンク説明
             $data_sheet->setCellValue("E{$row_num}", $link->description);
             // 作成日時
-            $cell_value = ($link->created instanceof FrozenTime) ? $link->created->i18nFormat('yyyy-MM-dd HH:mm:ss') : null;
-            $data_sheet->setCellValue("F{$row_num}", $cell_value);
+            $data_sheet->setCellValue("F{$row_num}", $link->created?->i18nFormat('yyyy-MM-dd HH:mm:ss'));
             // 更新日時
-            $cell_value = ($link->modified instanceof FrozenTime) ? $link->modified->i18nFormat('yyyy-MM-dd HH:mm:ss') : null;
-            $data_sheet->setCellValue("G{$row_num}", $cell_value);
+            $data_sheet->setCellValue("G{$row_num}", $link->modified?->i18nFormat('yyyy-MM-dd HH:mm:ss'));
             $row_num++;
         }
 
@@ -318,7 +306,7 @@ class LinksController extends AppController
 
     /**
      * excel import method
-     * @return \Cake\Http\Response|NULL
+     * @return \Cake\Http\Response|null
      */
     public function excelImport()
     {

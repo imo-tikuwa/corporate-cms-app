@@ -1,7 +1,7 @@
 $(() => {
 
     // GoogleMap地図座標
-    var location_latlon = ($('#location-latlon-hidden').val() != '') ? JSON.parse($('#location-latlon-hidden').val()) : {latitude: eval(35.658599), longitude: eval(139.745443), zoom: 13};
+    var location_latlon = ($('#location-latlon-hidden').val() != '') ? JSON.parse($('#location-latlon-hidden').val()) : {latitude: 35.658599, longitude: 139.745443, zoom: 13};
     var location_marker;
     if ($("#location-googlemap-container").length) {
         const location_googlemap = new google.maps.Map(document.getElementById("location-googlemap-container"), {
@@ -16,11 +16,8 @@ $(() => {
             scaleControl: false,
             scrollwheel: false,
             clickableIcons: false,
-        });
-        _locationPutMarker(location_googlemap.getCenter());
-        location_googlemap.addListener('click', e => _locationPutMarker(e.latLng));
-        location_googlemap.addListener('zoom_changed', () => _locationPutMarker(location_marker.getPosition()));
-        function _locationPutMarker(position) {
+        }),
+        locationPutMarker = position => {
             if (location_marker) {
                 location_marker.setMap(null);
             }
@@ -30,7 +27,10 @@ $(() => {
             });
             location_latlon = {latitude: position.lat(), longitude: position.lng(), zoom: location_googlemap.getZoom()};
             $('#location-latlon-hidden').val(JSON.stringify(location_latlon));
-        }
+        };
+        locationPutMarker(location_googlemap.getCenter());
+        location_googlemap.addListener('click', e => locationPutMarker(e.latLng));
+        location_googlemap.addListener('zoom_changed', () => locationPutMarker(location_marker.getPosition()));
     }
 
 });

@@ -118,8 +118,8 @@ class ChargeMastersFixture extends TestFixture
                 'basic_charge' => 0,
                 'campaign_charge' => 0,
                 'search_snippet' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
-                'created' => '2021-02-12 20:44:48',
-                'modified' => '2021-02-12 20:44:48',
+                'created' => '2021-03-31 17:21:26',
+                'modified' => '2021-03-31 17:21:26',
                 'deleted' => null,
             ],
         ];

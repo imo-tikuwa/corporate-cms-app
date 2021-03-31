@@ -23,7 +23,7 @@ $this->assign('title', "基本料金{$button_name}");
             <?= $this->Form->control('annotation', ['type' => 'text', 'class' => 'form-control rounded-0 ', 'label' => false, 'required' => false, 'error' => false, 'maxlength' => '20']); ?>
           </div>
         </div>
-        <div class="col-md-12">
+        <div class="col-lg-12 col-md-12 col-sm-12">
           <?= $this->Form->button($button_name, ['class' => "btn btn-flat btn-outline-secondary"]) ?>
         </div>
       </div>
