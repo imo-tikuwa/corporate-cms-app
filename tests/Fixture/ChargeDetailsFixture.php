@@ -6,9 +6,9 @@ namespace App\Test\Fixture;
 use Cake\TestSuite\Fixture\TestFixture;
 
 /**
- * ChargeRelationsFixture
+ * ChargeDetailsFixture
  */
-class ChargeRelationsFixture extends TestFixture
+class ChargeDetailsFixture extends TestFixture
 {
     /**
      * Fields
@@ -22,7 +22,7 @@ class ChargeRelationsFixture extends TestFixture
             'unsigned' => false,
             'null' => false,
             'default' => null,
-            'comment' => 'ID',
+            'comment' => '',
             'autoIncrement' => true,
             'precision' => null,
         ],
@@ -30,30 +30,40 @@ class ChargeRelationsFixture extends TestFixture
             'type' => 'integer',
             'length' => null,
             'unsigned' => false,
-            'null' => true,
+            'null' => false,
             'default' => null,
-            'comment' => '基本料金ID',
+            'comment' => '料金ID',
             'precision' => null,
             'autoIncrement' => null,
         ],
-        'charge_master_id' => [
+        'name' => [
+            'type' => 'string',
+            'length' => 255,
+            'null' => true,
+            'default' => null,
+            'collate' => 'utf8_general_ci',
+            'comment' => '料金名',
+            'precision' => null,
+        ],
+        'basic_charge' => [
             'type' => 'integer',
             'length' => null,
             'unsigned' => false,
             'null' => true,
             'default' => null,
-            'comment' => '料金マスタID',
+            'comment' => '基本料金',
             'precision' => null,
             'autoIncrement' => null,
         ],
-        'search_snippet' => [
-            'type' => 'text',
-            'length' => 16777215,
+        'campaign_charge' => [
+            'type' => 'integer',
+            'length' => null,
+            'unsigned' => false,
             'null' => true,
             'default' => null,
-            'collate' => 'utf8_general_ci',
-            'comment' => 'フリーワード検索用のスニペット',
+            'comment' => 'キャンペーン料金',
             'precision' => null,
+            'autoIncrement' => null,
         ],
         'created' => [
             'type' => 'datetime',
@@ -88,14 +98,6 @@ class ChargeRelationsFixture extends TestFixture
                 'length' => [
                 ],
             ],
-            'charge_master_id' => [
-                'type' => 'index',
-                'columns' => [
-                    'charge_master_id',
-                ],
-                'length' => [
-                ],
-            ],
         ],
         '_constraints' => [
             'primary' => [
@@ -124,10 +126,11 @@ class ChargeRelationsFixture extends TestFixture
             [
                 'id' => 1,
                 'charge_id' => 1,
-                'charge_master_id' => 1,
-                'search_snippet' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
-                'created' => '2021-03-31 17:21:26',
-                'modified' => '2021-03-31 17:21:26',
+                'name' => 'Lorem ipsum dolor sit amet',
+                'basic_charge' => 0,
+                'campaign_charge' => 0,
+                'created' => '2021-04-01 19:57:28',
+                'modified' => '2021-04-01 19:57:28',
                 'deleted' => null,
             ],
         ];

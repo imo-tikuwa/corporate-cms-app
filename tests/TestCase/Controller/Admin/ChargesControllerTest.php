@@ -24,7 +24,7 @@ class ChargesControllerTest extends TestCase
     protected $fixtures = [
         'app.Admins',
         'app.Charges',
-        'app.ChargeRelations',
+        'app.ChargeDetails',
     ];
 
     /**
@@ -213,7 +213,7 @@ class ChargesControllerTest extends TestCase
         $this->get('/admin/charges');
         $this->assertResponseCode(200);
         $this->assertHeaderContains('Content-Type', 'text/html;');
-        $this->assertTextContains('<title>基本料金</title>', (string)$this->_response->getBody());
+        $this->assertTextContains('<title>料金</title>', (string)$this->_response->getBody());
 
         $this->session([
             'Auth.Admin' => $this->read_admin
@@ -221,7 +221,7 @@ class ChargesControllerTest extends TestCase
         $this->get('/admin/charges');
         $this->assertResponseCode(200);
         $this->assertHeaderContains('Content-Type', 'text/html;');
-        $this->assertTextContains('<title>基本料金</title>', (string)$this->_response->getBody());
+        $this->assertTextContains('<title>料金</title>', (string)$this->_response->getBody());
 
         $this->session([
             'Auth.Admin' => $this->write_admin
@@ -276,7 +276,7 @@ class ChargesControllerTest extends TestCase
         $this->get('/admin/charges/view/1');
         $this->assertResponseCode(200);
         $this->assertHeaderContains('Content-Type', 'text/html;');
-        $this->assertTextContains('<title>基本料金詳細</title>', (string)$this->_response->getBody());
+        $this->assertTextContains('<title>料金詳細</title>', (string)$this->_response->getBody());
 
         $this->session([
             'Auth.Admin' => $this->read_admin
@@ -284,7 +284,7 @@ class ChargesControllerTest extends TestCase
         $this->get('/admin/charges/view/1');
         $this->assertResponseCode(200);
         $this->assertHeaderContains('Content-Type', 'text/html;');
-        $this->assertTextContains('<title>基本料金詳細</title>', (string)$this->_response->getBody());
+        $this->assertTextContains('<title>料金詳細</title>', (string)$this->_response->getBody());
 
         $this->session([
             'Auth.Admin' => $this->write_admin
@@ -339,7 +339,7 @@ class ChargesControllerTest extends TestCase
         $this->get('/admin/charges/add');
         $this->assertResponseCode(200);
         $this->assertHeaderContains('Content-Type', 'text/html;');
-        $this->assertTextContains('<title>基本料金登録</title>', (string)$this->_response->getBody());
+        $this->assertTextContains('<title>料金登録</title>', (string)$this->_response->getBody());
 
         $this->session([
             'Auth.Admin' => $this->read_admin
@@ -354,7 +354,7 @@ class ChargesControllerTest extends TestCase
         $this->get('/admin/charges/add');
         $this->assertResponseCode(200);
         $this->assertHeaderContains('Content-Type', 'text/html;');
-        $this->assertTextContains('<title>基本料金登録</title>', (string)$this->_response->getBody());
+        $this->assertTextContains('<title>料金登録</title>', (string)$this->_response->getBody());
 
         $this->session([
             'Auth.Admin' => $this->delete_admin
@@ -402,7 +402,7 @@ class ChargesControllerTest extends TestCase
         $this->get('/admin/charges/edit/1');
         $this->assertResponseCode(200);
         $this->assertHeaderContains('Content-Type', 'text/html;');
-        $this->assertTextContains('<title>基本料金更新</title>', (string)$this->_response->getBody());
+        $this->assertTextContains('<title>料金更新</title>', (string)$this->_response->getBody());
 
         $this->session([
             'Auth.Admin' => $this->read_admin
@@ -417,7 +417,7 @@ class ChargesControllerTest extends TestCase
         $this->get('/admin/charges/edit/1');
         $this->assertResponseCode(200);
         $this->assertHeaderContains('Content-Type', 'text/html;');
-        $this->assertTextContains('<title>基本料金更新</title>', (string)$this->_response->getBody());
+        $this->assertTextContains('<title>料金更新</title>', (string)$this->_response->getBody());
 
         $this->session([
             'Auth.Admin' => $this->delete_admin
@@ -468,7 +468,7 @@ class ChargesControllerTest extends TestCase
         $this->assertInstanceOf('\App\Model\Entity\Charge', $charge);
         $this->post('/admin/charges/delete/1');
         $this->assertResponseCode(302);
-        $this->assertSession('基本料金の削除が完了しました。', 'Flash.flash.0.message');
+        $this->assertSession('料金の削除が完了しました。', 'Flash.flash.0.message');
         $charge = $this->Charges->findById(1)->first();
         $this->assertEquals(null, $charge);
 
@@ -492,7 +492,7 @@ class ChargesControllerTest extends TestCase
         ]);
         $this->post('/admin/charges/delete/1');
         $this->assertResponseCode(302);
-        $this->assertSession('基本料金の削除が完了しました。', 'Flash.flash.0.message');
+        $this->assertSession('料金の削除が完了しました。', 'Flash.flash.0.message');
 
         $this->session([
             'Auth.Admin' => $this->csv_export_admin
@@ -654,6 +654,138 @@ class ChargesControllerTest extends TestCase
             'Auth.Admin' => $this->no_authority_admin
         ]);
         $this->get('/admin/charges/excel-export');
+        $this->assertResponseCode(302);
+        $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
+    }
+
+    /**
+     * Test appendChargeDetailRow method
+     *
+     * @return void
+     */
+    public function testAppendChargeDetailRow(): void
+    {
+        $this->cleanup();
+        $this->enableCsrfToken();
+
+        $this->get('/admin/charges/append-charge-detail-row');
+        $this->assertResponseCode(302);
+        $this->assertHeaderContains('location', '/admin/auth/login');
+
+        $this->session([
+            'Auth.Admin' => $this->super_admin
+        ]);
+        $this->get('/admin/charges/append-charge-detail-row');
+        $this->assertResponseCode(302);
+        $this->assertRedirectEquals('http://localhost/admin/charges?' . http_build_query(_code('InitialOrders.Charges')));
+
+        $this->post('/admin/charges/append-charge-detail-row');
+        $this->assertResponseCode(302);
+        $this->assertRedirectEquals('http://localhost/admin/charges?' . http_build_query(_code('InitialOrders.Charges')));
+
+        $this->configRequest([
+            'headers' => [
+                'X-Requested-With' => 'XMLHttpRequest',
+                'Accept' => 'application/json',
+                'ContentType' => 'application/json; charset=utf-8',
+            ],
+        ]);
+
+        $this->get('/admin/charges/append-charge-detail-row');
+        $this->assertResponseCode(200);
+        $this->assertHeaderContains('Content-Type', 'text/html;');
+        $this->assertTextContains('<div class="charge-detail-row"', (string)$this->_response->getBody());
+
+        $this->cleanup();
+        $this->enableCsrfToken();
+
+        $this->session([
+            'Auth.Admin' => $this->read_admin
+        ]);
+        $this->get('/admin/charges/append-charge-detail-row');
+        $this->assertResponseCode(302);
+        $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
+
+        $this->post('/admin/charges/append-charge-detail-row');
+        $this->assertResponseCode(302);
+        $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
+
+        $this->cleanup();
+        $this->enableCsrfToken();
+
+        $this->session([
+            'Auth.Admin' => $this->write_admin
+        ]);
+        $this->get('/admin/charges/append-charge-detail-row');
+        $this->assertResponseCode(302);
+        $this->assertRedirectEquals('http://localhost/admin/charges?' . http_build_query(_code('InitialOrders.Charges')));
+
+        $this->post('/admin/charges/append-charge-detail-row');
+        $this->assertResponseCode(302);
+        $this->assertRedirectEquals('http://localhost/admin/charges?' . http_build_query(_code('InitialOrders.Charges')));
+
+        $this->configRequest([
+            'headers' => [
+                'X-Requested-With' => 'XMLHttpRequest',
+                'Accept' => 'application/json',
+                'ContentType' => 'application/json; charset=utf-8',
+            ],
+        ]);
+
+        $this->get('/admin/charges/append-charge-detail-row');
+        $this->assertResponseCode(200);
+        $this->assertHeaderContains('Content-Type', 'text/html;');
+        $this->assertTextContains('<div class="charge-detail-row"', (string)$this->_response->getBody());
+
+        $this->cleanup();
+        $this->enableCsrfToken();
+
+        $this->session([
+            'Auth.Admin' => $this->delete_admin
+        ]);
+        $this->get('/admin/charges/append-charge-detail-row');
+        $this->assertResponseCode(302);
+        $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
+
+        $this->post('/admin/charges/append-charge-detail-row');
+        $this->assertResponseCode(302);
+        $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
+
+        $this->cleanup();
+        $this->enableCsrfToken();
+
+        $this->session([
+            'Auth.Admin' => $this->csv_export_admin
+        ]);
+        $this->get('/admin/charges/append-charge-detail-row');
+        $this->assertResponseCode(302);
+        $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
+
+        $this->post('/admin/charges/append-charge-detail-row');
+        $this->assertResponseCode(302);
+        $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
+
+        $this->cleanup();
+        $this->enableCsrfToken();
+
+        $this->session([
+            'Auth.Admin' => $this->excel_export_admin
+        ]);
+        $this->get('/admin/charges/append-charge-detail-row');
+        $this->assertResponseCode(302);
+        $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
+
+        $this->post('/admin/charges/append-charge-detail-row');
+        $this->assertResponseCode(302);
+        $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
+
+        $this->cleanup();
+        $this->enableCsrfToken();
+
+        $this->session([
+            'Auth.Admin' => $this->no_authority_admin
+        ]);
+        $this->get('/admin/charges/append-charge-detail-row');
         $this->assertResponseCode(302);
         $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
     }

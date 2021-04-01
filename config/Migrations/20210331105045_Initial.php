@@ -126,8 +126,8 @@ class Initial extends AbstractMigration
             ])
             ->create();
 
-        $this->table('charge_masters', [
-                'comment' => '料金マスタ',
+        $this->table('charge_details', [
+                'comment' => '',
             ])
             ->addColumn('id', 'integer', [
                 'autoIncrement' => true,
@@ -137,8 +137,14 @@ class Initial extends AbstractMigration
                 'null' => false,
             ])
             ->addPrimaryKey(['id'])
+            ->addColumn('charge_id', 'integer', [
+                'comment' => '料金ID',
+                'default' => null,
+                'limit' => null,
+                'null' => false,
+            ])
             ->addColumn('name', 'string', [
-                'comment' => 'マスタ名',
+                'comment' => '料金名',
                 'default' => null,
                 'limit' => 255,
                 'null' => true,
@@ -153,61 +159,6 @@ class Initial extends AbstractMigration
                 'comment' => 'キャンペーン料金',
                 'default' => null,
                 'limit' => null,
-                'null' => true,
-            ])
-            ->addColumn('search_snippet', 'text', [
-                'comment' => 'フリーワード検索用のスニペット',
-                'default' => null,
-                'limit' => 16777215,
-                'null' => true,
-            ])
-            ->addColumn('created', 'datetime', [
-                'comment' => '作成日時',
-                'default' => null,
-                'limit' => null,
-                'null' => true,
-            ])
-            ->addColumn('modified', 'datetime', [
-                'comment' => '更新日時',
-                'default' => null,
-                'limit' => null,
-                'null' => true,
-            ])
-            ->addColumn('deleted', 'datetime', [
-                'comment' => '削除日時',
-                'default' => null,
-                'limit' => null,
-                'null' => true,
-            ])
-            ->create();
-
-        $this->table('charge_relations', [
-                'comment' => '料金マッピング',
-            ])
-            ->addColumn('id', 'integer', [
-                'autoIncrement' => true,
-                'comment' => 'ID',
-                'default' => null,
-                'limit' => null,
-                'null' => false,
-            ])
-            ->addPrimaryKey(['id'])
-            ->addColumn('charge_id', 'integer', [
-                'comment' => '基本料金ID',
-                'default' => null,
-                'limit' => null,
-                'null' => true,
-            ])
-            ->addColumn('charge_master_id', 'integer', [
-                'comment' => '料金マスタID',
-                'default' => null,
-                'limit' => null,
-                'null' => true,
-            ])
-            ->addColumn('search_snippet', 'text', [
-                'comment' => 'フリーワード検索用のスニペット',
-                'default' => null,
-                'limit' => 16777215,
                 'null' => true,
             ])
             ->addColumn('created', 'datetime', [
@@ -233,15 +184,10 @@ class Initial extends AbstractMigration
                     'charge_id',
                 ]
             )
-            ->addIndex(
-                [
-                    'charge_master_id',
-                ]
-            )
             ->create();
 
         $this->table('charges', [
-                'comment' => '基本料金',
+                'comment' => '料金',
             ])
             ->addColumn('id', 'integer', [
                 'autoIncrement' => true,
@@ -678,8 +624,7 @@ class Initial extends AbstractMigration
     {
         $this->table('access_maps')->drop()->save();
         $this->table('admins')->drop()->save();
-        $this->table('charge_masters')->drop()->save();
-        $this->table('charge_relations')->drop()->save();
+        $this->table('charge_details')->drop()->save();
         $this->table('charges')->drop()->save();
         $this->table('contacts')->drop()->save();
         $this->table('links')->drop()->save();

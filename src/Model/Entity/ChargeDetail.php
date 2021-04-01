@@ -4,20 +4,20 @@ declare(strict_types=1);
 namespace App\Model\Entity;
 
 /**
- * ChargeRelation Entity
+ * ChargeDetail Entity
  *
  * @property int $id
- * @property int|null $charge_id
- * @property int|null $charge_master_id
- * @property string|null $search_snippet
+ * @property int $charge_id
+ * @property string|null $name
+ * @property int|null $basic_charge
+ * @property int|null $campaign_charge
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime|null $modified
  * @property \Cake\I18n\FrozenTime|null $deleted
  *
  * @property \App\Model\Entity\Charge $charge
- * @property \App\Model\Entity\ChargeMaster $charge_master
  */
-class ChargeRelation extends AppEntity
+class ChargeDetail extends AppEntity
 {
 
     /**
@@ -31,12 +31,12 @@ class ChargeRelation extends AppEntity
      */
     protected $_accessible = [
         'charge_id' => true,
-        'charge_master_id' => true,
-        'search_snippet' => true,
+        'name' => true,
+        'basic_charge' => true,
+        'campaign_charge' => true,
         'created' => true,
         'modified' => true,
         'deleted' => true,
         'charge' => true,
-        'charge_master' => true,
     ];
 }

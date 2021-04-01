@@ -14,6 +14,7 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx as XlsxWriter;
 use DateTime;
 use DateTimeZone;
+use Cake\View\CellTrait;
 
 /**
  * Charges Controller
@@ -24,6 +25,9 @@ use DateTimeZone;
  */
 class ChargesController extends AppController
 {
+    /** コントローラ内でcellを使用するためのTrait */
+    use CellTrait;
+
     /**
      * Paging setting.
      */
@@ -56,7 +60,11 @@ class ChargesController extends AppController
      */
     public function view($id = null)
     {
-        $charge = $this->Charges->get($id);
+        $charge = $this->Charges->get($id, [
+            'contain' => [
+                'ChargeDetails',
+            ]
+        ]);
 
         $this->set('charge', $charge);
     }
@@ -74,7 +82,7 @@ class ChargesController extends AppController
     /**
      * Edit method
      *
-     * @param string|null $id 基本料金ID
+     * @param string|null $id 料金ID
      * @return \Cake\Http\Response|null
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
@@ -86,22 +94,30 @@ class ChargesController extends AppController
     /**
      * Add and Edit Common method
      *
-     * @param string|null $id 基本料金ID
+     * @param string|null $id 料金ID
      * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     private function _form($id = null)
     {
         if ($this->getRequest()->getParam('action') == 'edit') {
-            $charge = $this->Charges->get($id);
+            $charge = $this->Charges->get($id, [
+                'contain' => [
+                    'ChargeDetails',
+                ]
+            ]);
             $this->Charges->touch($charge);
         } else {
             $charge = $this->Charges->newEmptyEntity();
+            $charge->charge_details = [];
+            for ($i = 0; $i < 1; $i++) {
+                $charge->charge_details[] = $this->Charges->ChargeDetails->newEmptyEntity();
+            }
         }
         if ($this->getRequest()->is(['patch', 'post', 'put'])) {
             $charge = $this->Charges->patchEntity($charge, $this->getRequest()->getData(), [
                 'associated' => [
-                    'ChargeRelations',
+                    'ChargeDetails',
                 ]
             ]);
             if ($charge->hasErrors()) {
@@ -114,7 +130,7 @@ class ChargesController extends AppController
                 $conn->begin();
                 if ($this->Charges->save($charge, ['atomic' => false])) {
                     $conn->commit();
-                    $this->Flash->success('基本料金の登録が完了しました。');
+                    $this->Flash->success('料金の登録が完了しました。');
 
                     return $this->redirect(['action' => 'index', '?' => _code('InitialOrders.Charges')]);
                 }
@@ -128,7 +144,7 @@ class ChargesController extends AppController
     /**
      * Delete method
      *
-     * @param string|null $id 基本料金ID
+     * @param string|null $id 料金ID
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
@@ -137,7 +153,7 @@ class ChargesController extends AppController
         $this->getRequest()->allowMethod(['post', 'delete']);
         $entity = $this->Charges->get($id);
         if ($this->Charges->delete($entity)) {
-            $this->Flash->success('基本料金の削除が完了しました。');
+            $this->Flash->success('料金の削除が完了しました。');
         } else {
             $this->Flash->error('エラーが発生しました。');
         }
@@ -233,5 +249,24 @@ class ChargesController extends AppController
         ->withHeader('Content-Disposition', "attachment; filename=\"charges-{$datetime}.xlsx\"")
         ->withHeader('Cache-Control', 'max-age=0')
         ->withBody($stream);
+    }
+
+    /**
+     * 料金詳細のフォームを追加する
+     * @return \Cake\Http\Response|null
+     */
+    public function appendChargeDetailRow()
+    {
+        $this->autoRender = false;
+        if ($this->getRequest()->is('ajax') && $this->getRequest()->is('get')) {
+            $cell = $this->cell('ChargeDetail', [
+                'charge_detail' => $this->Charges->ChargeDetails->newEmptyEntity(),
+                'append_index' => $this->getRequest()->getQuery('append_index'),
+            ]);
+
+            return $this->getResponse()->withType('html')->withStringBody($cell->render());
+        }
+
+        return $this->redirect(['action' => 'index', '?' => _code('InitialOrders.Charges')]);
     }
 }

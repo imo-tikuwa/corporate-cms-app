@@ -6,7 +6,7 @@ use App\Utils\AuthUtils;
  * @var \App\Model\Entity\Charge[] $charges
  * @var \App\Form\SearchForm $search_form
  */
-$this->assign('title', "基本料金");
+$this->assign('title', "料金");
 ?>
 <div class="col-md-12 mb-12">
   <div class="card rounded-0">
@@ -103,7 +103,7 @@ $this->assign('title', "基本料金");
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">基本料金検索</h5>
+        <h5 class="modal-title">料金検索</h5>
       </div>
       <div class="modal-body">
         <?= $this->Form->create($search_form, ['type' => 'get', 'id' => 'charges-search-form']) ?>

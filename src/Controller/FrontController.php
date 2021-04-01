@@ -47,7 +47,7 @@ class FrontController extends AppController
     public function menu()
     {
         $this->loadModel('Charges');
-        $charges = $this->Charges->find()->contain(['ChargeRelations', 'ChargeRelations.ChargeMasters'])->order(['id' => 'ASC'])->toArray();
+        $charges = $this->Charges->find()->contain(['ChargeDetails'])->order(['id' => 'ASC'])->toArray();
         $this->set(compact('charges'));
     }
 

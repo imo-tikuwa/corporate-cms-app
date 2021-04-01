@@ -22,9 +22,7 @@ return [
     ],
     'BakedFunctions' => [
         'AccessMaps' => 'アクセスマップ',
-        'ChargeMasters' => '料金マスタ',
-        'ChargeRelations' => '料金マッピング',
-        'Charges' => '基本料金',
+        'Charges' => '料金',
         'Contacts' => 'お問い合わせ情報',
         'Links' => 'リンク集',
         'Staffs' => 'スタッフ',
@@ -93,20 +91,10 @@ return [
             'label' => 'スタッフ',
             'icon_class' => 'fas fa-users',
         ],
-        'ChargeMasters' => [
-            'controller' => 'ChargeMasters',
-            'label' => '料金マスタ',
-            'icon_class' => 'fas fa-yen-sign',
-        ],
         'Charges' => [
             'controller' => 'Charges',
-            'label' => '基本料金',
+            'label' => '料金',
             'icon_class' => 'fas fa-yen-sign',
-        ],
-        'ChargeRelations' => [
-            'controller' => 'ChargeRelations',
-            'label' => '料金マッピング',
-            'icon_class' => 'fas fa-arrows-alt-h',
         ],
         'AccessMaps' => [
             'controller' => 'AccessMaps',
@@ -156,14 +144,6 @@ return [
             'sort' => 'id',
             'direction' => 'asc',
         ],
-        'ChargeMasters' => [
-            'sort' => 'id',
-            'direction' => 'asc',
-        ],
-        'ChargeRelations' => [
-            'sort' => 'id',
-            'direction' => 'asc',
-        ],
         'Charges' => [
             'sort' => 'id',
             'direction' => 'asc',
@@ -198,24 +178,12 @@ return [
             ROLE_CSV_EXPORT => 'スタッフCSVエクスポート',
             ROLE_EXCEL_EXPORT => 'スタッフExcelエクスポート',
         ],
-        'ChargeMasters' => [
-            ROLE_READ => '料金マスタ読込',
-            ROLE_WRITE => '料金マスタ書込',
-            ROLE_DELETE => '料金マスタ削除',
-            ROLE_CSV_EXPORT => '料金マスタCSVエクスポート',
-        ],
         'Charges' => [
-            ROLE_READ => '基本料金読込',
-            ROLE_WRITE => '基本料金書込',
-            ROLE_DELETE => '基本料金削除',
-            ROLE_CSV_EXPORT => '基本料金CSVエクスポート',
-            ROLE_EXCEL_EXPORT => '基本料金Excelエクスポート',
-        ],
-        'ChargeRelations' => [
-            ROLE_READ => '料金マッピング読込',
-            ROLE_WRITE => '料金マッピング書込',
-            ROLE_DELETE => '料金マッピング削除',
-            ROLE_CSV_EXPORT => '料金マッピングCSVエクスポート',
+            ROLE_READ => '料金読込',
+            ROLE_WRITE => '料金書込',
+            ROLE_DELETE => '料金削除',
+            ROLE_CSV_EXPORT => '料金CSVエクスポート',
+            ROLE_EXCEL_EXPORT => '料金Excelエクスポート',
         ],
         'AccessMaps' => [
             ROLE_WRITE => 'アクセスマップ書込',

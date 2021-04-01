@@ -25,7 +25,7 @@ class ChargesTableTest extends TestCase
      */
     protected $fixtures = [
         'app.Charges',
-        'app.ChargeRelations',
+        'app.ChargeDetails',
     ];
 
     /**
@@ -89,6 +89,24 @@ class ChargesTableTest extends TestCase
         $this->assertInstanceOf('\Cake\Datasource\EntityInterface', $charge);
 
         $this->assertFalse($charge->hasErrors());
+    }
+
+    /**
+     * Test save method
+     *
+     * @return void
+     */
+    public function testSave(): void
+    {
+        $charge = $this->Charges->get(1);
+        $datetime_before_save = (int)$charge->modified->i18nFormat('yyyyMMddHHmmss');
+        $this->Charges->touch($charge);
+        $result = $this->Charges->save($charge);
+        $datetime_after_save = (int)$charge->get('modified')->i18nFormat('yyyyMMddHHmmss');
+
+        $this->assertInstanceOf('\App\Model\Entity\Charge', $charge);
+        $this->assertTrue(!empty($result));
+        $this->assertGreaterThanOrEqual($datetime_before_save, $datetime_after_save);
     }
 
     /**

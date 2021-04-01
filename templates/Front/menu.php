@@ -1,6 +1,7 @@
 <?php
 /**
  * @var \App\View\AppView $this
+ * @var \App\Model\Entity\Charge[] $charges
  */
 $this->assign('title', "メニュー・料金<span>Menu / Price</span>");
 ?>
@@ -18,14 +19,14 @@ $this->assign('title', "メニュー・料金<span>Menu / Price</span>");
               <?php if (!empty($charge->annotation)) { ?><br /><span><?= $charge->annotation ?></span><?php } ?>
             </th>
             <td>
-              <?php foreach ($charge->charge_relations as $charge_relation) { ?>
+              <?php foreach ($charge->charge_details as $charge_detail) { ?>
                 <?php
-                if (!isset($charge_relation->charge_master) || empty($charge_relation->charge_master)) {
+                if (!isset($charge_detail)) {
                   continue;
                 }
                 ?>
-                <?php if (!empty($charge_relation->charge_master->name)) { ?><?= $charge_relation->charge_master->name ?>：<?php } ?><span class="teisei"><?= number_format($charge_relation->charge_master->basic_charge) ?>円</span>→<strong><?= number_format($charge_relation->charge_master->campaign_charge) ?>円</strong>
-                <?php if ($charge_relation != end($charge->charge_relations)) { ?>
+                <?php if (!empty($charge_detail->name)) { ?><?= $charge_detail->name ?>：<?php } ?><span class="teisei"><?= number_format($charge_detail->basic_charge) ?>円</span>→<strong><?= number_format($charge_detail->campaign_charge) ?>円</strong>
+                <?php if ($charge_detail != end($charge->charge_details)) { ?>
                   <br />
                 <?php } ?>
               <?php } ?>

@@ -14,7 +14,7 @@ use SoftDelete\Model\Table\SoftDeleteTrait;
 /**
  * Charges Model
  *
- * @property \App\Model\Table\ChargeRelationsTable&\Cake\ORM\Association\HasMany $ChargeRelations
+ * @property \App\Model\Table\ChargeDetailsTable&\Cake\ORM\Association\HasMany $ChargeDetails
  *
  * @method \App\Model\Entity\Charge newEmptyEntity()
  * @method \App\Model\Entity\Charge newEntity(array $data, array $options = [])
@@ -50,8 +50,9 @@ class ChargesTable extends AppTable
         $this->setTable('charges');
         $this->setDisplayField('name');
         $this->setPrimaryKey('id');
-        $this->hasMany('ChargeRelations', [
+        $this->hasMany('ChargeDetails', [
             'foreignKey' => 'charge_id',
+            'dependent' => true,
         ]);
     }
 
@@ -126,6 +127,26 @@ class ChargesTable extends AppTable
     }
 
     /**
+     * saveのオーバーライド
+     * @param EntityInterface $entity エンティティ
+     * @param array $options オプション配列
+     * @return \Cake\Datasource\EntityInterface|false
+     */
+    public function save(EntityInterface $entity, $options = [])
+    {
+        if (!$entity->isNew()) {
+            $prev_entities = $this->ChargeDetails->find()->where(['charge_id' => $entity->id])->toArray();
+            if (!empty($prev_entities) && count($prev_entities) > 0) {
+                foreach ($prev_entities as $prev_entity) {
+                    $this->ChargeDetails->hardDelete($prev_entity);
+                }
+            }
+        }
+
+        return parent::save($entity, $options);
+    }
+
+    /**
      * ページネートに渡すクエリオブジェクトを生成する
      * @param array $request リクエスト情報
      * @return \Cake\ORM\Query $query
@@ -159,8 +180,9 @@ class ChargesTable extends AppTable
                 });
             }
         }
+        $query->group('Charges.id');
 
-        return $query;
+        return $query->contain(['ChargeDetails']);
     }
 
     /**

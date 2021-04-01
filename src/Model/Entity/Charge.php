@@ -14,7 +14,7 @@ namespace App\Model\Entity;
  * @property \Cake\I18n\FrozenTime|null $modified
  * @property \Cake\I18n\FrozenTime|null $deleted
  *
- * @property \App\Model\Entity\ChargeRelation[] $charge_relations
+ * @property \App\Model\Entity\ChargeDetail[] $charge_details
  */
 class Charge extends AppEntity
 {
@@ -35,6 +35,18 @@ class Charge extends AppEntity
         'created' => true,
         'modified' => true,
         'deleted' => true,
-        'charge_relations' => true,
+        'charge_details' => true,
     ];
+
+    /**
+     * 関連エンティティのプロパティ名 => 論理名のデータ配列を返す
+     *
+     * @return array
+     */
+    protected function _getRelatedEntityNames()
+    {
+        return [
+            'charge_details' => '料金詳細',
+        ];
+    }
 }
