@@ -24,7 +24,7 @@ class ChargesSeed extends AbstractSeed
             [
                 'id' => '1',
                 'name' => '基本プラン',
-                'annotation' => '　',
+                'annotation' => '',
                 'search_snippet' => '基本プラン ',
                 'created' => '2020-05-01 21:12:28',
                 'modified' => '2020-09-30 15:26:33',

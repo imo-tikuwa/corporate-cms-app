@@ -24,7 +24,7 @@ class ChargeDetailsSeed extends AbstractSeed
             [
                 'id' => '1',
                 'charge_id' => '1',
-                'name' => '',
+                'name' => '　',
                 'basic_charge' => '5250',
                 'campaign_charge' => '4200',
                 'created' => '2020-05-01 21:07:19',

@@ -127,7 +127,7 @@ class Initial extends AbstractMigration
             ->create();
 
         $this->table('charge_details', [
-                'comment' => '',
+                'comment' => '料金 - 料金詳細',
             ])
             ->addColumn('id', 'integer', [
                 'autoIncrement' => true,
