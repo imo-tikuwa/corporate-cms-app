@@ -17,37 +17,80 @@ $this->Form->setTemplates([
         <div class="col-lg-6 col-md-6 col-sm-12">
           <div class="form-group">
             <?= $this->element('Parts/label', ['field' => 'name', 'label' => 'お名前', 'require' => true, 'class' => 'item-label col-form-label']); ?>
-            <?= $this->Form->control('name', ['type' => 'text', 'class' => 'form-control rounded-0 ', 'label' => false, 'required' => false, 'error' => false, 'maxlength' => '30']); ?>
+            <?= $this->Form->control('name', [
+              'type' => 'text',
+              'class' => 'form-control rounded-0 ',
+              'label' => false,
+              'required' => false,
+              'maxlength' => '30',
+              'error' => false
+            ]); ?>
           </div>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-12">
           <div class="form-group">
             <?= $this->element('Parts/label', ['field' => 'email', 'label' => 'メールアドレス', 'require' => true, 'class' => 'item-label col-form-label']); ?>
-            <?= $this->Form->control('email', ['type' => 'text', 'class' => 'form-control rounded-0 ', 'label' => false, 'required' => false, 'error' => false, 'maxlength' => '250']); ?>
+            <?= $this->Form->control('email', [
+              'type' => 'text',
+              'class' => 'form-control rounded-0 ',
+              'label' => false,
+              'required' => false,
+              'maxlength' => '250',
+              'error' => false
+            ]); ?>
           </div>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-12">
           <div class="form-group">
             <?= $this->element('Parts/label', ['field' => 'type', 'label' => 'お問い合わせ内容', 'require' => true, 'class' => 'item-label col-form-label']); ?>
-            <?= $this->Form->control('type', ['type' => 'radio', 'options' => _code('Codes.Contacts.type'), 'label' => false, 'required' => false, 'error' => false, "hiddenField" => false]); ?>
+            <?= $this->Form->control('type', [
+              'type' => 'radio',
+              'options' => _code('Codes.Contacts.type'),
+              'label' => false,
+              'required' => false,
+              'error' => false,
+              'hiddenField' => false
+            ]); ?>
           </div>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-12">
           <div class="form-group">
             <?= $this->element('Parts/label', ['field' => 'tel', 'label' => 'お電話番号', 'require' => false, 'class' => 'item-label col-form-label']); ?>
-            <?= $this->Form->control('tel', ['type' => 'text', 'class' => 'form-control rounded-0 ', 'label' => false, 'required' => false, 'error' => false, 'maxlength' => '15']); ?>
+            <?= $this->Form->control('tel', [
+              'type' => 'text',
+              'class' => 'form-control rounded-0 ',
+              'label' => false,
+              'required' => false,
+              'maxlength' => '15',
+              'error' => false
+            ]); ?>
           </div>
         </div>
         <div class="col-lg-12 col-md-12 col-sm-12">
           <div class="form-group">
             <?= $this->element('Parts/label', ['field' => 'content', 'label' => 'ご希望日時／その他ご要望等', 'require' => true, 'class' => 'item-label col-form-label']); ?>
-            <?= $this->Form->control('content', ['type' => 'textarea', 'class' => 'form-control rounded-0 ', 'label' => false, 'required' => false, 'error' => false, 'rows' => '5', 'maxlength' => '1000']); ?>
+            <?= $this->Form->control('content', [
+              'type' => 'textarea',
+              'class' => 'form-control rounded-0 ',
+              'label' => false,
+              'required' => false,
+              'rows' => '5',
+              'maxlength' => '1000',
+              'error' => false
+            ]); ?>
           </div>
         </div>
         <div class="col-lg-12 col-md-12 col-sm-12">
           <div class="form-group">
             <?= $this->element('Parts/label', ['field' => 'hp_url', 'label' => 'ホームページURL', 'require' => false, 'class' => 'item-label col-form-label']); ?>
-            <?= $this->Form->control('hp_url', ['type' => 'text', 'class' => 'form-control rounded-0 ', 'label' => false, 'required' => false, 'error' => false, 'maxlength' => '250']); ?>
+            <?= $this->Form->control('hp_url', [
+              'type' => 'text',
+              'class' => 'form-control rounded-0 ',
+              'label' => false,
+              'required' => false,
+              'maxlength' => '250',
+              'error' => false
+            ]); ?>
           </div>
         </div>
         <div class="col-lg-12 col-md-12 col-sm-12">

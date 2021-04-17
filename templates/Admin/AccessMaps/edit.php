@@ -14,21 +14,40 @@ $this->assign('title', "アクセスマップ{$button_name}");
         <div class="col-lg-12 col-md-12 col-sm-12">
           <div class="form-group">
             <?= $this->element('Parts/label', ['field' => 'description', 'label' => 'アクセス方法', 'require' => false, 'class' => 'item-label col-form-label']); ?>
-            <?= $this->Form->control('description', ['type' => 'text', 'class' => 'form-control rounded-0 ', 'label' => false, 'required' => false, 'error' => false, 'maxlength' => '100']); ?>
+            <?= $this->Form->control('description', [
+              'type' => 'text',
+              'class' => 'form-control rounded-0 ',
+              'label' => false,
+              'required' => false,
+              'maxlength' => '100',
+              'error' => false
+            ]); ?>
           </div>
         </div>
         <div class="col-lg-12 col-md-12 col-sm-12">
           <div class="form-group">
             <?= $this->element('Parts/label', ['field' => 'location-googlemap-container', 'label' => 'GoogleMap地図座標', 'require' => true, 'class' => 'item-label col-form-label']); ?>
             <div id="location-googlemap-container" style="height:350px;"></div>
-            <?= $this->Form->hidden('location', ['id' => 'location-latlon-hidden', 'required' => false, 'error' => false, 'value' => !empty($access_map['location']) ? json_encode($access_map['location']) : '']); ?>
+            <?= $this->Form->hidden('location', [
+              'id' => 'location-latlon-hidden',
+              'required' => false,
+              'error' => false,
+              'value' => !empty($access_map['location']) ? json_encode($access_map['location']) : ''
+            ]); ?>
           </div>
         </div>
         <?= $this->Html->script('//maps.google.com/maps/api/js?v=3&key=' . env('GOOGLEMAP_API_KEY'), ['block' => true, 'charset' => 'UTF-8']) ?>
         <div class="col-lg-12 col-md-12 col-sm-12">
           <div class="form-group">
             <?= $this->element('Parts/label', ['field' => 'map_link', 'label' => '地図リンク', 'require' => false, 'class' => 'item-label col-form-label']); ?>
-            <?= $this->Form->control('map_link', ['type' => 'text', 'class' => 'form-control rounded-0 ', 'label' => false, 'required' => false, 'error' => false, 'maxlength' => '512']); ?>
+            <?= $this->Form->control('map_link', [
+              'type' => 'text',
+              'class' => 'form-control rounded-0 ',
+              'label' => false,
+              'required' => false,
+              'maxlength' => '512',
+              'error' => false
+            ]); ?>
           </div>
         </div>
         <div class="col-lg-12 col-md-12 col-sm-12">

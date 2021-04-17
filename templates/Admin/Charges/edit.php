@@ -14,13 +14,27 @@ $this->assign('title', "料金{$button_name}");
         <div class="col-lg-4 col-md-6 col-sm-12">
           <div class="form-group">
             <?= $this->element('Parts/label', ['field' => 'name', 'label' => 'プラン名', 'require' => true, 'class' => 'item-label col-form-label']); ?>
-            <?= $this->Form->control('name', ['type' => 'text', 'class' => 'form-control rounded-0 ', 'label' => false, 'required' => false, 'error' => false, 'maxlength' => '20']); ?>
+            <?= $this->Form->control('name', [
+              'type' => 'text',
+              'class' => 'form-control rounded-0 ',
+              'label' => false,
+              'required' => false,
+              'maxlength' => '20',
+              'error' => false
+            ]); ?>
           </div>
         </div>
         <div class="col-lg-4 col-md-6 col-sm-12">
           <div class="form-group">
             <?= $this->element('Parts/label', ['field' => 'annotation', 'label' => 'プラン名下注釈', 'require' => false, 'class' => 'item-label col-form-label']); ?>
-            <?= $this->Form->control('annotation', ['type' => 'text', 'class' => 'form-control rounded-0 ', 'label' => false, 'required' => false, 'error' => false, 'maxlength' => '20']); ?>
+            <?= $this->Form->control('annotation', [
+              'type' => 'text',
+              'class' => 'form-control rounded-0 ',
+              'label' => false,
+              'required' => false,
+              'maxlength' => '20',
+              'error' => false
+            ]); ?>
           </div>
         </div>
         <div class="col-lg-12 col-md-12 col-sm-12">

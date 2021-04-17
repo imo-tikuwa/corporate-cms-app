@@ -14,25 +14,56 @@ $this->assign('title', "リンク集{$button_name}");
         <div class="col-lg-4 col-md-6 col-sm-12">
           <div class="form-group">
             <?= $this->element('Parts/label', ['field' => 'category', 'label' => 'リンクカテゴリ', 'require' => true, 'class' => 'item-label col-form-label']); ?>
-            <?= $this->Form->control('category', ['id' => 'category', 'type' => 'select', 'options' => _code('Codes.Links.category'), 'class' => 'form-control ', 'label' => false, 'required' => false, 'error' => false, 'default' => '01', 'empty' => '　']); ?>
+            <?= $this->Form->control('category', [
+              'id' => 'category',
+              'type' => 'select',
+              'options' => _code('Codes.Links.category'),
+              'class' => 'form-control ',
+              'label' => false,
+              'required' => false,
+              'error' => false,
+              'default' => '01',
+              'empty' => '　'
+            ]); ?>
           </div>
         </div>
         <div class="col-lg-4 col-md-6 col-sm-12">
           <div class="form-group">
             <?= $this->element('Parts/label', ['field' => 'title', 'label' => 'リンクタイトル', 'require' => true, 'class' => 'item-label col-form-label']); ?>
-            <?= $this->Form->control('title', ['type' => 'text', 'class' => 'form-control rounded-0 ', 'label' => false, 'required' => false, 'error' => false, 'maxlength' => '50']); ?>
+            <?= $this->Form->control('title', [
+              'type' => 'text',
+              'class' => 'form-control rounded-0 ',
+              'label' => false,
+              'required' => false,
+              'maxlength' => '50',
+              'error' => false
+            ]); ?>
           </div>
         </div>
         <div class="col-lg-4 col-md-6 col-sm-12">
           <div class="form-group">
             <?= $this->element('Parts/label', ['field' => 'url', 'label' => 'リンクURL', 'require' => true, 'class' => 'item-label col-form-label']); ?>
-            <?= $this->Form->control('url', ['type' => 'text', 'class' => 'form-control rounded-0 ', 'label' => false, 'required' => false, 'error' => false]); ?>
+            <?= $this->Form->control('url', [
+              'type' => 'text',
+              'class' => 'form-control rounded-0 ',
+              'label' => false,
+              'required' => false,
+              'error' => false
+            ]); ?>
           </div>
         </div>
         <div class="col-lg-12 col-md-12 col-sm-12">
           <div class="form-group">
             <?= $this->element('Parts/label', ['field' => 'description', 'label' => 'リンク説明', 'require' => false, 'class' => 'item-label col-form-label']); ?>
-            <?= $this->Form->control('description', ['type' => 'textarea', 'class' => 'form-control rounded-0 ', 'label' => false, 'required' => false, 'error' => false, 'rows' => '3', 'maxlength' => '500']); ?>
+            <?= $this->Form->control('description', [
+              'type' => 'textarea',
+              'class' => 'form-control rounded-0 ',
+              'label' => false,
+              'required' => false,
+              'rows' => '3',
+              'maxlength' => '500',
+              'error' => false
+            ]); ?>
           </div>
         </div>
         <div class="col-lg-12 col-md-12 col-sm-12">
