@@ -119,6 +119,7 @@ $this->Form->setTemplates([
             <div class="col-md-12 col-sm-12">
               <div class="form-group">
                 <?= $this->Form->control('id', [
+                  'type' => 'text',
                   'class' => 'form-control rounded-0',
                   'label' => 'ID',
                 ]); ?>
@@ -129,6 +130,7 @@ $this->Form->setTemplates([
             <div class="col-md-12 col-sm-12">
               <div class="form-group">
                 <?= $this->Form->control('name', [
+                  'type' => 'text',
                   'class' => 'form-control rounded-0',
                   'label' => 'お名前',
                 ]); ?>
@@ -139,6 +141,7 @@ $this->Form->setTemplates([
             <div class="col-md-12 col-sm-12">
               <div class="form-group">
                 <?= $this->Form->control('email', [
+                  'type' => 'text',
                   'class' => 'form-control rounded-0',
                   'label' => 'メールアドレス',
                 ]); ?>
@@ -162,6 +165,7 @@ $this->Form->setTemplates([
             <div class="col-md-12 col-sm-12">
               <div class="form-group">
                 <?= $this->Form->control('tel', [
+                  'type' => 'text',
                   'class' => 'form-control rounded-0',
                   'label' => 'お電話番号',
                 ]); ?>
@@ -172,6 +176,7 @@ $this->Form->setTemplates([
             <div class="col-md-12 col-sm-12">
               <div class="form-group">
                 <?= $this->Form->control('content', [
+                  'type' => 'text',
                   'class' => 'form-control rounded-0',
                   'label' => 'ご希望日時／その他ご要望等',
                 ]); ?>
@@ -182,6 +187,7 @@ $this->Form->setTemplates([
             <div class="col-md-12 col-sm-12">
               <div class="form-group">
                 <?= $this->Form->control('hp_url', [
+                  'type' => 'text',
                   'class' => 'form-control rounded-0',
                   'label' => 'ホームページURL',
                 ]); ?>

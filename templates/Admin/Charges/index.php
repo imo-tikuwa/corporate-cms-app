@@ -111,6 +111,7 @@ $this->assign('title', "料金");
             <div class="col-md-12 col-sm-12">
               <div class="form-group">
                 <?= $this->Form->control('id', [
+                  'type' => 'text',
                   'class' => 'form-control rounded-0',
                   'label' => 'ID',
                 ]); ?>
@@ -121,6 +122,7 @@ $this->assign('title', "料金");
             <div class="col-md-12 col-sm-12">
               <div class="form-group">
                 <?= $this->Form->control('name', [
+                  'type' => 'text',
                   'class' => 'form-control rounded-0',
                   'label' => 'プラン名',
                 ]); ?>
@@ -131,6 +133,7 @@ $this->assign('title', "料金");
             <div class="col-md-12 col-sm-12">
               <div class="form-group">
                 <?= $this->Form->control('annotation', [
+                  'type' => 'text',
                   'class' => 'form-control rounded-0',
                   'label' => 'プラン名下注釈',
                 ]); ?>

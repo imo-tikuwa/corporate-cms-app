@@ -115,6 +115,7 @@ $this->assign('title', "スタッフ");
             <div class="col-md-12 col-sm-12">
               <div class="form-group">
                 <?= $this->Form->control('id', [
+                  'type' => 'text',
                   'class' => 'form-control rounded-0',
                   'label' => 'ID',
                 ]); ?>
@@ -125,6 +126,7 @@ $this->assign('title', "スタッフ");
             <div class="col-md-12 col-sm-12">
               <div class="form-group">
                 <?= $this->Form->control('name', [
+                  'type' => 'text',
                   'class' => 'form-control rounded-0',
                   'label' => 'スタッフ名',
                 ]); ?>
@@ -135,6 +137,7 @@ $this->assign('title', "スタッフ");
             <div class="col-md-12 col-sm-12">
               <div class="form-group">
                 <?= $this->Form->control('name_en', [
+                  'type' => 'text',
                   'class' => 'form-control rounded-0',
                   'label' => 'スタッフ名(英)',
                 ]); ?>
@@ -173,6 +176,7 @@ $this->assign('title', "スタッフ");
             <div class="col-md-12 col-sm-12">
               <div class="form-group">
                 <?= $this->Form->control('description1', [
+                  'type' => 'text',
                   'class' => 'form-control rounded-0',
                   'label' => 'スタッフ説明1',
                 ]); ?>
@@ -183,6 +187,7 @@ $this->assign('title', "スタッフ");
             <div class="col-md-12 col-sm-12">
               <div class="form-group">
                 <?= $this->Form->control('midashi1', [
+                  'type' => 'text',
                   'class' => 'form-control rounded-0',
                   'label' => '見出し1',
                 ]); ?>
@@ -193,6 +198,7 @@ $this->assign('title', "スタッフ");
             <div class="col-md-12 col-sm-12">
               <div class="form-group">
                 <?= $this->Form->control('description2', [
+                  'type' => 'text',
                   'class' => 'form-control rounded-0',
                   'label' => 'スタッフ説明2',
                 ]); ?>

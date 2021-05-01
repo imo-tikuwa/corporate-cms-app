@@ -131,6 +131,7 @@ $this->assign('title', "リンク集");
             <div class="col-md-12 col-sm-12">
               <div class="form-group">
                 <?= $this->Form->control('id', [
+                  'type' => 'text',
                   'class' => 'form-control rounded-0',
                   'label' => 'ID',
                 ]); ?>
@@ -155,6 +156,7 @@ $this->assign('title', "リンク集");
             <div class="col-md-12 col-sm-12">
               <div class="form-group">
                 <?= $this->Form->control('title', [
+                  'type' => 'text',
                   'class' => 'form-control rounded-0',
                   'label' => 'リンクタイトル',
                 ]); ?>
@@ -165,6 +167,7 @@ $this->assign('title', "リンク集");
             <div class="col-md-12 col-sm-12">
               <div class="form-group">
                 <?= $this->Form->control('url', [
+                  'type' => 'text',
                   'class' => 'form-control rounded-0',
                   'label' => 'リンクURL',
                 ]); ?>
@@ -175,6 +178,7 @@ $this->assign('title', "リンク集");
             <div class="col-md-12 col-sm-12">
               <div class="form-group">
                 <?= $this->Form->control('description', [
+                  'type' => 'text',
                   'class' => 'form-control rounded-0',
                   'label' => 'リンク説明',
                 ]); ?>
